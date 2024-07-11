@@ -10,6 +10,8 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
 use App\Models\Permission;
+use App\Notifications\CustomResetPasswordNotification;
+
 
 class User extends Authenticatable
 {
@@ -71,7 +73,10 @@ class User extends Authenticatable
     ];
 
 
-
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPasswordNotification($token));
+    }
     //functions
     public function permissions()
     {

@@ -12,6 +12,9 @@ class GrantsController extends Controller
     //
     public function postnewgrant(Request $request)
     {
+        if(!auth()->user()->haspermission('canaddoreditgrant')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Grant!");
+        }
         // Validate incoming request data if needed
         // Define validation rules
         $rules = [
@@ -19,6 +22,7 @@ class GrantsController extends Controller
             'finyear' => 'required|string', // Adjust data types as per your schema
             'status' => 'required|string',
         ];
+
 
 
 
@@ -49,6 +53,9 @@ class GrantsController extends Controller
 
     public function updategrant(Request $request, $id)
     {
+        if(!auth()->user()->haspermission('canaddoreditgrant')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Grant!");
+        }
         // Validate incoming request data if needed
         // Define validation rules
         $rules = [
@@ -90,6 +97,9 @@ class GrantsController extends Controller
     }
     public function getviewsinglegrantpage($id)
     {
+        if(!auth()->user()->haspermission('canaddoreditgrant')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Grant!");
+        }
         // Find the grant by ID or fail with a 404 error
         $grant = Grant::findOrFail($id);
         $isreadonlypage = true;
@@ -99,6 +109,9 @@ class GrantsController extends Controller
     }
     public function geteditsinglegrantpage($id)
     {
+        if(!auth()->user()->haspermission('canaddoreditgrant')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Grant!");
+        }
         // Find the grant by ID or fail with a 404 error
         $grant = Grant::findOrFail($id);
         $isreadonlypage = true;

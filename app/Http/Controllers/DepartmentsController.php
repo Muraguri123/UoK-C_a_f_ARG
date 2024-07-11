@@ -13,6 +13,9 @@ class DepartmentsController extends Controller
     //
     public function postnewdepartment(Request $request)
     {
+        if(!auth()->user()->haspermission('canaddoreditdepartment')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Department!");
+        }
         // Validate incoming request data if needed
         // Define validation rules
         $rules = [
@@ -47,6 +50,9 @@ class DepartmentsController extends Controller
 
     public function updatedepartment(Request $request, $id)
     {
+        if(!auth()->user()->haspermission('canaddoreditdepartment')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Department!");
+        }
         // Validate incoming request data if needed
         // Define validation rules
         $rules = [
@@ -81,11 +87,17 @@ class DepartmentsController extends Controller
     }
     public function viewalldepartments()
     {
+        if(!auth()->user()->haspermission('canviewdepartments')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to View Departments!");
+        }
         $alldepartments = Department::all();
         return view('pages.departments.home', compact('alldepartments'));
     }
     public function getviewdepartmentpage($id)
     {
+        if(!auth()->user()->haspermission('canaddoreditdepartment')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Department!");
+        }
         // Find the department by ID or fail with a 404 error
         $department = Department::findOrFail($id);
         $isreadonlypage = true;
@@ -94,6 +106,9 @@ class DepartmentsController extends Controller
     }
     public function geteditdepartmentpage($id)
     {
+        if(!auth()->user()->haspermission('canaddoreditdepartment')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Department!");
+        }
         // Find the grant by ID or fail with a 404 error
         $grant = Grant::findOrFail($id);
         $isreadonlypage = true;

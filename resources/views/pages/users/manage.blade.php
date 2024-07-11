@@ -9,66 +9,15 @@
         }
     </style>
 
-    @auth
-
-        <div class="row form-group" style="padding-top:4px">
-
-            <!--Collaborator Modal -->
-            <div class="modal fade" id="addgrantmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Add User</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="form_collaborators" method="POST" >
-                                @csrf
-                                <!-- Collaborators details form fields -->
-                                <div class="row form-group">
-                                    <div class="col col-md-3">
-                                        <label class="form-control-label">Financial Year</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="text" id="collaboratorname" placeholder="Financial Year"
-                                            class="form-control">
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3">
-                                        <label class="form-control-label">Status</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <select type="text" id="position" class="form-control">
-
-                                            <option>Open</option>
-                                            <option>Closed</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save User</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="row form-group" style="padding-top:4px">
+        @if (auth()->user()->haspermission('canviewallusers'))
             <form class="form-horizontal">
                 <div class="row form-group">
-                    <div class="col-lg-10 col-md-9 col-sm-9 col-xs-6">
+                    <div class="col-12">
 
                         <input type="text" id="searchInput" class="form-control text-center"
                             style="::placeholder { color: red; }"
                             placeholder="Search by User Name, Email, PFNO or Is Active Status">
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">
-                        <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
-                            data-bs-target="#addgrantmodal">
-                            Add User
-                        </button>
                     </div>
                 </div>
             </form>
@@ -81,18 +30,23 @@
                         <th scope="col">Email</th>
                         <th scope="col">PFNO</th>
                         <th scope="col">Is Active</th>
-                        <th scope="col">Date Created</th> 
+                        <th scope="col">Date Created</th>
                     </tr>
                 </thead>
                 <tbody>
 
                 </tbody>
             </table>
-        </div>
-    @endauth
+        @endif
+    </div>
 </div>
 <script>
+
     $(document).ready(function () {
+        var canviewuser = false; 
+        @if(Auth::user()->haspermission('canedituserprofile'))
+             canviewuser = true;  
+        @endif
 
         // Function to fetch data using AJAX
         function fetchData() {
@@ -134,11 +88,11 @@
             var tbody = $('#proposalstable tbody');
             tbody.empty(); // Clear existing table rows
             if (data.length > 0) {
-                $.each(data, function (index, data) {                    
+                $.each(data, function (index, data) {
                     var userurl = routeUrlTemplate.replace('__ID__', data.userid);
                     var row = '<tr>' +
                         '<td>' + data.name + '</td>' +
-                        '<td><a class="nav-link pt-0 pb-0" href="' + userurl + '">' + data.email + '</a></td>' +
+                        (canviewuser ? '<td><a class="nav-link pt-0 pb-0" href="' +  userurl  + '">' + data.email + '</a></td>'  : '<td>' + data.email + '</td>') +
                         '<td>' + data.pfno + '</td>' +
                         '<td>' + Boolean(data.isactive) + '</td>' +
                         '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +

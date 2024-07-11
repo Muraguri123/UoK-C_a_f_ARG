@@ -11,6 +11,9 @@ class DashboardController extends Controller
 {
     public function dashboard()
     {
+        if(!auth()->user()->haspermission('canviewadmindashboard')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to View Admin Dashboard!");
+        }
         $themes = ResearchTheme::all();
         // Count proposals grouped by theme
         $themeCounts = Proposal::join('researchthemes', 'proposals.themefk', '=', 'researchthemes.themeid')

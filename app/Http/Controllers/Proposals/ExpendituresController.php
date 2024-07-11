@@ -12,7 +12,7 @@ class ExpendituresController extends Controller
 {
     //
     public function postexpenditure(Request $request)
-    {
+    { 
         // Validate incoming request data if needed
         // Define validation rules
         $rules = [

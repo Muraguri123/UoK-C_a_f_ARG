@@ -16,12 +16,18 @@ class UsersController extends Controller
     //
     public function viewallusers()
     {
+        if (!auth()->user()->haspermission('canviewallusers')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to View Users!");
+        }
         $allusers = User::all();
         return view('pages.users.manage', compact('allusers'));
     }
 
     public function updateuserpermissions(Request $request, $id)
     {
+        if (!auth()->user()->haspermission('canchangeuserroleorrights')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Change User Role or Right!");
+        }
         // Find the user by ID or fail with a 404 error
         $request->validate([
             'permissions' => 'required|array',
@@ -48,6 +54,9 @@ class UsersController extends Controller
 
     public function updaterole(Request $request, $id)
     {
+        if (!auth()->user()->haspermission('canchangeuserroleorrights')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Change User Role or Right!");
+        }
         // Find the user by ID or fail with a 404 error
         $user = User::findOrFail($id);
         if (!$user->issuperadmin()) {
@@ -78,12 +87,16 @@ class UsersController extends Controller
 
     public function updatebasicdetails(Request $request, $id)
     {
-           // Define validation rules
-           $rules = [
+        if (Auth::user()->userid != $id && !auth()->user()->haspermission('canedituserprofile')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Edit this User!");
+
+        }
+        // Define validation rules
+        $rules = [
             'fullname' => 'required|string',
             'email' => 'required|string',
-            'phonenumber' => 'required|string', 
-            'pfno' => 'required|string', 
+            'phonenumber' => 'required|string',
+            'pfno' => 'required|string',
         ];
 
         // Validate incoming request
@@ -91,27 +104,30 @@ class UsersController extends Controller
 
         // Check if validation fails
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors(),'type'=>'danger'], 400);
+            return response()->json(['message' => $validator->errors(), 'type' => 'danger'], 400);
         }
 
         // Find the user by ID or fail with a 404 error
         $user = User::findOrFail($id);
-        if ($user->issuperadmin() || (auth()->user()->userid==$user->userid)) {
-            $user->name =$request->input('fullname');
-            $user->email =$request->input('email');
-            $user->pfno =$request->input('pfno');
-            $user->phonenumber =$request->input('phonenumber');
-                $user->save();
-            return response()->json(['message' => 'User Updated Successfully!', 'type'=> 'success']);
+        if ($user->issuperadmin() || (auth()->user()->userid == $user->userid)) {
+            $user->name = $request->input('fullname');
+            $user->email = $request->input('email');
+            $user->pfno = $request->input('pfno');
+            $user->phonenumber = $request->input('phonenumber');
+            $user->save();
+            return response()->json(['message' => 'User Updated Successfully!', 'type' => 'success']);
 
         } else {
-            return response()->json(['message' => 'You dont have the rights to update this User!', 'type'=>'danger']);
+            return response()->json(['message' => 'You dont have the rights to update this User!', 'type' => 'danger']);
         }
 
     }
 
     public function viewsingleuser($id)
     {
+        if (!auth()->user()->haspermission('canedituserprofile')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Edit this User!");
+        }
         // Find the user by ID or fail with a 404 error
         $user = User::findOrFail($id);
         $isreadonlypage = true;
@@ -120,8 +136,12 @@ class UsersController extends Controller
         // Return the view with the proposal data
         return view('pages.users.viewuser', compact('user', 'isreadonlypage', 'isadminmode', 'permissions'));
     }
+    
     public function geteditsingleuserpage($id)
     {
+        if (!auth()->user()->haspermission('canedituserprofile')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Edit this User!");
+        }
         // Find the proposal by ID or fail with a 404 error
         $prop = User::findOrFail($id);
         $isreadonlypage = false;
@@ -133,18 +153,27 @@ class UsersController extends Controller
 
     public function fetchallusers()
     {
-        $data = User::all();
-        return response()->json($data); // Return  data as JSON
+        if (!auth()->user()->haspermission('canviewallusers')) {
+            return response()->json([]);
+        } else {
+            $data = User::all();
+            return response()->json($data); // Return  data as JSON
+        }
     }
 
     public function fetchsearchusers(Request $request)
     {
-        $searchTerm = $request->input('search');
-        $data = User::all()->where('name', 'like', '%' . $searchTerm . '%')
-            ->orWhere('email', 'like', '%' . $searchTerm . '%')
-            ->orWhere('pfno', 'like', '%' . $searchTerm . '%')
-            ->orWhere('isactive', 'like', '%' . $searchTerm . '%')
-            ->get();
-        return response()->json($data); // Return filtered data as JSON
+        if (!auth()->user()->haspermission('canviewallusers')) {
+            return response()->json([]);
+        } else {
+            $searchTerm = $request->input('search');
+            $data = User::all()->where('name', 'like', '%' . $searchTerm . '%')
+                ->orWhere('email', 'like', '%' . $searchTerm . '%')
+                ->orWhere('pfno', 'like', '%' . $searchTerm . '%')
+                ->orWhere('isactive', 'like', '%' . $searchTerm . '%')
+                ->get();
+            return response()->json($data); // Return filtered data as JSON
+        }
+       
     }
 }

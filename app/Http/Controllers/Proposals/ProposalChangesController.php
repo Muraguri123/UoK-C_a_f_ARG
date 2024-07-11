@@ -15,6 +15,9 @@ class ProposalChangesController extends Controller
     //
     public function postproposalchanges(Request $request)
     {
+        if(!auth()->user()->haspermission('canproposechanges')){
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Make Proposal Changes!");
+        }
         // Validate incoming request data if needed
         // Define validation rules
         $rules = [
@@ -54,9 +57,9 @@ class ProposalChangesController extends Controller
     }
 
     
-    public function fetchall()
+    public function fetchall($id)
     {
-        $data = Workplan::all();
+        $data = ProposalChanges::where('proposalidfk',$id);
         return response()->json($data); // Return  data as JSON
     }
 
@@ -78,14 +81,5 @@ class ProposalChangesController extends Controller
             ->get();
         return response()->json($data); // Return filtered data as JSON
     }
-
-    public function geteditsingleexpenditurepage($id)
-    {
-        // Find the proposal by ID or fail with a 404 error
-        $prop = Workplan::findOrFail($id);
-        $isreadonlypage = false;
-        $isadminmode = true; 
-        // Return the view with the proposal data
-        return view('pages.proposals.proposalform', compact('prop', 'isreadonlypage', 'isadminmode', 'departments', 'grants', 'themes'));
-    }
+ 
 }

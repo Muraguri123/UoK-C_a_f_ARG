@@ -21,9 +21,11 @@
      @include('partials.sidebar')
       <div class="content-wrapper">
         <div class="main">
+          @auth
           <main class="content">
             @yield('content')
           </main>
+          @endauth
         </div>
       </div>
     </div>

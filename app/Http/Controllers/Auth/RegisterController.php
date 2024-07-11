@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Hash;
+use App\Http\Controllers\MailingController;
 
 class RegisterController extends Controller
 {
@@ -30,12 +31,12 @@ class RegisterController extends Controller
         $user = new User();
         $user->name = $validatedData['fullname'];
         $user->email = $validatedData['email'];
-        $user->pfno =$validatedData['pfno'];
-        $user->phonenumber =$validatedData['phonenumber'];
+        $user->pfno = $validatedData['pfno'];
+        $user->phonenumber = $validatedData['phonenumber'];
         $user->password = Hash::make($validatedData['password']);
-        $user->role=2; 
-        $user->isadmin=0;
-        $user->isactive=0;
+        $user->role = 2;
+        $user->isadmin = 0;
+        $user->isactive = 0;
         // $user->isactive=1;
         $user->save();
 
@@ -43,19 +44,25 @@ class RegisterController extends Controller
         return redirect()->route('pages.login')->with('success', 'Registration successful. Please login.');
     }
 
-    public function resetuserpassworddirectly(Request $request,$id)
+    public function resetuserpassword(Request $request, $id)
     {
-        // Validate the incoming request
-        $validatedData = $request->validate([ 
-            'newpass' => 'required|string|min:8',
-        ]);
 
         // Create a new user instance
-        $user = User::findOrFail($id); 
-        $user->password = Hash::make($validatedData['newpass']); 
-        $user->save();
+        $user = User::findOrFail($id);
+        $recipientEmail = $user->email;
+        $details = [
+            'title' => 'Password Reset Request',
+            'body' => 'Your password reset link is here.'
+        ];
 
-        // Redirect to login page with success message
-        return response(['message'=> 'Password Changed successfully!','type'=>'success']);
+        // Create an instance of MailingController and call the sendMail function
+        $mailingController = new MailingController();
+        $mailresponse=$mailingController->sendMail($recipientEmail, $details);
+        if($mailresponse['issuccess']){
+            return response(['message' => 'Password reset mail sent Successfully!', 'type' => 'success']);
+        }
+        else{
+            return response(['message' =>  $mailresponse['message'], 'type' => 'danger']);
+        }
     }
 }

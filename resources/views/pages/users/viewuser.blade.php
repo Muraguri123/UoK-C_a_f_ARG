@@ -180,42 +180,12 @@
                 <!-- Actions tab -->
                 <div role="tabpanel" class="tab-pane" id="panel-actions">
                     <form method="POST" id="changepasswordform" enctype="multipart/form-data" class="form-horizontal">
-                        @csrf
+                        @csrf 
 
                         <div class="row form-group">
-                            <div class="col col-md-3">
-                                <label class="form-control-label">New Password</label>
-                            </div>
-                            <div class="col-12 col-md-9">
-                                <input type="password" id="newpass" name="newpass" placeholder="New Password"
-                                    class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="row form-group">
-                            <div class="col col-md-3">
-                                <label class="form-control-label">Confirm Password</label>
-                            </div>
-                            <div class="col-12 col-md-9">
-                                <input type="password" id="confirmpass" name="confirmpass" placeholder="Confirm Password"
-                                    class="form-control">
-                            </div>
-                        </div>
-
-                        <div class="row form-group">
-                            <div class="col col-md-3">
-                                <label class="form-control-label"></label>
-                            </div>
-                            <div class="col-12 col-md-9">
-                                <div class=" form-check">
-                                    <input class="form-check-input" type="checkbox">
-                                    <label class="form-check-label" for="flexCheckDefault">By changing this password you confirm that the owner has a CONSENT!</label>
-                                    <br />
-
-                                </div>
-                            </div>
+                            
                             <div class="text-center">
-                                <button id="btn_changepassword" type="button" class="btn btn-info">Change Password</button>
+                                <button id="btn_resetpassword" type="button" class="btn btn-info">Reset User Password</button>
                             </div>
                         </div>
 
@@ -279,17 +249,16 @@
                                 const passwordchangeurl = `{{ route('api.users.resetpassword', ['id' => ':id']) }}`.replace(':id', userid.toString());
                                 const updateroleurl = `{{ route('api.users.updaterole', ['id' => ':id']) }}`.replace(':id', userid.toString());
 
-                                document.getElementById('btn_changepassword').addEventListener('click', function () {
-
-                                    var formData = $('#changepasswordform').serialize();
-                                     
-                                    // Function to fetch data using AJAX
+                                document.getElementById('btn_resetpassword').addEventListener('click', function () {
+                                    var csrfToken = document.getElementsByName('_token')[0].value;
+                                    var formdata={'_token': csrfToken};
                                     $.ajax({
                                         url: passwordchangeurl,
                                         type: 'POST',
-                                        data: formData,
+                                        data:formdata,
                                         dataType: 'json',
                                         success: function (response) { 
+                                            console.log(response);
                                             showtoastmessage(response); 
                                         },
                                         error: function (xhr, status, error) {

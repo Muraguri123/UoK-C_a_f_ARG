@@ -16,12 +16,14 @@ use App\Http\Controllers\{
     Proposals\ExpendituresController,
     Proposals\WorkplanController,
     Proposals\ResearchdesignController,
-    Proposals\ReportsController,
+    ReportsController,
     Proposals\ProposalChangesController,
     NotificationsController,
     DepartmentsController,
 
 };
+use App\Http\Controllers\Auth\CustomPasswordResetController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +42,12 @@ Route::get('/about', [CommonPagesController::class, 'about'])->name('pages.about
 Route::get('/contact', [CommonPagesController::class, 'contact'])->name('pages.contact');
 Route::get('/resetpassword', [CommonPagesController::class, 'resetpassword'])->name('pages.resetpassword');
 Route::get('/setupadmin', [CommonPagesController::class, 'setupadmin'])->name('pages.setupadmin');
+
+//testauth
+Route::get('password/reset', [CustomPasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('password/email', [CustomPasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('password/reset/{token}', [CustomPasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('password/reset', [CustomPasswordResetController::class, 'reset'])->name('password.update');
 
 
 // Authentication Routes
@@ -86,8 +94,8 @@ Route::middleware(['auth.custom'])->group(function () {
     Route::get('/proposals/edit/{id}', [ProposalsController::class, 'geteditsingleproposalpage'])->name('pages.proposals.editproposal');
     //changes
     Route::post('/proposals/changes/post', [ProposalChangesController::class, 'postproposalchanges'])->name('api.proposalchanges.post');
-    Route::get('/proposals/changes/fetchsearch', [ProposalChangesController::class, 'fetchsearch'])->name('api.publications.fetchsearch');
-    Route::get('/proposals/changes/fetchall', [ProposalChangesController::class, 'fetchall'])->name('api.publications.fetchall');
+    Route::get('/proposals/changes/fetchsearch', [ProposalChangesController::class, 'fetchsearch'])->name('api.proposalchanges.fetchsearch');
+    Route::get('/proposals/changes/{id}/fetchall', [ProposalChangesController::class, 'fetchall'])->name('api.proposalchanges.fetchall');
 
 
     //departments
@@ -116,7 +124,7 @@ Route::middleware(['auth.custom'])->group(function () {
     Route::post('/users/updatebasicdetails/{id}', [UsersController::class, 'updatebasicdetails'])->name('api.users.updatebasicdetails');
     Route::post('/users/permissions/{id}', [UsersController::class, 'updateuserpermissions'])->name('api.users.updatepermissions');
     Route::post('/users/updaterole/{id}', [UsersController::class, 'updaterole'])->name('api.users.updaterole');
-    Route::post('/users/changepassword/{id}', [RegisterController::class, 'resetuserpassworddirectly'])->name('api.users.resetpassword');
+    Route::post('/users/resetpassword/{id}', [RegisterController::class, 'resetuserpassword'])->name('api.users.resetpassword');
 
     //collaborators
     Route::post('/collaborators/post', [CollaboratorsController::class, 'postcollaborator'])->name('api.collaborators.post');

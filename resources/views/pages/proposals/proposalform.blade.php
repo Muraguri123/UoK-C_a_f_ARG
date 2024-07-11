@@ -1,7 +1,8 @@
 @extends('layouts.master')
 
 @section('content')
-@if (isset($grants) && ($grants->count() > 0))
+@auth 
+@if ( isset($grants) && ($grants->count() > 0))
     <div>
         @if (isset($hasmessage) && $hasmessage)
             <script>
@@ -11,7 +12,7 @@
                 });
             </script>
         @endif
-
+        
 
         <style>
             .prop-tabcontainer {
@@ -32,7 +33,7 @@
                 margin-bottom: 6px;
             }
         </style>
-        @auth
+        
             <div class="prop-tabcontainer">
                 <!-- Nav tabs -->
                 <nav>
@@ -53,12 +54,12 @@
                         <button class="nav-link" id="nav-workplan-tab" data-bs-toggle="tab" data-bs-target="#panel-workplan"
                             type="button" role="tab" aria-controls="panel-workplan" aria-selected="false">Workplan</button>
 
-                        @if (isset($prop) && (isset($isreadonlypage) && !$isreadonlypage) && !$prop->submittedstatus)
+                        @if ( isset($prop) && (isset($isreadonlypage) && !$isreadonlypage) && !$prop->submittedstatus)
                             <button class="nav-link" id="nav-submit-tab" data-bs-toggle="tab" data-bs-target="#panel-submit"
                                 type="button" role="tab" aria-controls="panel-submit" aria-selected="false">Submit</button>
                         @endif
 
-                        @if (Auth::user()->haspermission('canviewofficeuse'))
+                        @if (isset($prop) && Auth::user()->haspermission('canviewofficeuse'))
                             <button class="nav-link" id="nav-officeuse-tab" data-bs-toggle="tab" data-bs-target="#panel-officeuse"
                                 type="button" role="tab" aria-controls="panel-officeuse" aria-selected="false">Office Use</button>
 
@@ -1676,13 +1677,23 @@
                     <!-- Office Use -->
                     <div role="tabpanel" class="tab-pane" id="panel-officeuse">
                         <div class="row form-group">
-                            @if(Auth::user()->haspermission('canapproveproposal'))
+                            @if(Auth::user()->haspermission('canreceiveproposal'))
+                            <div class="col text-center">
+                                <button id="btn_receiveproposal" type="button" class="btn btn-info ">Receive Proposal</button>
+                            </div>
+                            @endif
+                            @if(Auth::user()->haspermission('canenableproposaledit'))
+                            <div class="col text-center">
+                                <button id="btn_enableproposalediting" type="button" class="btn btn-info ">Enable Editing</button>
+                            </div>
+                            @endif
+                            @if(Auth::user()->haspermission('canproposechanges'))
                             <div class="col text-center">
                                 <button id="btn_open_proposalchangeform" type="button" class="btn btn-info "
                                     data-bs-toggle="modal" data-bs-target="#proposalchangeModal">Propose Changes</button>
                             </div>
                             @endif
-                            @if(Auth::user()->haspermission('canapproveproposal'))
+                            @if(Auth::user()->haspermission('canrejectproposal'))
                             <div class="col text-center">
                                 <button id="btn_openreject_proposalmodal" type="button" class="btn btn-danger "
                                     data-bs-toggle="modal" data-bs-target="#approveproposalModal">Reject Application</button>
@@ -1960,25 +1971,15 @@
                 </div>
             </div>
 
-        @endauth
+        
     </div>
 @else
     <div class="col text-dark text-center">
         <br /><br /><br />
-        <h4>There are no Open Call for Grants</h4>
+        <h4>There are no Open Calls for Grant this Year</h4>
         <br /><br />
         <a href="{{route('pages.dashboard')}}">Go Back to Dashboard</a>
     </div>
-@endif
-<!-- <div   class="position-fixed bottom-0 end-0 p-1 mr-5 " style="z-index:1051" >
-        <div id="liveToast" class="toast " role="alert" aria-live="assertive" aria-atomic="true">
-
-            <div id="toastheader" class="toast-header text-white "  >
-                <strong id="toastmessage_body" class="me-auto text-center" >
-                
-                </strong>
-                <button   type="button" class="btn-close btn-light" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div> 
-        </div>
-    </div>  -->
+@endif 
+@endauth
 @endsection
