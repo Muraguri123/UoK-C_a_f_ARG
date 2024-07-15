@@ -20,9 +20,9 @@ use App\Http\Controllers\{
     Proposals\ProposalChangesController,
     NotificationsController,
     DepartmentsController,
-
+    Auth\CustomPasswordResetController,
+    Auth\CustomVerificationController
 };
-use App\Http\Controllers\Auth\CustomPasswordResetController;
 
 
 /*
@@ -43,11 +43,12 @@ Route::get('/contact', [CommonPagesController::class, 'contact'])->name('pages.c
 Route::get('/resetpassword', [CommonPagesController::class, 'resetpassword'])->name('pages.resetpassword');
 Route::get('/setupadmin', [CommonPagesController::class, 'setupadmin'])->name('pages.setupadmin');
 
-//testauth
+//custom password reset
 Route::get('password/reset', [CustomPasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('password/email', [CustomPasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('password/reset/{token}', [CustomPasswordResetController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [CustomPasswordResetController::class, 'reset'])->name('password.update');
+
 
 
 // Authentication Routes
@@ -58,14 +59,17 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('pages.register');
 Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
 Route::match(['post', 'get'], '/logout', [LogoutController::class, 'logout'])->name('route.logout');
-Route::get('/permission',[LoginController::class, 'subpermission'])->name('route.permission');
+Route::get('/permission', [LoginController::class, 'subpermission'])->name('route.permission');
 
 // Protected Routes
-// Route::middleware('auth')->group(function () {
+//custom account verification
+Route::middleware('auth.custom')->group(function () {
+    Route::get('email/verify', [CustomVerificationController::class, 'show'])->name('pages.account.verifyemail');
+    Route::get('email/verify/{id}/{hash}', [CustomVerificationController::class, 'verify'])->name('verification.verify');
+    Route::post('email/resend', [CustomVerificationController::class, 'resend'])->name('verification.resend');
+});
 
-// });
-
-Route::middleware(['auth.custom'])->group(function () {
+Route::middleware(['auth.custom', 'email.account.verification'])->group(function () {
 
     //dashboard
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('pages.dashboard');
@@ -107,15 +111,15 @@ Route::middleware(['auth.custom'])->group(function () {
     Route::get('/departments/edit/{id}', [DepartmentsController::class, 'geteditdepartmentpage'])->name('pages.departments.editdepartment');
     Route::post('/departments/edit/{id}', [DepartmentsController::class, 'updatedepartment'])->name('api.departments.updatedepartment');
 
-     //grants
-     Route::post('/grants/post', [GrantsController::class, 'postnewgrant'])->name('api.grants.post');
-     Route::get('/grants/home', [GrantsController::class, 'viewallgrants'])->name('pages.grants.home');
-     Route::get('/grants/fetchsearchgrants', [GrantsController::class, 'fetchsearchgrants'])->name('api.grants.fetchsearchgrants');
-     Route::get('/grants/fetchallgrants', [GrantsController::class, 'fetchallgrants'])->name('api.grants.fetchallgrants');
-     Route::get('/grants/view/{id}', [GrantsController::class, 'getviewsinglegrantpage'])->name('pages.grants.viewgrant');
-     Route::get('/grants/edit/{id}', [GrantsController::class, 'geteditsinglegrantpage'])->name('pages.grants.editgrant');
-     Route::post('/grants/edit/{id}', [GrantsController::class, 'updategrant'])->name('api.grants.updategrant');
- 
+    //grants
+    Route::post('/grants/post', [GrantsController::class, 'postnewgrant'])->name('api.grants.post');
+    Route::get('/grants/home', [GrantsController::class, 'viewallgrants'])->name('pages.grants.home');
+    Route::get('/grants/fetchsearchgrants', [GrantsController::class, 'fetchsearchgrants'])->name('api.grants.fetchsearchgrants');
+    Route::get('/grants/fetchallgrants', [GrantsController::class, 'fetchallgrants'])->name('api.grants.fetchallgrants');
+    Route::get('/grants/view/{id}', [GrantsController::class, 'getviewsinglegrantpage'])->name('pages.grants.viewgrant');
+    Route::get('/grants/edit/{id}', [GrantsController::class, 'geteditsinglegrantpage'])->name('pages.grants.editgrant');
+    Route::post('/grants/edit/{id}', [GrantsController::class, 'updategrant'])->name('api.grants.updategrant');
+
     //users
     Route::get('/users/manage', [UsersController::class, 'viewallusers'])->name('pages.users.manage');
     Route::get('/users/view/{id}', [UsersController::class, 'viewsingleuser'])->name('pages.users.viewsingleuser');

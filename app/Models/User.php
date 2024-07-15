@@ -4,13 +4,17 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Auth;
+use Error;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\User as Authenticatable; 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
 use App\Models\Permission;
 use App\Notifications\CustomResetPasswordNotification;
+use App\Notifications\CustomVerifyEmailNotification; 
 
 
 class User extends Authenticatable
@@ -77,6 +81,12 @@ class User extends Authenticatable
     {
         $this->notify(new CustomResetPasswordNotification($token));
     }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new CustomVerifyEmailNotification());
+    }
+
     //functions
     public function permissions()
     {
