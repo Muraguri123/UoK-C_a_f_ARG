@@ -71,9 +71,12 @@ Route::middleware('auth.custom')->group(function () {
 
 Route::middleware(['auth.custom', 'email.account.verification'])->group(function () {
 
-    //dashboard
-    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('pages.dashboard');
+    //Unauthorized
     Route::get('/unauthorized', [DashboardController::class, 'unauthorized'])->name('pages.unauthorized');
+
+    //dashboard & home
+    Route::get('/home', [DashboardController::class, 'home'])->name('pages.home');
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('pages.dashboard');
 
     //proposals
     Route::get('/proposals/newproposal', [ProposalsController::class, 'getnewproposalpage'])->name('pages.proposals.viewnewproposal');

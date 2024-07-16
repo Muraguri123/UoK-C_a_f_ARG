@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Proposals;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MailingController;
 use App\Models\Collaborator;
 use App\Models\Department;
 use App\Models\Expenditureitem;
 use App\Models\Grant;
+use App\Models\Permission;
 use App\Models\Proposal;
 use App\Models\Publication;
 use App\Models\ResearchDesignItem;
@@ -14,10 +16,12 @@ use App\Models\ResearchTheme;
 use App\Models\Workplan;
 use App\Models\User;
 use App\Models\ProposalChanges;
+use App\Notifications\ProposalSubmitted;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Notification;
 
 
 class ProposalsController extends Controller
@@ -245,6 +249,23 @@ class ProposalsController extends Controller
         if (isset($cansubmit)) {
             $proposal->submittedstatus = true;
             $proposal->save();
+            //notifiable users to be informed of new proposal
+            if (Permission::where('shortname', 'cangetnewproposalnotification')->exists()) {
+                // $permission = Permission::where('shortname', 'cangetnewproposalnotification')->first();
+
+                // $mailingController = new MailingController();
+                // $emails = $mailingController->getEmailsByPermission($permission->pid);
+                // $details = [
+                //     'title' => '',
+                //     'body' => 'New Proposal Received.'
+                // ];
+
+                // Create an instance of MailingController and call the sendMail function
+                $mailingController = new MailingController();
+                $mailingController->notifyusersnewProposal($proposal);
+
+              
+            }
             return response(['message' => 'Application Submitted Successfully!!', 'type' => 'success']);
         } else {
             return response(['message' => 'Application not ready for Submission. Has incomplete Details!', 'type' => 'warning']);
@@ -253,9 +274,14 @@ class ProposalsController extends Controller
     }
     public function approverejectproposal(Request $request, $id)
     {
-        if (auth()->user()->haspermission('canapproveproposal') || auth()->user()->haspermission('canrejectproposal')) {
+        if ($request->input('status') == "Approved" && auth()->user()->haspermission('canapproveproposal') ) {
+        }
+        else if ($request->input('status') == "Rejected" && auth()->user()->haspermission('canrejectproposal')) {
+        }
+        else{
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to  Approve/Reject this Proposal!");
         }
+
         $rules = [
             'comment' => 'required|string',
             'status' => 'required|string',
@@ -273,7 +299,10 @@ class ProposalsController extends Controller
         $proposal->approvalstatus = $request->input('status');
         $proposal->comment = $request->input('comment');
         $proposal->save();
+       
         if ($request->input('status') == "Approved") {
+            $mailingController = new MailingController();
+            $mailingController->notifyusersapprovedproposal($proposal);
             return response(['message' => 'Proposal Approved Successfully!!', 'type' => 'success']);
         } else if ($request->input('status') == "Rejected") {
             return response(['message' => 'Proposal Rejected Successfully!!', 'type' => 'success']);

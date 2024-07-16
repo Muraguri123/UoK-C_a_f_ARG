@@ -5,8 +5,9 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Auth;
 use Error;
+use Exception;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable; 
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -14,7 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 use App\Models\Permission;
 use App\Notifications\CustomResetPasswordNotification;
-use App\Notifications\CustomVerifyEmailNotification; 
+use App\Notifications\CustomVerifyEmailNotification;
 
 
 class User extends Authenticatable
@@ -122,5 +123,76 @@ class User extends Authenticatable
         } else {
             return false;
         }
+    }
+    public function canapproveproposal($proposalid)
+    {
+        try {
+            $proposal = Proposal::findOrFail($proposalid);
+            if ($this->haspermission('canapproveproposal') && ($proposal->useridfk != $this->userid) && ($proposal->approvalstatus != 'Approved' || $proposal->approvalstatus != 'Rejected')) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception $exception) {
+            return false;
+        }
+
+    }
+
+    public function canrejectproposal($proposalid)
+    {
+        try {
+            $proposal = Proposal::findOrFail($proposalid);
+            if ($this->haspermission('canrejectproposal') && ($proposal->useridfk != $this->userid) && ($proposal->approvalstatus != 'Approved' || $proposal->approvalstatus != 'Rejected')) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception $exception) {
+            return false;
+        }
+
+    }
+    public function canproposechanges($proposalid)
+    {
+        try {
+            $proposal = Proposal::findOrFail($proposalid);
+            if ($this->haspermission('canproposechanges') && ($proposal->useridfk != $this->userid) && $proposal->approvalstatus == 'Pending') {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception $exception) {
+            return false;
+        }
+
+    }
+    public function canreceiveproposal($proposalid)
+    {
+        try {
+            $proposal = Proposal::findOrFail($proposalid);
+            if ($this->haspermission('canreceiveproposal') && ($proposal->useridfk != $this->userid) && $proposal->approvalstatus == 'Pending') {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception $exception) {
+            return false;
+        }
+
+    }
+    public function canenabledisableediting($proposalid)
+    {
+        try {
+            $proposal = Proposal::findOrFail($proposalid);
+            if ($this->haspermission('canenabledisableproposaledit') && ($proposal->useridfk != $this->userid) && $proposal->approvalstatus == 'Pending') {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception $exception) {
+            return false;
+        }
+
     }
 }

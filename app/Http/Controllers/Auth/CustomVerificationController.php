@@ -21,7 +21,6 @@ class CustomVerificationController extends Controller
     public function show(Request $request)
     {
         $user = Auth::user();
-        Log::info('Authenticated user:', ['user' => $user]);
         return Auth::user()->hasVerifiedEmail()
             ? redirect()->route('pages.dashboard')
             : view('pages.auth.verifyemail');

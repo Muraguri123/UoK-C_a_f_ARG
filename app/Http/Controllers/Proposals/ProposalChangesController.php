@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Proposals;
 
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\MailingController;
 use App\Models\ProposalChanges;
 use App\Models\Workplan;
 use Illuminate\Http\Request;
@@ -48,7 +49,9 @@ class ProposalChangesController extends Controller
         $proposal->proposalidfk =$request->input('proposalidfk');
         // Save the proposal
         $proposal->save();
-
+        //notify user of the suggested changees
+        $mailingController = new MailingController();
+        $mailingController->notifyusersproposalchangerequest($proposal->proposalidfk);
         // Optionally, return a response or redirect
         // return response()->json(['message' => 'Proposal created successfully'], 201);
         return response(['message'=> 'Proposal Change Saved Successfully!!','type'=>'success']);
