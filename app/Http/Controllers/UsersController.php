@@ -17,7 +17,7 @@ class UsersController extends Controller
     public function viewallusers()
     {
         if (!auth()->user()->haspermission('canviewallusers')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to View Users!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to View Users!");
         }
         $allusers = User::all();
         return view('pages.users.manage', compact('allusers'));
@@ -26,7 +26,7 @@ class UsersController extends Controller
     public function updateuserpermissions(Request $request, $id)
     {
         if (!auth()->user()->haspermission('canchangeuserroleorrights')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Change User Role or Right!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Change User Role or Right!");
         }
         // Find the user by ID or fail with a 404 error
         $request->validate([
@@ -55,7 +55,7 @@ class UsersController extends Controller
     public function updaterole(Request $request, $id)
     {
         if (!auth()->user()->haspermission('canchangeuserroleorrights')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Change User Role or Right!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Change User Role or Right!");
         }
         // Find the user by ID or fail with a 404 error
         $user = User::findOrFail($id);
@@ -88,7 +88,7 @@ class UsersController extends Controller
     public function updatebasicdetails(Request $request, $id)
     {
         if (Auth::user()->userid != $id && !auth()->user()->haspermission('canedituserprofile')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Edit this User!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit this User!");
 
         }
         // Define validation rules
@@ -126,7 +126,7 @@ class UsersController extends Controller
     public function viewsingleuser($id)
     {
         if (!auth()->user()->haspermission('canedituserprofile')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Edit this User!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit this User!");
         }
         // Find the user by ID or fail with a 404 error
         $user = User::findOrFail($id);
@@ -140,7 +140,7 @@ class UsersController extends Controller
     public function geteditsingleuserpage($id)
     {
         if (!auth()->user()->haspermission('canedituserprofile')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Edit this User!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit this User!");
         }
         // Find the proposal by ID or fail with a 404 error
         $prop = User::findOrFail($id);

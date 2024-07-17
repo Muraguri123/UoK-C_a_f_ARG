@@ -211,7 +211,7 @@
                             <option value="">Select Status</option>
                             <option value="1" {{ (isset($user) && $user->role == "1") ? 'selected' : '' }}>Admin</option>
                             <option value="2" {{ (isset($user) && $user->role == "2") ? 'selected' : '' }}>Applicant</option>
-                            
+                            <option value="3" {{ (isset($user) && $user->role == "3") ? 'selected' : '' }}>Co-opted</option>                            
                             </select>
                         </div>
                         </div>

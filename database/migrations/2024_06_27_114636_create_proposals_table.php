@@ -22,12 +22,14 @@ return new class extends Migration
             $table->uuid('useridfk');
             $table->string('pfnofk');
             $table->integer('themefk');
-            $table->string('approvalstatus');
+            $table->boolean('submittedstatus')->default(false);  
+            $table->boolean('receivedstatus')->default(false);  
+            $table->boolean('caneditstatus')->default(false);  
+            $table->string('approvalstatus')->default('Pending');
             $table->string('highqualification');
             $table->string('officephone');
             $table->string('cellphone');
             $table->string('faxnumber'); 
-            $table->boolean('submittedstatus')->default(false);  
             $table->foreign('grantnofk')->references('grantid')->on('grants')->onDelete('restrict');
             $table->foreign('useridfk')->references('userid')->on('users')->onDelete('restrict');
             $table->foreign('pfnofk')->references('pfno')->on('users')->onDelete('restrict');

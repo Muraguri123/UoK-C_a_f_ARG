@@ -10,7 +10,7 @@ class ReportsController extends Controller
     //
     public function home(){
         if(!auth()->user()->haspermission('canviewreports')){
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to View Reports!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to View Reports!");
         }
         return view('pages.reports.home');
     }

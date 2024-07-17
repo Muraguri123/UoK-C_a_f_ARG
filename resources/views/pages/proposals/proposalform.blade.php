@@ -3,6 +3,10 @@
 @section('content')
 @auth 
 
+
+
+
+
 @if (isset($grants) && ($grants->count() > 0))
 <div>
     @if (isset($hasmessage) && $hasmessage)
@@ -1680,311 +1684,318 @@
 
             <!-- Office Use -->
             <div role="tabpanel" class="tab-pane" id="panel-officeuse">
-                <div class="row form-group">
-                    @if(Auth::user()->canreceiveproposal($prop->proposalId))
-                        <div class="col text-center">
-                            <button id="btn_receiveproposal" type="button" class="btn btn-info ">Receive Proposal</button>
-                        </div>
-                    @endif
-                    @if(Auth::user()->canenabledisableediting($prop->proposalId))
-                        <div class="col text-center">
-                            <button id="btn_enableproposalediting" type="button" class="btn btn-info ">Enable
-                                Editing</button>
-                        </div>
-                    @endif
-                    @if(Auth::user()->canproposechanges($prop->proposalId))
-                        <div class="col text-center">
-                            <button id="btn_open_proposalchangeform" type="button" class="btn btn-info "
-                                data-bs-toggle="modal" data-bs-target="#proposalchangeModal">Propose Changes</button>
-                        </div>
-                    @endif
-                    @if(Auth::user()->canrejectproposal($prop->proposalId))
-                        <div class="col text-center">
-                            <button id="btn_openreject_proposalmodal" type="button" class="btn btn-danger "
-                                data-bs-toggle="modal" data-bs-target="#approveproposalModal">Reject Application</button>
-                        </div>
-                    @endif
-                    @if(Auth::user()->canapproveproposal($prop->proposalId))
-                                            <div class="col text-center">
-                                                <button id="btn_openapprove_proposalmodal" type="button" class="btn btn-success "
-                                                    data-bs-toggle="modal" data-bs-target="#approveproposalModal">Approve</button>
-                                            </div>
-                                            @endauth
-                                        </div>
-                                        <div class="row form-group">
-                                            <h5 class="mt-1 text-center">Proposal Changes History</h5>
-
-                                        </div>
-                                        <div>
-                                            <table id="proposalchangestable"
-                                                class="table table-responsive table-bordered table-striped table-hover" style="margin:4px">
-                                                <thead class="bg-secondary text-white">
-                                                    <tr>
-                                                        <th scope="col">#No</th>
-                                                        <th scope="col">Issue</th>
-                                                        <th scope="col">Suggestion</th>
-                                                        <th scope="col">Status</th>
-                                                        <th scope="col">By Who</th>
-                                                        <th scope="col">Date</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <!-- proposal , change Modal -->
-                                        <div class="modal fade" id="proposalchangeModal" tabindex="-1" role="dialog"
-                                            aria-labelledby="proposalchangeLabel" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="proposalchangeLabel">Expenditure Details</h5>
-                                                        <button type="button" id="btn_close_proposalchangemodal" class="close"
-                                                            data-bs-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
+            @if(isset($prop))
+            <div class="row form-group">
+                    
+                    <div>
+                        @if(Auth::user()->canreceiveproposal($prop->proposalId))
+                            <div class="col text-center">
+                                <button id="btn_receiveproposal" type="button" class="btn btn-info ">Receive
+                                    Proposal</button>
+                            </div>
+                        @endif
+                        @if(Auth::user()->canenabledisableediting($prop->proposalId))
+                            <div class="col text-center">
+                                <button id="btn_enableproposalediting" type="button" class="btn btn-info ">Enable
+                                    Editing</button>
+                            </div>
+                        @endif
+                        @if(Auth::user()->canproposechanges($prop->proposalId))
+                            <div class="col text-center">
+                                <button id="btn_open_proposalchangeform" type="button" class="btn btn-info "
+                                    data-bs-toggle="modal" data-bs-target="#proposalchangeModal">Propose Changes</button>
+                            </div>
+                        @endif
+                        @if(Auth::user()->canrejectproposal($prop->proposalId))
+                            <div class="col text-center">
+                                <button id="btn_openreject_proposalmodal" type="button" class="btn btn-danger "
+                                    data-bs-toggle="modal" data-bs-target="#approveproposalModal">Reject
+                                    Application</button>
+                            </div>
+                        @endif
+                        @if(Auth::user()->canapproveproposal($prop->proposalId))
+                                                    <div class="col text-center">
+                                                        <button id="btn_openapprove_proposalmodal" type="button" class="btn btn-success "
+                                                            data-bs-toggle="modal" data-bs-target="#approveproposalModal">Approve</button>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <form id="proposalchangeForm">
-                                                            @csrf
-                                                            <div class="form-group">
-                                                                <label for="item">Issue</label>
-                                                                <textarea type="text" class="form-control" id="issue" name="issue"
-                                                                    required></textarea>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="quantity">Suggestion</label>
-                                                                <textarea type="text" class="form-control" id="suggestion" name="suggestion"
-                                                                    required></textarea>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label for="unitprice">Status</label>
-                                                                <input type="text" class="form-control" value="Pending" id="unitprice" readonly>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Cancel</button>
-                                                                <button type="button" id="button_save_proposalchange"
-                                                                    class="btn btn-primary">Save</button>
-                                                            </div>
-                                                        </form>
+                                                    @endauth
+                                                </div>
+                                            </div>
+                                            <div class="row form-group">
+                                                <h5 class="mt-1 text-center">Proposal Changes History</h5>
+
+                                            </div>
+                                            <div>
+                                                <table id="proposalchangestable"
+                                                    class="table table-responsive table-bordered table-striped table-hover" style="margin:4px">
+                                                    <thead class="bg-secondary text-white">
+                                                        <tr>
+                                                            <th scope="col">#No</th>
+                                                            <th scope="col">Issue</th>
+                                                            <th scope="col">Suggestion</th>
+                                                            <th scope="col">Status</th>
+                                                            <th scope="col">By Who</th>
+                                                            <th scope="col">Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- proposal , change Modal -->
+                                            <div class="modal fade" id="proposalchangeModal" tabindex="-1" role="dialog"
+                                                aria-labelledby="proposalchangeLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="proposalchangeLabel">Expenditure Details</h5>
+                                                            <button type="button" id="btn_close_proposalchangemodal" class="close"
+                                                                data-bs-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form id="proposalchangeForm">
+                                                                @csrf
+                                                                <div class="form-group">
+                                                                    <label for="item">Issue</label>
+                                                                    <textarea type="text" class="form-control" id="issue" name="issue"
+                                                                        required></textarea>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="quantity">Suggestion</label>
+                                                                    <textarea type="text" class="form-control" id="suggestion" name="suggestion"
+                                                                        required></textarea>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="unitprice">Status</label>
+                                                                    <input type="text" class="form-control" value="Pending" id="unitprice" readonly>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Cancel</button>
+                                                                    <button type="button" id="button_save_proposalchange"
+                                                                        class="btn btn-primary">Save</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <!-- approve proposal Modal -->
-                                        <div class="modal fade" id="approveproposalModal" tabindex="-1" role="dialog"
-                                            aria-labelledby="approverejectproposalLabel" aria-hidden="true">
-                                            <div class="modal-dialog" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="approverejectproposalLabel"></h5>
-                                                        <button type="button" id="btn_close_approveproposalmodal" class="close"
-                                                            data-bs-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form id="proposalapprovalForm">
-                                                            @csrf
-                                                            <div class="form-group">
-                                                                <label for="comment">Comment</label>
-                                                                <textarea type="text" class="form-control" id="comment" name="comment"
-                                                                    required></textarea>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Cancel</button>
-                                                                <button type="button" id="button_approve_proposal"
-                                                                    class="btn btn-success">Approve</button>
-                                                                <button type="button" id="button_reject_proposal"
-                                                                    class="btn btn-danger">Reject</button>
-                                                            </div>
-                                                        </form>
+                                            <!-- approve proposal Modal -->
+                                            <div class="modal fade" id="approveproposalModal" tabindex="-1" role="dialog"
+                                                aria-labelledby="approverejectproposalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="approverejectproposalLabel"></h5>
+                                                            <button type="button" id="btn_close_approveproposalmodal" class="close"
+                                                                data-bs-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form id="proposalapprovalForm">
+                                                                @csrf
+                                                                <div class="form-group">
+                                                                    <label for="comment">Comment</label>
+                                                                    <textarea type="text" class="form-control" id="comment" name="comment"
+                                                                        required></textarea>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary"
+                                                                        data-bs-dismiss="modal">Cancel</button>
+                                                                    <button type="button" id="button_approve_proposal"
+                                                                        class="btn btn-success">Approve</button>
+                                                                    <button type="button" id="button_reject_proposal"
+                                                                        class="btn btn-danger">Reject</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <script>
-                                            $(document).ready(function () {
+                                            <script>
+                                                $(document).ready(function () {
 
 
-                                                let proposalId = "{{ isset($prop) ? $prop->proposalid : '' }}"; // Check if proposalId is set
-                                                const proposalchangeurl = `{{ route('api.proposals.proposalchanges', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
-                                                const approverejecturl = `{{ route('api.proposals.approvereject', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
+                                                    let proposalId = "{{ isset($prop) ? $prop->proposalid : '' }}"; // Check if proposalId is set
+                                                    const proposalchangeurl = `{{ route('api.proposals.proposalchanges', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
+                                                    const approverejecturl = `{{ route('api.proposals.approvereject', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
 
-                                                document.getElementById('button_save_proposalchange').addEventListener('click', function () {
+                                                    document.getElementById('button_save_proposalchange').addEventListener('click', function () {
 
-                                                    var formData = $('#proposalchangeForm').serialize();
-                                                    if (proposalId) {
-                                                        formData += '&proposalidfk=' + proposalId;
-                                                    }
-                                                    // Function to fetch data using AJAX
-                                                    $.ajax({
-                                                        url: "{{ route('api.proposalchanges.post') }}",
-                                                        type: 'POST',
-                                                        data: formData,
-                                                        dataType: 'json',
-                                                        success: function (response) {
-                                                            var closebtn = document.getElementById('btn_close_proposalchangemodal');
-                                                            if (closebtn) { closebtn.click(); }
-                                                            showtoastmessage(response);
-                                                            fetchproposalchanges();
-                                                        },
-                                                        error: function (xhr, status, error) {
-                                                            var mess = JSON.stringify(xhr.responseJSON.message);
-                                                            var type = JSON.stringify(xhr.responseJSON.type);
-                                                            var result = {
-                                                                message: mess,
-                                                                type: type
-                                                            };
-                                                            showtoastmessage(result);
-
-                                                            console.error('Error fetching data:', error);
+                                                        var formData = $('#proposalchangeForm').serialize();
+                                                        if (proposalId) {
+                                                            formData += '&proposalidfk=' + proposalId;
                                                         }
-                                                    });
-                                                });
+                                                        // Function to fetch data using AJAX
+                                                        $.ajax({
+                                                            url: "{{ route('api.proposalchanges.post') }}",
+                                                            type: 'POST',
+                                                            data: formData,
+                                                            dataType: 'json',
+                                                            success: function (response) {
+                                                                var closebtn = document.getElementById('btn_close_proposalchangemodal');
+                                                                if (closebtn) { closebtn.click(); }
+                                                                showtoastmessage(response);
+                                                                fetchproposalchanges();
+                                                            },
+                                                            error: function (xhr, status, error) {
+                                                                var mess = JSON.stringify(xhr.responseJSON.message);
+                                                                var type = JSON.stringify(xhr.responseJSON.type);
+                                                                var result = {
+                                                                    message: mess,
+                                                                    type: type
+                                                                };
+                                                                showtoastmessage(result);
 
-                                                document.getElementById('btn_openreject_proposalmodal').addEventListener('click', function () {
-                                                    var rejectbtn = document.getElementById('button_reject_proposal').hidden = false;
-                                                    var approvebtn = document.getElementById('button_approve_proposal').hidden = true;
-                                                    document.getElementById('approverejectproposalLabel').innerText = "Reject Proposal";
-                                                });
-                                                document.getElementById('btn_openapprove_proposalmodal').addEventListener('click', function () {
-                                                    var rejectbtn = document.getElementById('button_reject_proposal').hidden = true;
-                                                    var approvebtn = document.getElementById('button_approve_proposal').hidden = false;
-                                                    document.getElementById('approverejectproposalLabel').innerText = "Approve Proposal";
-
-                                                });
-                                                document.getElementById('button_approve_proposal').addEventListener('click', function () {
-                                                    approverejectproposal('Approved');
-                                                });
-                                                document.getElementById('button_reject_proposal').addEventListener('click', function () {
-                                                    approverejectproposal('Rejected');
-                                                });
-
-                                                function approverejectproposal(action) {
-                                                    var formData = $('#proposalapprovalForm').serialize();
-                                                    if (proposalId) {
-                                                        formData += '&proposalidfk=' + proposalId;
-                                                    }
-                                                    if (action) {
-                                                        formData += '&status=' + action;
-                                                    }
-                                                    // Function to fetch data using AJAX
-                                                    $.ajax({
-                                                        url: approverejecturl,
-                                                        type: 'POST',
-                                                        data: formData,
-                                                        dataType: 'json',
-                                                        success: function (response) {
-                                                            var closebtn = document.getElementById('btn_close_approveproposalmodal');
-                                                            if (closebtn) { closebtn.click(); }
-                                                            showtoastmessage(response);
-                                                            fetchproposalchanges();
-                                                        },
-                                                        error: function (xhr, status, error) {
-                                                            var mess = JSON.stringify(xhr.responseJSON.message);
-                                                            var type = JSON.stringify(xhr.responseJSON.type);
-                                                            var result = {
-                                                                message: mess,
-                                                                type: type
-                                                            };
-                                                            showtoastmessage(result);
-
-                                                            console.error('Error fetching data:', error);
-                                                        }
-                                                    });
-                                                }
-
-
-                                                function showtoastmessage(response) {
-
-
-                                                    var toastEl = document.getElementById('liveToast');
-                                                    if (toastEl) {
-                                                        var toastbody = document.getElementById('toastmessage_body');
-                                                        var toastheader = document.getElementById('toastheader');
-                                                        toastheader.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-info', 'bg-warning', 'bg-secondary');
-
-                                                        if (response && response.type) {
-                                                            if (response.type == "success") {
-                                                                toastheader.classList.add('bg-success');
+                                                                console.error('Error fetching data:', error);
                                                             }
-                                                            else if (response.type == "warning") {
-                                                                toastheader.classList.add('bg-warning');
+                                                        });
+                                                    });
+
+                                                    document.getElementById('btn_openreject_proposalmodal').addEventListener('click', function () {
+                                                        var rejectbtn = document.getElementById('button_reject_proposal').hidden = false;
+                                                        var approvebtn = document.getElementById('button_approve_proposal').hidden = true;
+                                                        document.getElementById('approverejectproposalLabel').innerText = "Reject Proposal";
+                                                    });
+                                                    document.getElementById('btn_openapprove_proposalmodal').addEventListener('click', function () {
+                                                        var rejectbtn = document.getElementById('button_reject_proposal').hidden = true;
+                                                        var approvebtn = document.getElementById('button_approve_proposal').hidden = false;
+                                                        document.getElementById('approverejectproposalLabel').innerText = "Approve Proposal";
+
+                                                    });
+                                                    document.getElementById('button_approve_proposal').addEventListener('click', function () {
+                                                        approverejectproposal('Approved');
+                                                    });
+                                                    document.getElementById('button_reject_proposal').addEventListener('click', function () {
+                                                        approverejectproposal('Rejected');
+                                                    });
+
+                                                    function approverejectproposal(action) {
+                                                        var formData = $('#proposalapprovalForm').serialize();
+                                                        if (proposalId) {
+                                                            formData += '&proposalidfk=' + proposalId;
+                                                        }
+                                                        if (action) {
+                                                            formData += '&status=' + action;
+                                                        }
+                                                        // Function to fetch data using AJAX
+                                                        $.ajax({
+                                                            url: approverejecturl,
+                                                            type: 'POST',
+                                                            data: formData,
+                                                            dataType: 'json',
+                                                            success: function (response) {
+                                                                var closebtn = document.getElementById('btn_close_approveproposalmodal');
+                                                                if (closebtn) { closebtn.click(); }
+                                                                showtoastmessage(response);
+                                                                fetchproposalchanges();
+                                                            },
+                                                            error: function (xhr, status, error) {
+                                                                var mess = JSON.stringify(xhr.responseJSON.message);
+                                                                var type = JSON.stringify(xhr.responseJSON.type);
+                                                                var result = {
+                                                                    message: mess,
+                                                                    type: type
+                                                                };
+                                                                showtoastmessage(result);
+
+                                                                console.error('Error fetching data:', error);
+                                                            }
+                                                        });
+                                                    }
+
+
+                                                    function showtoastmessage(response) {
+
+
+                                                        var toastEl = document.getElementById('liveToast');
+                                                        if (toastEl) {
+                                                            var toastbody = document.getElementById('toastmessage_body');
+                                                            var toastheader = document.getElementById('toastheader');
+                                                            toastheader.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-info', 'bg-warning', 'bg-secondary');
+
+                                                            if (response && response.type) {
+                                                                if (response.type == "success") {
+                                                                    toastheader.classList.add('bg-success');
+                                                                }
+                                                                else if (response.type == "warning") {
+                                                                    toastheader.classList.add('bg-warning');
+                                                                }
+                                                                else {
+                                                                    toastheader.classList.add('bg-danger');
+                                                                }
                                                             }
                                                             else {
                                                                 toastheader.classList.add('bg-danger');
                                                             }
+                                                            toastbody.innerText = response && response.message ? response.message : "No Message";
+                                                            var toast = new bootstrap.Toast(toastEl, {
+                                                                autohide: true,
+                                                                delay: 2000
+                                                            });
+                                                            toast.show();
+                                                        }
+                                                    }
+
+                                                    // Function to fetch expenditures data 
+                                                    function fetchproposalchanges() {
+                                                        $.ajax({
+                                                            url: proposalchangeurl,
+                                                            type: 'GET',
+                                                            dataType: 'json',
+                                                            success: function (response) {
+                                                                populateproposalchanges(response);
+                                                            },
+                                                            error: function (xhr, status, error) {
+                                                                console.error('Error fetching data:', error);
+                                                            }
+                                                        });
+                                                    }
+
+                                                    // Function to populate collaborators
+                                                    function populateproposalchanges(data) {
+                                                        var tbody = $('#proposalchangestable tbody');
+                                                        tbody.empty(); // Clear existing table rows
+                                                        if (data.length > 0) {
+                                                            $.each(data, function (index, data) {
+                                                                var row = '<tr>' +
+                                                                    '<td>' + data.changeid + '</td>' +
+                                                                    '<td>' + data.triggerissue + '</td>' +
+                                                                    '<td>' + data.suggestedchange + '</td>' +
+                                                                    '<td>' + data.status + '</td>' +
+                                                                    '<td>' + data.suggestedby?.name + '</td>' +
+                                                                    '<td>' + new Date(data.created_at).toDateString('en-US') + '</td>' +
+                                                                    '</tr>';
+                                                                tbody.append(row);
+                                                            });
                                                         }
                                                         else {
-                                                            toastheader.classList.add('bg-danger');
-                                                        }
-                                                        toastbody.innerText = response && response.message ? response.message : "No Message";
-                                                        var toast = new bootstrap.Toast(toastEl, {
-                                                            autohide: true,
-                                                            delay: 2000
-                                                        });
-                                                        toast.show();
-                                                    }
-                                                }
-
-                                                // Function to fetch expenditures data 
-                                                function fetchproposalchanges() {
-                                                    $.ajax({
-                                                        url: proposalchangeurl,
-                                                        type: 'GET',
-                                                        dataType: 'json',
-                                                        success: function (response) {
-                                                            populateproposalchanges(response);
-                                                        },
-                                                        error: function (xhr, status, error) {
-                                                            console.error('Error fetching data:', error);
-                                                        }
-                                                    });
-                                                }
-
-                                                // Function to populate collaborators
-                                                function populateproposalchanges(data) {
-                                                    var tbody = $('#proposalchangestable tbody');
-                                                    tbody.empty(); // Clear existing table rows
-                                                    if (data.length > 0) {
-                                                        $.each(data, function (index, data) {
-                                                            var row = '<tr>' +
-                                                                '<td>' + data.changeid + '</td>' +
-                                                                '<td>' + data.triggerissue + '</td>' +
-                                                                '<td>' + data.suggestedchange + '</td>' +
-                                                                '<td>' + data.status + '</td>' +
-                                                                '<td>' + data.suggestedby?.name + '</td>' +
-                                                                '<td>' + new Date(data.created_at).toDateString('en-US') + '</td>' +
-                                                                '</tr>';
+                                                            var row = '<tr><td colspan="6" class="text-center">No Proposal Changes found</td></tr>';
                                                             tbody.append(row);
-                                                        });
+                                                        }
                                                     }
-                                                    else {
-                                                        var row = '<tr><td colspan="6" class="text-center">No Proposal Changes found</td></tr>';
-                                                        tbody.append(row);
-                                                    }
-                                                }
 
-                                                fetchproposalchanges();
-                                            });
-                                        </script>
+                                                    fetchproposalchanges();
+                                                });
+                                            </script>
+                @endauth
+                                        </div>
                                     </div>
                                 </div>
+
+
                             </div>
-
-
-                        </div>
-                    @else
-                        <div class="col text-dark text-center">
-                            <br /><br /><br />
-                            <h4>There are no Open Calls for Grant this Year</h4>
-                            <br /><br />
-                            <a href="{{route('pages.dashboard')}}">Go Back to Dashboard</a>
-                        </div>
-                    @endif 
+                        @else
+                            <div class="col text-dark text-center">
+                                <br /><br /><br />
+                                <h4>There are no Open Calls for Grant this Year</h4>
+                                <br /><br />
+                                <a href="{{route('pages.dashboard')}}">Go Back to Dashboard</a>
+                            </div>
+                        @endif 
 @endauth
 @endsection

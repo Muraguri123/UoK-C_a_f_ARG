@@ -18,7 +18,7 @@ class CollaboratorsController extends Controller
     public function postcollaborator(Request $request)
     {
         if(!auth()->user()->hasselfpermission('canmakenewproposal')){
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Edit the requested Proposal!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit the requested Proposal!");
         }
         // Validate incoming request data if needed
         // Define validation rules

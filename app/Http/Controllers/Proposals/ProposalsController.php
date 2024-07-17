@@ -30,7 +30,7 @@ class ProposalsController extends Controller
     public function getnewproposalpage()
     {
         if (!auth()->user()->hasselfpermission('canmakenewproposal')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Make a new Proposal!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Make a new Proposal!");
         }
         $isnewprop = true;
         $isreadonlypage = false;
@@ -49,7 +49,7 @@ class ProposalsController extends Controller
     public function postnewproposal(Request $request)
     {
         if (!auth()->user()->hasselfpermission('canmakenewproposal')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Make a new Proposal!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Make a new Proposal!");
         }
         // Define validation rules
         $rules = [
@@ -129,7 +129,7 @@ class ProposalsController extends Controller
     public function getsingleproposalpage($id)
     {
         if (!auth()->user()->haspermission('canreadproposaldetails')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to read the requested Proposal!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to read the requested Proposal!");
         }
         // Find the proposal by ID or fail with a 404 error
         $user = Auth::user();
@@ -146,7 +146,7 @@ class ProposalsController extends Controller
     {
         $proposal = Proposal::findOrFail($id);
         if (!auth()->user()->userid == $proposal->useridfk) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to edit this Proposal. Only the owner can Edit!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to edit this Proposal. Only the owner can Edit!");
         }
         $rules = [
             'grantnofk' => 'required|integer', // Example rules, adjust as needed
@@ -192,7 +192,7 @@ class ProposalsController extends Controller
     {
         $proposal = Proposal::findOrFail($id);
         if (!auth()->user()->userid == $proposal->useridfk) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to edit this Proposal. Only the owner can Edit!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to edit this Proposal. Only the owner can Edit!");
         }
         $rules = [
             'researchtitle' => 'required|string', // Example rules, adjust as needed
@@ -240,7 +240,7 @@ class ProposalsController extends Controller
     {
         $proposal = Proposal::findOrFail($id);
         if (!auth()->user()->userid == $proposal->useridfk) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Submit this Proposal. Only the owner can Submit!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Submit this Proposal. Only the owner can Submit!");
         }
         if ($proposal->submittedstatus) {
             return response(['message' => 'Application has already been submitted!', 'type' => 'warning']);
@@ -279,7 +279,7 @@ class ProposalsController extends Controller
         else if ($request->input('status') == "Rejected" && auth()->user()->haspermission('canrejectproposal')) {
         }
         else{
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to  Approve/Reject this Proposal!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to  Approve/Reject this Proposal!");
         }
 
         $rules = [
@@ -337,7 +337,7 @@ class ProposalsController extends Controller
     public function viewallproposals()
     {
         if (!auth()->user()->haspermission('canviewallapplications')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to view all Proposals!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to view all Proposals!");
         }
         $allproposals = Proposal::all();
         return view('pages.proposals.allproposals', compact('allproposals'));
@@ -345,7 +345,7 @@ class ProposalsController extends Controller
     public function viewmyapplications()
     {
         if (!auth()->user()->haspermission('canviewmyapplications')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to view My Proposals!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to view My Proposals!");
         }
         $userid = auth()->user()->userid;
         $allproposals = Proposal::where('useridfk', $userid);
@@ -356,7 +356,7 @@ class ProposalsController extends Controller
     {
         $prop = Proposal::findOrFail($id);
         if (!auth()->user()->userid == $prop->useridfk) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Edit the requested Proposal!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit the requested Proposal!");
         }
         $isreadonlypage = false;
         // $isadminmode = true;
@@ -372,7 +372,7 @@ class ProposalsController extends Controller
     public function fetchmyapplications()
     {
         if (!auth()->user()->haspermission('canviewmyapplications')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to view My Proposals!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to view My Proposals!");
         }
         $userid = auth()->user()->userid;
         $myapplications = Proposal::where('useridfk', $userid)->with('department', 'grantitem', 'themeitem', 'applicant')->get();
@@ -382,7 +382,7 @@ class ProposalsController extends Controller
     public function fetchallproposals()
     {
         if (!auth()->user()->haspermission('canviewallapplications')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to view all Proposals!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to view all Proposals!");
         }
         $data = Proposal::with('department', 'grantitem', 'themeitem', 'applicant')->get();
         return response()->json($data); // Return  data as JSON
@@ -391,7 +391,7 @@ class ProposalsController extends Controller
     public function fetchsearchproposals(Request $request)
     {
         if (!auth()->user()->haspermission('canviewallapplications')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to view all Proposals!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to view all Proposals!");
         }
         $searchTerm = $request->input('search');
         $data = Proposal::with('department', 'grantitem', 'themeitem', 'applicant')

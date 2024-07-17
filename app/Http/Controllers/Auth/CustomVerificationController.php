@@ -22,27 +22,27 @@ class CustomVerificationController extends Controller
     {
         $user = Auth::user();
         return Auth::user()->hasVerifiedEmail()
-            ? redirect()->route('pages.dashboard')
+            ? redirect()->route('pages.home')
             : view('pages.auth.verifyemail');
     }
 
     public function verify(EmailVerificationRequest $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('pages.dashboard');
+            return redirect()->route('pages.home');
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
 
-        return redirect()->route('pages.dashboard')->with('verified', true);
+        return redirect()->route('pages.home')->with('verified', true);
     }
 
     public function resend(Request $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('pages.dashboard');
+            return redirect()->route('pages.home');
         }
 
         $request->user()->sendEmailVerificationNotification();

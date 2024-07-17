@@ -263,6 +263,7 @@
                             <select class="form-control">
                                 <option value="1">Admin</option>
                                 <option value="2">Applicant</option>
+                                <option value="3">Co-opted</option>
                             </select>
                         </div>
                         <div class="col-12 col-md-9">

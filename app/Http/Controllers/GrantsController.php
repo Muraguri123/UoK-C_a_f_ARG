@@ -13,7 +13,7 @@ class GrantsController extends Controller
     public function postnewgrant(Request $request)
     {
         if(!auth()->user()->haspermission('canaddoreditgrant')){
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Grant!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Add or Edit a Grant!");
         }
         // Validate incoming request data if needed
         // Define validation rules
@@ -54,7 +54,7 @@ class GrantsController extends Controller
     public function updategrant(Request $request, $id)
     {
         if(!auth()->user()->haspermission('canaddoreditgrant')){
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Grant!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Add or Edit a Grant!");
         }
         // Validate incoming request data if needed
         // Define validation rules
@@ -98,7 +98,7 @@ class GrantsController extends Controller
     public function getviewsinglegrantpage($id)
     {
         if(!auth()->user()->haspermission('canaddoreditgrant')){
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Grant!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Add or Edit a Grant!");
         }
         // Find the grant by ID or fail with a 404 error
         $grant = Grant::findOrFail($id);
@@ -110,7 +110,7 @@ class GrantsController extends Controller
     public function geteditsinglegrantpage($id)
     {
         if(!auth()->user()->haspermission('canaddoreditgrant')){
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "This User is not Authorized to Add or Edit a Grant!");
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Add or Edit a Grant!");
         }
         // Find the grant by ID or fail with a 404 error
         $grant = Grant::findOrFail($id);
