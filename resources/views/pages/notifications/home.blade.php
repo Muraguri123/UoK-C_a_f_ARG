@@ -45,7 +45,6 @@
          let userid = "{{Auth::user()->userid}}"
         // Assuming prop is passed to the Blade view from the Laravel controller
         const basicupdateurl = `{{ route('api.users.updatebasicdetails', ['id' => ':id']) }}`.replace(':id', userid);
-        const punlicationsurl = `{{ route('api.proposals.fetchpublications', ['id' => ':id']) }}`.replace(':id', userid);
         document.getElementById('btn_editprofile').addEventListener('click', function () {
 
           document.getElementById('fullname').removeAttribute('readonly');

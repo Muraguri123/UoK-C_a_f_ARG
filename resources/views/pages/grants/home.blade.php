@@ -24,10 +24,10 @@
                         </div>
                         <div class="modal-body">
                             <form id="form_addgrant" method="POST">
-                                @csrf 
+                                @csrf
                                 <div class="row form-group">
                                     <div class="col col-md-3">
-                                        <label class="form-control-label">Financial Year</label>
+                                        <label class="form-control-label">Grant Title</label>
                                     </div>
                                     <div class="col-12 col-md-9">
                                         <input type="text" name="title" placeholder="Title for the grant"
@@ -39,8 +39,24 @@
                                         <label class="form-control-label">Financial Year</label>
                                     </div>
                                     <div class="col-12 col-md-9">
-                                        <input type="text" name="finyear" placeholder="Financial Year"
-                                            class="form-control">
+                                        <input type="text" id="finyear" name="finyear" placeholder="Financial Year"
+                                            class="form-control" >
+                                    </div>
+                                </div>
+                                <div class="row form-group mt-2">
+                                    <div class="col col-md-3">
+                                        <label class="form-control-label">Start Date</label>
+                                    </div>
+                                    <div class="col-12 col-md-9">
+                                        <input type="date" id="startdate" name="startdate" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="row form-group mt-2">
+                                    <div class="col col-md-3">
+                                        <label class="form-control-label">End Date</label>
+                                    </div>
+                                    <div class="col-12 col-md-9">
+                                        <input type="date" id="enddate" name="enddate" class="form-control">
                                     </div>
                                 </div>
                                 <div class="row form-group mt-2">
@@ -58,8 +74,9 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button id="btn_closegrantmodal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button id="btn_savegrant" type="button"  class="btn btn-primary">Save Grant</button>
+                            <button id="btn_closegrantmodal" type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Close</button>
+                            <button id="btn_savegrant" type="button" class="btn btn-primary">Save Grant</button>
                         </div>
                     </div>
                 </div>
@@ -72,12 +89,12 @@
                             style="::placeholder { color: red; }" placeholder="Search by Grant No, Year or Status">
                     </div>
                     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">
-                    @if (auth()->user()->haspermission('canaddgrant'))
-                    <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
-                            data-bs-target="#addgrantmodal">
-                            Add Grant
-                        </button>
-                    @endif
+                        @if (auth()->user()->haspermission('canaddgrant'))
+                            <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
+                                data-bs-target="#addgrantmodal">
+                                Add Grant
+                            </button>
+                        @endif
                     </div>
                 </div>
             </form>
@@ -90,7 +107,7 @@
                         <th scope="col">Title</th>
                         <th scope="col">Fin Year</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Date Created</th> 
+                        <th scope="col">Date Created</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -102,10 +119,17 @@
 </div>
 <script>
     $(document).ready(function () {
+        document.getElementById('startdate').addEventListener('change', function () {
+            
+            calculateFinYear();
+        });
+        document.getElementById('enddate').addEventListener('change', function () {
+            calculateFinYear();
+        });
         document.getElementById('btn_savegrant').addEventListener('click', function () {
 
             var formData = $('#form_addgrant').serialize();
-             
+
             // Function to fetch data using AJAX
             $.ajax({
                 url: "{{ route('api.grants.post') }}",
@@ -113,8 +137,8 @@
                 data: formData,
                 dataType: 'json',
                 success: function (response) {
-                    var closebtn=document.getElementById('btn_closegrantmodal');
-                    if(closebtn){closebtn.click();}
+                    var closebtn = document.getElementById('btn_closegrantmodal');
+                    if (closebtn) { closebtn.click(); }
                     showtoastmessage(response);
                     fetchgrantsData();
                 },
@@ -130,7 +154,7 @@
                     console.error('Error fetching data:', error);
                 }
             });
-        }); 
+        });
         // Function to fetch data using AJAX
         function fetchgrantsData() {
             $.ajax({
@@ -174,8 +198,8 @@
                 $.each(data, function (index, data) {
                     var granturl = routeUrlTemplate.replace('__ID__', data.grantid);
                     var row = '<tr>' +
-                    '<td>' + data.grantid + '</td>' +
-                    '<td><a class="nav-link" href="' + granturl + '">' + data.title + '</a></td>' +
+                        '<td>' + data.grantid + '</td>' +
+                        '<td><a class="nav-link" href="' + granturl + '">' + data.title + '</a></td>' +
                         '<td>' + data.finyear + '</td>' +
                         '<td>' + data.status + '</td>' +
                         '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
@@ -201,6 +225,44 @@
                 fetchgrantsData(); // Fetch all data when search input is empty
             }
         });
+
+
+        function calculateFinYear() {
+            try {
+                var startdate = document.getElementById('startdate').value;
+                var enddate = document.getElementById('enddate').value;
+                var enddate_el = document.getElementById('enddate');
+                var finyear = document.getElementById('finyear');
+                if (!startdate || !enddate) {
+                    finyear.value=null;
+                    return;
+                }
+
+                var startDate = new Date(startdate);
+                var startYear = startDate.getFullYear();
+
+                var endDate = new Date(enddate);
+                var endYear = startDate.getFullYear();
+                if(startDate>=endDate){
+                    alert('The Start Date must not be greater than Enddate!');
+                    finyear.value=null;
+                    return;
+                }
+                if((endYear-startYear)!==1){
+                    alert('The Year difference should be Exactly 1!');
+                    finyear.value=null; 
+                    enddate_el.value=null;
+                    return;
+                }
+                var financialYear;
+                financialYear = `${startYear}/${endYear}`;
+
+                finyear.value = financialYear;
+            }
+            catch {
+
+            }
+        }
     });
 </script>
 @endsection

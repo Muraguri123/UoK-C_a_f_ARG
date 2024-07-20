@@ -21,7 +21,8 @@ use App\Http\Controllers\{
     NotificationsController,
     DepartmentsController,
     Auth\CustomPasswordResetController,
-    Auth\CustomVerificationController
+    Auth\CustomVerificationController,
+    TestController
 };
 
 
@@ -35,6 +36,9 @@ use App\Http\Controllers\{
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+//test controller /endpoint
+Route::get('/test', [TestController::class, 'test'])->name('api.test');
 
 // Common Pages Routes
 Route::get('/default', [CommonPagesController::class, 'index'])->name('pages.default');
@@ -96,6 +100,7 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/proposals/submissionstatus/{id}', [ProposalsController::class, 'fetchsubmissionstatus'])->name('api.proposals.submissionstatus');
     Route::get('/proposals/proposalchanges/{id}', [ProposalsController::class, 'fetchproposalchanges'])->name('api.proposals.proposalchanges');
     Route::post('/proposals/submit/{id}', [ProposalsController::class, 'submitproposal'])->name('api.proposals.submitproposal');
+    Route::post('/proposals/receive/{id}', [ProposalsController::class, 'receiveproposal'])->name('api.proposals.receiveproposal');
     Route::post('/proposals/approvereject/{id}', [ProposalsController::class, 'approverejectproposal'])->name('api.proposals.approvereject');
     Route::get('/proposals/view/{id}', [ProposalsController::class, 'getsingleproposalpage'])->name('pages.proposals.viewproposal');
     Route::get('/proposals/edit/{id}', [ProposalsController::class, 'geteditsingleproposalpage'])->name('pages.proposals.editproposal');

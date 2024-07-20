@@ -79,8 +79,7 @@
         }
 
         // Function to populate table with data
-        function populateTable(data) {
-            console.log(data);
+        function populateTable(data) { 
             var tbody = $('#proposalstable tbody');
             tbody.empty(); // Clear existing table rows
             if (data.length > 0) {
@@ -88,14 +87,14 @@
                     var proposalUrl = routeUrlTemplate.replace('__ID__', data.proposalid);
                     var editurl = routeeditUrlTemplate.replace('__ID__', data.proposalid);
                     var row = '<tr>' +
-                        '<td><a class="nav-link" href="' + proposalUrl + '">' + (data.applicant ? data.applicant.name : '') + '</a></td>' +
+                        '<td><a class="nav-link" href="' + proposalUrl + '">' + data.proposalcode + '</a></td>' +
                         '<td>' + (data.grantitem ? data.grantitem?.grantid + ' - (' + data.grantitem?.finyear + ')' : '') + '</td>' +
                         '<td>' + (data.themeitem ? data.themeitem.themename : '') + '</td>' +
                         '<td>' + data.highqualification + '</td>' +
                         '<td>' + (data.department ? data.department.shortname : '') + '</td>' +
                         '<td>' + (data.submittedstatus == 1 ? "Yes" : "No") + '</td>' +
                         '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
-                        (data.grantitem?.status == "Open" ? '<td><a class="nav-link" href="' + editurl + '"><i class="bi bi-pencil"></i>Edit</a></td>' : '<td><a class="nav-link" href="' + proposalUrl + '"><i class="bi bi-eye"></i>View</a></td>') +
+                        '<td><a class="nav-link" href="' + (data.iseditable ? editurl : proposalUrl) + '"><i class="bi bi-pencil"></i>Edit</a></td>' +
                         '</tr>';
                     tbody.append(row);
                 });

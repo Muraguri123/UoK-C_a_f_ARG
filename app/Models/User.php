@@ -86,7 +86,7 @@ class User extends Authenticatable
     public function sendEmailVerificationNotification()
     {
         $this->notify(new CustomVerifyEmailNotification());
-    }
+    } 
 
     //functions
     public function permissions()
@@ -94,6 +94,7 @@ class User extends Authenticatable
         if ($this->isadmin) {
             return Permission::orderBy('priorityno');
         } else {
+
             return $this->belongsToMany(Permission::class, 'userpermissions', 'useridfk', 'permissionidfk')->orderBy('priorityno');
         }
     }
@@ -128,7 +129,7 @@ class User extends Authenticatable
     {
         try {
             $proposal = Proposal::findOrFail($proposalid);
-            if ($this->haspermission('canapproveproposal') && ($proposal->useridfk != $this->userid) && ($proposal->approvalstatus != 'Approved' || $proposal->approvalstatus != 'Rejected')) {
+            if ($this->haspermission('canapproveproposal') && ($proposal->useridfk != $this->userid) && $proposal->receivedstatus && $proposal->approvalstatus == 'Pending') {
                 return true;
             } else {
                 return false;
@@ -143,7 +144,7 @@ class User extends Authenticatable
     {
         try {
             $proposal = Proposal::findOrFail($proposalid);
-            if ($this->haspermission('canrejectproposal') && ($proposal->useridfk != $this->userid) && ($proposal->approvalstatus != 'Approved' || $proposal->approvalstatus != 'Rejected')) {
+            if ($this->haspermission('canrejectproposal') && ($proposal->useridfk != $this->userid) && $proposal->receivedstatus && $proposal->approvalstatus == 'Pending' ) {
                 return true;
             } else {
                 return false;
@@ -157,7 +158,7 @@ class User extends Authenticatable
     {
         try {
             $proposal = Proposal::findOrFail($proposalid);
-            if ($this->haspermission('canproposechanges') && ($proposal->useridfk != $this->userid) && $proposal->approvalstatus == 'Pending') {
+            if ($this->haspermission('canproposechanges') && ($proposal->useridfk != $this->userid) && $proposal->approvalstatus == 'Pending' && $proposal->receivedstatus) {
                 return true;
             } else {
                 return false;
@@ -171,7 +172,7 @@ class User extends Authenticatable
     {
         try {
             $proposal = Proposal::findOrFail($proposalid);
-            if ($this->haspermission('canreceiveproposal') && ($proposal->useridfk != $this->userid) && $proposal->approvalstatus == 'Pending') {
+            if ($this->haspermission('canreceiveproposal') && ($proposal->useridfk != $this->userid) && $proposal->approvalstatus == 'Pending' && $proposal->submittedstatus && !$proposal->receivedstatus) {
                 return true;
             } else {
                 return false;
@@ -181,11 +182,11 @@ class User extends Authenticatable
         }
 
     }
-    public function canenabledisableediting($proposalid)
+    public function canenableediting($proposalid)
     {
         try {
             $proposal = Proposal::findOrFail($proposalid);
-            if ($this->haspermission('canenabledisableproposaledit') && ($proposal->useridfk != $this->userid) && $proposal->approvalstatus == 'Pending') {
+            if ($this->haspermission('canenabledisableproposaledit') && ($proposal->useridfk != $this->userid) && $proposal->approvalstatus == 'Pending' && $proposal->submittedstatus && $proposal->receivedstatus && !$proposal->caneditstatus) {
                 return true;
             } else {
                 return false;
@@ -194,5 +195,19 @@ class User extends Authenticatable
             return false;
         }
 
-    }
+    } 
+    public function candisableediting($proposalid)
+    {
+        try {
+            $proposal = Proposal::findOrFail($proposalid);
+            if ($this->haspermission('canenabledisableproposaledit') && ($proposal->useridfk != $this->userid) && $proposal->approvalstatus == 'Pending' && $proposal->submittedstatus && $proposal->receivedstatus && $proposal->caneditstatus) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception $exception) {
+            return false;
+        }
+
+    } 
 }

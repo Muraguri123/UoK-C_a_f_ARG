@@ -58,7 +58,7 @@ class LoginController extends Controller
             // Create an instance of MailingController and call the sendMail function
             // $mailingController = new MailingController();
             // $mailingController->sendMail($recipientEmail, $details);
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/home');
         }
 
 

@@ -126,22 +126,7 @@ class ProposalsController extends Controller
         }
     }
 
-    public function getsingleproposalpage($id)
-    {
-        if (!auth()->user()->haspermission('canreadproposaldetails')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to read the requested Proposal!");
-        }
-        // Find the proposal by ID or fail with a 404 error
-        $user = Auth::user();
-        $prop = Proposal::findOrFail($id);
-        $isreadonlypage = true;
-        $isadminmode = true;
-        $grants = Grant::all();
-        $departments = Department::all();
-        $themes = ResearchTheme::all();
-
-        return view('pages.proposals.proposalform', compact('prop', 'isreadonlypage', 'isadminmode', 'departments', 'grants', 'themes'));
-    }
+  
     public function updatebasicdetails(Request $request, $id)
     {
         $proposal = Proposal::findOrFail($id);
@@ -272,6 +257,23 @@ class ProposalsController extends Controller
         }
 
     }
+    public function receiveproposal(Request $request, $id)
+    {
+        if (!auth()->user()->haspermission('canreceiveproposal') ) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to receive this Proposal!");
+        }  
+
+        $proposal = Proposal::findOrFail($id);
+
+        $proposal->receivedstatus = true;
+        $proposal->caneditstatus=false;
+        $proposal->save();
+        $mailingController = new MailingController();
+        $mailingController->notifyUserReceivedProposal($proposal);
+        return response(['message' => 'Proposal received Successfully!!', 'type' => 'success']);
+
+
+    }
     public function approverejectproposal(Request $request, $id)
     {
         if ($request->input('status') == "Approved" && auth()->user()->haspermission('canapproveproposal') ) {
@@ -351,12 +353,30 @@ class ProposalsController extends Controller
         $allproposals = Proposal::where('useridfk', $userid);
         return view('pages.proposals.myapplications', compact('allproposals'));
     }
+    public function getsingleproposalpage($id)
+    {
+        if (!auth()->user()->haspermission('canreadproposaldetails')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to read the requested Proposal!");
+        }
+        // Find the proposal by ID or fail with a 404 error
+        $user = Auth::user();
+        $prop = Proposal::findOrFail($id);
+        $isreadonlypage = true;
+        $isadminmode = true;
+        $grants = Grant::all();
+        $departments = Department::all();
+        $themes = ResearchTheme::all();
 
+        return view('pages.proposals.proposalform', compact('prop', 'isreadonlypage', 'isadminmode', 'departments', 'grants', 'themes'));
+    }
     public function geteditsingleproposalpage(Request $req, $id)
     {
         $prop = Proposal::findOrFail($id);
         if (!auth()->user()->userid == $prop->useridfk) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit the requested Proposal!");
+        }
+        if (!$prop->isEditable()) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "The Proposal is not Editable!");
         }
         $isreadonlypage = false;
         // $isadminmode = true;
@@ -374,9 +394,14 @@ class ProposalsController extends Controller
         if (!auth()->user()->haspermission('canviewmyapplications')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to view My Proposals!");
         }
-        $userid = auth()->user()->userid;
-        $myapplications = Proposal::where('useridfk', $userid)->with('department', 'grantitem', 'themeitem', 'applicant')->get();
-        return response()->json($myapplications);
+        $user = auth()->user();
+        $myapplications = Proposal::where('useridfk', $user->userid)->with('department', 'grantitem', 'themeitem', 'applicant')->get();
+        $proposals = $myapplications->map(function ($proposal) use ($user) {
+            $proposal->iseditable = $proposal->isEditable();
+            $proposal->haspendingupdates = $proposal->hasPendingUpdates();
+            return $proposal;
+        });
+        return response()->json($proposals);
     }
 
     public function fetchallproposals()

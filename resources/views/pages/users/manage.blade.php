@@ -29,7 +29,8 @@
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">PFNO</th>
-                        <th scope="col">Is Active</th>
+                        <th scope="col">Can Login</th>
+                        <th scope="col">Role</th>
                         <th scope="col">Date Created</th>
                     </tr>
                 </thead>
@@ -95,6 +96,7 @@
                         (canviewuser ? '<td><a class="nav-link pt-0 pb-0" href="' +  userurl  + '">' + data.email + '</a></td>'  : '<td>' + data.email + '</td>') +
                         '<td>' + data.pfno + '</td>' +
                         '<td>' + Boolean(data.isactive) + '</td>' +
+                        '<td>' + getrolename(data.role) + '</td>' +
                         '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
                         '</tr>';
                     tbody.append(row);
@@ -105,7 +107,20 @@
                 tbody.append(row);
             }
         }
-
+        function getrolename(roleid){
+            if(roleid==1){
+                return 'Committee';
+            }
+            else if(roleid==2){
+                return 'Applicant';
+            }  
+            else if(roleid==3){
+                return 'Co-opted';
+            }
+            else{
+                return 'unknown';
+            }
+        }
         // Initial fetch when the page loads
         fetchData();
 

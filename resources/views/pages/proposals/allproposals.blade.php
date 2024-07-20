@@ -90,8 +90,7 @@
         }
 
         // Function to populate table with data
-        function populateTable(data) {
-            console.log(data);
+        function populateTable(data) { 
             var tbody = $('#proposalstable tbody');
             tbody.empty(); // Clear existing table rows
             if (data.length > 0) {

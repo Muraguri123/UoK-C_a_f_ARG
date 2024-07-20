@@ -48,7 +48,7 @@
                 <!-- basic details Details -->
                 <div role="tabpanel" class="tab-pane active" id="panel-basicdetails">
                     <!-- basic Details Form -->
-                    <form method="POST" id="basicdetails" enctype="multipart/form-data" class="form-horizontal">
+                    <form method="POST" id="form_basicdetails" enctype="multipart/form-data" class="form-horizontal">
                         @csrf
                         <div class="row form-group">
                             <div class="col col-md-3">
@@ -110,23 +110,23 @@
                                     value="{{ ($user->role == 1) ? 'Admin' : 'Applicant' }}" class="form-control" readonly>
                             </div>
                         </div>
+                        @if (Auth::user()->haspermission('canedituserprofile'))
                         <div class="row form-group">
                             <div class="col text-center">
                                 <button id="btn_editprofile" type="button" class="btn btn-info">Edit Profile</button>
 
-                                <button id="btn_updateprofile" class="btn btn-success" disabled hidden>Update</button>
+                                <button id="btn_updateprofile" type="button" class="btn btn-success" disabled hidden>Update</button>
                             </div>
                         </div>
-
+                        @endif
                     </form>
 
                     <script>
                         $(document).ready(function () {
 
-                            let proposalId = "{{ isset($prop) ? $prop->proposalid : '' }}"; // Check if proposalId is set
+                            let userid = "{{ isset($user) ? $user->userid : '' }}"; // Check if user is set
                             // Assuming prop is passed to the Blade view from the Laravel controller
-                            const collaboratorsurl = `{{ route('api.proposals.fetchcollaborators', ['id' => ':id']) }}`.replace(':id', proposalId);
-                            const punlicationsurl = `{{ route('api.proposals.fetchpublications', ['id' => ':id']) }}`.replace(':id', proposalId);
+                            const userurl = `{{ route('api.users.updatebasicdetails', ['id' => ':id']) }}`.replace(':id', userid);
                             document.getElementById('btn_editprofile').addEventListener('click', function () {
 
                                 document.getElementById('fullname').removeAttribute('readonly');
@@ -140,26 +140,19 @@
                             });
                             document.getElementById('btn_updateprofile').addEventListener('click', function () {
 
-                                var formData = $('#form_collaborators').serialize();
-                                if (proposalId) {
-                                    formData += '&proposalidfk=' + proposalId;
-                                }
+                                var formData = $('#form_basicdetails').serialize(); 
+                                // var csrfToken = document.getElementsByName('_token')[0].value;
+                                //     var formdata={'_token': csrfToken};
                                 // Function to fetch data using AJAX
                                 $.ajax({
-                                    url: "{{ route('api.collaborators.post') }}",
+                                    url: userurl,
                                     type: 'POST',
                                     data: formData,
                                     dataType: 'json',
                                     success: function (response) {
-                                        showtoastmessage(response);
-                                        // Close the modal
-                                        var button = document.getElementById('closecollaboratormodal_button');
-                                        if (button) {
-                                            button.click();
-                                        }
-                                        fetchcollaborators();
+                                        showtoastmessage(response);  
                                     },
-                                    error: function (xhr, status, error) {
+                                    error: function (xhr, status, error) { 
                                         var mess = JSON.stringify(xhr.responseJSON.message);
                                         var type = JSON.stringify(xhr.responseJSON.type);
                                         var result = {
@@ -209,7 +202,7 @@
 
                             <select id="userrole" name="userrole" class="form-control">
                             <option value="">Select Status</option>
-                            <option value="1" {{ (isset($user) && $user->role == "1") ? 'selected' : '' }}>Admin</option>
+                            <option value="1" {{ (isset($user) && $user->role == "1") ? 'selected' : '' }}>Committee</option>
                             <option value="2" {{ (isset($user) && $user->role == "2") ? 'selected' : '' }}>Applicant</option>
                             <option value="3" {{ (isset($user) && $user->role == "3") ? 'selected' : '' }}>Co-opted</option>                            
                             </select>
@@ -257,8 +250,7 @@
                                         type: 'POST',
                                         data:formdata,
                                         dataType: 'json',
-                                        success: function (response) { 
-                                            console.log(response);
+                                        success: function (response) {  
                                             showtoastmessage(response); 
                                         },
                                         error: function (xhr, status, error) {

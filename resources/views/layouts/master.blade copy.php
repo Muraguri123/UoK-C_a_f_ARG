@@ -274,18 +274,15 @@
         }
       }
 
-      sidebarToggle.addEventListener('click', () => {
-        console.log('Sidebar toggle clicked');
+      sidebarToggle.addEventListener('click', () => { 
         toggleSidebar();
       });
 
-      closeSidebar.addEventListener('click', () => {
-        console.log('Close button clicked');
+      closeSidebar.addEventListener('click', () => { 
         toggleSidebar();
       });
 
-      overlay.addEventListener('click', () => {
-        console.log('Overlay clicked');
+      overlay.addEventListener('click', () => { 
         toggleSidebar();
       });
     });

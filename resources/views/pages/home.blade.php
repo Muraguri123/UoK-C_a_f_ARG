@@ -55,8 +55,7 @@
          </div>
          <script type="text/javascript">
            google.charts.load('current', { 'packages': ['bar'] });
-           google.charts.setOnLoadCallback(drawChart);
-           console.log({{ Js::from($themeCounts) }})
+           google.charts.setOnLoadCallback(drawChart); 
            function drawChart() {
             var data = google.visualization.arrayToDataTable({{ Js::from($themeCounts) }});
             var chart = new google.charts.Bar(document.getElementById('barchart_material'));

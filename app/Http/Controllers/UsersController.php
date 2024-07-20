@@ -40,14 +40,23 @@ class UsersController extends Controller
                 $user->permissions()->detach();
                 DB::table('userpermissions')->where('useridfk', $id)->delete();
                 // Add new permissions for the user
-                foreach ($newPermissions as $permissioncode) {
-                    $permission = Permission::where('pid', $permissioncode)->firstOrFail();
-                    $user->permissions()->attach($permission->pid, ['id' => (string) Str::uuid()]);
+                if ($user->role != 2) {
+                    foreach ($newPermissions as $permissioncode) {
+                        $permission = Permission::where('pid', $permissioncode)->firstOrFail();
+                        if ($permission->targetrole != 2) {
+                            $user->permissions()->attach($permission->pid, ['id' => (string) Str::uuid()]);
+                        }
+                    }
+                } else {
+                    $applicantpermissions = Permission::where('targetrole', $user->role)->get();
+                    foreach ($applicantpermissions as $permission) {
+                        $user->permissions()->attach($permission->pid, ['id' => (string) Str::uuid()]);
+                    }
                 }
             });
             return response()->json(['message' => 'Permissions updated successfully.', 'type' => "success"]);
         } else {
-            return response()->json(['message' => 'Administrator has exclusively all rights!', 'type', $user]);
+            return response()->json(['message' => 'Administrator has exclusively all rights!', 'type' => 'warning']);
         }
 
     }
@@ -60,36 +69,55 @@ class UsersController extends Controller
         // Find the user by ID or fail with a 404 error
         $user = User::findOrFail($id);
         if (!$user->issuperadmin()) {
+            DB::transaction(function () use ($user, $id, $request) {
+                $user->permissions()->detach();
+                DB::table('userpermissions')->where('useridfk', $id)->delete();
+                if ($request->exists('isadmin') && $request->input('isadmin') == 'on') {
+                    $user->isadmin = true;
+                    $user->role = 1;
 
-            if ($request->exists('isadmin') && $request->input('isadmin') == 'on') {
-                $user->isadmin = true;
-                $user->role = 1;
+                } else if ($request->exists('userrole')) {
+                    $user->role = $request->input('userrole');
+                    $user->isadmin = false;
+                } else {
+                    $user->isadmin = false;
+                }
+                if ($request->exists('userisactive') && $request->input('userisactive') == 'on') {
+                    $user->isactive = true;
+                } else {
+                    $user->isactive = false;
+                }
 
-            } else if ($request->exists('userrole')) {
-                $user->role = $request->input('userrole');
-                $user->isadmin = false;
-            } else {
-                $user->isadmin = false;
-            }
-            if ($request->exists('userisactive') && $request->input('userisactive') == 'on') {
-                $user->isactive = true;
-            } else {
-                $user->isactive = false;
-            }
-            $user->save();
-            return response()->json(['message' => 'Role Updated Successfully!', 'type', 'success']);
+                //update respective permissions
+                $user->permissions()->detach();
+                if($user->role==2){
+                    $applicantpermissions = Permission::where('targetrole', $user->role)->get();
+                }
+                else{
+                    $applicantpermissions=$this->getnonapplicantdefaultrights();
+                }
+                foreach ($applicantpermissions as $permission) {
+                    $user->permissions()->attach($permission->pid, ['id' => (string) Str::uuid()]);
+                }
+            });
+            return response()->json(['message' => 'Role Updated Successfully!', 'type' => 'success']);
 
         } else {
-            return response()->json(['message' => 'Super Administrator has exclusively all rights!', 'type', 'warning']);
+            return response()->json(['message' => 'Super Administrator has exclusively all rights!', 'type' => 'warning']);
         }
 
     }
-
+    public function getnonapplicantdefaultrights(){
+        $names=['canviewallapplications','canviewreports','canviewadmindashboard','canreadproposaldetails','canviewofficeuse','canproposechanges'];
+        $permissions=[];
+        $permissions = Permission::whereIn('shortname', $names)->get();
+        return $permissions;
+    } 
     public function updatebasicdetails(Request $request, $id)
     {
-        if (Auth::user()->userid != $id && !auth()->user()->haspermission('canedituserprofile')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit this User!");
 
+        if (Auth::user()->userid != $id && !Auth::user()->haspermission('canedituserprofile')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit this User!");
         }
         // Define validation rules
         $rules = [
@@ -98,7 +126,6 @@ class UsersController extends Controller
             'phonenumber' => 'required|string',
             'pfno' => 'required|string',
         ];
-
         // Validate incoming request
         $validator = Validator::make($request->all(), $rules);
 
@@ -109,17 +136,14 @@ class UsersController extends Controller
 
         // Find the user by ID or fail with a 404 error
         $user = User::findOrFail($id);
-        if ($user->issuperadmin() || (auth()->user()->userid == $user->userid)) {
-            $user->name = $request->input('fullname');
-            $user->email = $request->input('email');
-            $user->pfno = $request->input('pfno');
-            $user->phonenumber = $request->input('phonenumber');
-            $user->save();
-            return response()->json(['message' => 'User Updated Successfully!', 'type' => 'success']);
+        $user->name = $request->input('fullname');
+        $user->email = $request->input('email');
+        $user->pfno = $request->input('pfno');
+        $user->phonenumber = $request->input('phonenumber');
+        $user->save();
+        return response()->json(['message' => 'User Updated Successfully!', 'type' => 'success']);
 
-        } else {
-            return response()->json(['message' => 'You dont have the rights to update this User!', 'type' => 'danger']);
-        }
+
 
     }
 
@@ -136,7 +160,7 @@ class UsersController extends Controller
         // Return the view with the proposal data
         return view('pages.users.viewuser', compact('user', 'isreadonlypage', 'isadminmode', 'permissions'));
     }
-    
+
     public function geteditsingleuserpage($id)
     {
         if (!auth()->user()->haspermission('canedituserprofile')) {
@@ -174,8 +198,8 @@ class UsersController extends Controller
                 ->get();
             return response()->json($data); // Return filtered data as JSON
         }
-       
+
     }
 
-    
+
 }

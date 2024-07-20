@@ -8,6 +8,7 @@ use App\Models\Permission;
 use App\Models\Proposal;
 use App\Models\User;
 use App\Notifications\ProposalApprovedNotification;
+use App\Notifications\ProposalReceivedNotification;
 use App\Notifications\ProposalSubmitted;
 use Exception;
 use Illuminate\Http\Request;
@@ -115,6 +116,41 @@ class MailingController extends Controller
 
     }
 
+    //notify owner of their proposal being received
+    public function notifyUserReceivedProposal($proposal)
+    {
+        try { 
+            $user = User::findOrFail($proposal->useridfk);
+            if ($user) {
+                // Define the data for the notification
+                $level = 'success';
+                $introLines = ['Your Proposal has been has been received by the committee!', 'Your proposal will now udergo the review process and you will be informed for any activity within your proposal.'];
+                $actionUrl = route('pages.proposals.viewproposal', ['id' => $proposal->proposalid]);
+                $actionText = 'View proposal';
+                $outroLines = ['If you received this message mistakenly, Kindly Ignore and report to the Administrator to prevent receiving this mail again in future.'];
+                $salutation = 'Best Regards';
+                $subject = 'Proposal Received!';
+
+                // Send the notification 
+                try {
+                    // notification instance
+                    $personName = $user->name;
+                    $greeting = 'Hello, ' . $personName;
+                    $notification = new ProposalReceivedNotification($subject, $greeting, $level, $introLines, $actionUrl, $actionText, $outroLines, $salutation);
+                    // Notification::route('mail', $user->email)->notify($notification);
+                    SendEmailNotification::dispatch($user->email, $notification);
+                } catch (Exception $e) {
+                    Log::error("Failed to send email to {$user->email}: " . $e->getMessage());
+                    // Handle the error accordingly, such as updating a database record
+                }
+            }
+        } catch (Exception $e) {
+
+        }
+
+
+
+    }
     //notify users of their proposal approval
     public function notifyusersapprovedproposal($proposal)
     {

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Auth;
+use DateTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -25,43 +27,24 @@ class Proposal extends Model
      */
     protected $primaryKey = 'proposalid';
 
-   
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'proposalid',        
-        'grantnofk',         
+        'proposalid',
+        'grantnofk',
         'useridfk',
         'pfnofk',
         'themefk',
         'highqualification',
-        'departmentidfk', 
+        'departmentidfk',
         'approvalstatus',
         'faxnumber',
         'cellphone',
         'officephone'
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
     ];
 
 
@@ -84,5 +67,74 @@ class Proposal extends Model
     public function themeitem()
     {
         return $this->belongsTo(ResearchTheme::class, 'themefk', 'themeid');
+    }
+
+    public function proposalchanges()
+    {
+        return $this->belongsTo(ResearchTheme::class, 'themefk', 'themeid');
+    }
+
+    function getCurrentFinancialYear()
+    {
+        $currentDate = new DateTime();
+        $currentYear = $currentDate->format('Y');
+        $currentMonth = (int) $currentDate->format('m'); // Convert month to integer
+
+        // Financial year starts in July
+        $financialYearStartMonth = 7; // July is 7 (1-based index)
+
+        if ($currentMonth >= $financialYearStartMonth) {
+            // From July to December, the financial year starts this year
+            return "{$currentYear}/" . ($currentYear + 1);
+        } else {
+            // From January to June, the financial year started last year
+            return ($currentYear - 1) . "/{$currentYear}";
+        }
+    }
+
+
+
+    public function isEditable()
+    {
+        try {
+            $user = Auth::user();
+            if (($user->userid == $this->useridfk)  && $this->approvalstatus == 'Pending' && $this->caneditstatus ) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $exception) {
+            return false;
+        }
+
+    }
+    public function hasPendingUpdates()
+    {
+        try {
+            $changes=$this->proposalchanges()->get();
+            if($changes->where('status','Pending' )){
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (\Exception $exception) {
+            return false;
+        }
+
+    }
+    public function isApprovable()
+    {
+        try {
+            $user = Auth::user();
+            if (($user->userid == $this->useridfk) && $this->caneditstatus && $this->approvalstatus == 'Pending') {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (\Exception $exception) {
+            return false;
+        }
+
     }
 }
