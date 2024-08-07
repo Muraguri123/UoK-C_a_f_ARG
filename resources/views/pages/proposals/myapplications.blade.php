@@ -100,7 +100,7 @@
                 });
             }
             else {
-                var row = '<tr><td colspan="8">No data found</td></tr>';
+                var row = '<tr><td colspan="8" class="text-center">No Applications found</td></tr>';
                 tbody.append(row);
             }
         }

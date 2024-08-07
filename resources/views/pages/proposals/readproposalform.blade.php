@@ -1,8 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-@auth 
-    @if (isset($prop))
+     @if (isset($prop))
         <div>
             <style>
                 .prop-tabcontainer {
@@ -50,6 +49,7 @@
 
 
                         @endif
+
 
 
                     </div>
@@ -180,8 +180,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="researchtitle" name="researchtitle" placeholder="Research Title"
-                                        class="form-control" value="{{ isset($prop) ? $prop->researchtitle : '' }}"
-                                       >
+                                        class="form-control" value="{{ isset($prop) ? $prop->researchtitle : '' }}">
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -218,7 +217,8 @@
                                     <label class="form-control-label">Objectives</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="objectives" placeholder="Objectives" class="form-control">{{ isset($prop) ? $prop->objectives : '' }}</textarea>
+                                    <textarea name="objectives" placeholder="Objectives"
+                                        class="form-control">{{ isset($prop) ? $prop->objectives : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -227,8 +227,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="hypothesis" placeholder="Question or Hypothesis" class="form-control"
-                                     disabled readonly
-                                        >{{ isset($prop) ? $prop->hypothesis : '' }}</textarea>
+                                        disabled readonly>{{ isset($prop) ? $prop->hypothesis : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -237,8 +236,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="significance" placeholder="Significance or Justification"
-                                        class="form-control"  readonly
-                                        >{{ isset($prop) ? $prop->significance : '' }}</textarea>
+                                        class="form-control" readonly>{{ isset($prop) ? $prop->significance : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -247,7 +245,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="ethicals" placeholder="Ethical Considerations" class="form-control"
-                                       readonly>{{ isset($prop) ? $prop->ethicals : '' }}</textarea>
+                                        readonly>{{ isset($prop) ? $prop->ethicals : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -255,7 +253,8 @@
                                     <label class="form-control-label">Expected Outputs</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="outputs" placeholder="Expected Outputs" class="form-control"  readonly>{{ isset($prop) ? $prop->expoutput : '' }}</textarea>
+                                    <textarea name="outputs" placeholder="Expected Outputs" class="form-control"
+                                        readonly>{{ isset($prop) ? $prop->expoutput : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -263,7 +262,8 @@
                                     <label class="form-control-label">Socio-Economic Impact</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="economicimpact" placeholder="Socio-Economic Impact" class="form-control" readonly>{{ isset($prop) ? $prop->socio_impact : '' }}</textarea>
+                                    <textarea name="economicimpact" placeholder="Socio-Economic Impact" class="form-control"
+                                        readonly>{{ isset($prop) ? $prop->socio_impact : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -276,7 +276,7 @@
                                 </div>
                             </div>
                         </form>
-                        @if (!isset($prop) )
+                        @if (!isset($prop))
                             <div class="row form-group">
                                 <div class="col-lg-6 col-md-6 col-sm-12 offset-lg-4 offset-md-4">
                                     <button id="saveresearchinfobutton" form="form_researchinfo" type="submit"
@@ -286,6 +286,7 @@
                                 </div>
                             </div>
                         @endif
+
 
                     </div>
 
@@ -364,38 +365,6 @@
                                 const collaboratorsurl = `{{ route('api.proposals.fetchcollaborators', ['id' => ':id']) }}`.replace(':id', proposalId);
                                 const punlicationsurl = `{{ route('api.proposals.fetchpublications', ['id' => ':id']) }}`.replace(':id', proposalId);
 
-                                function showtoastmessage1(response) {
-
-
-                                    var toastEl = document.getElementById('liveToast');
-                                    if (toastEl) {
-                                        var toastbody = document.getElementById('toastmessage_body');
-                                        var toastheader = document.getElementById('toastheader');
-                                        toastheader.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-info', 'bg-warning', 'bg-secondary');
-
-
-                                        if (response && response.type) {
-                                            if (response.type == "success") {
-                                                toastheader.classList.add('bg-success');
-                                            }
-                                            else if (response.type == "warning") {
-                                                toastheader.classList.add('bg-warning');
-                                            }
-                                            else {
-                                                toastheader.classList.add('bg-danger');
-                                            }
-                                        }
-                                        else {
-                                            toastheader.classList.add('bg-danger');
-                                        }
-                                        toastbody.innerText = response && response.message ? response.message : "No Message";
-                                        var toast = new bootstrap.Toast(toastEl, {
-                                            autohide: true,
-                                            delay: 2000
-                                        });
-                                        toast.show();
-                                    }
-                                }
                                 // Function to fetch collaborators data 
                                 function fetchcollaborators() {
                                     $.ajax({
@@ -573,39 +542,7 @@
 
 
 
-                                    function showtoastmessage(response) {
-
-
-                                        var toastEl = document.getElementById('liveToast');
-                                        if (toastEl) {
-                                            var toastbody = document.getElementById('toastmessage_body');
-                                            var toastheader = document.getElementById('toastheader');
-                                            toastheader.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-info', 'bg-warning', 'bg-secondary');
-
-
-                                            if (response && response.type) {
-                                                if (response.type == "success") {
-                                                    toastheader.classList.add('bg-success');
-                                                }
-                                                else if (response.type == "warning") {
-                                                    toastheader.classList.add('bg-warning');
-                                                }
-                                                else {
-                                                    toastheader.classList.add('bg-danger');
-                                                }
-                                            }
-                                            else {
-                                                toastheader.classList.add('bg-danger');
-                                            }
-                                            toastbody.innerText = response && response.message ? response.message : "No Message";
-                                            var toast = new bootstrap.Toast(toastEl, {
-                                                autohide: true,
-                                                delay: 2000
-                                            });
-                                            toast.show();
-                                        }
-                                    }
-
+                                    
                                     // Function to fetch expenditures data 
                                     function fetchexpenditures() {
                                         $.ajax({
@@ -715,38 +652,7 @@
                                 // Assuming prop is passed to the Blade view from the Laravel controller
                                 const researchurl = `{{ route('api.proposals.researchdesignitems', ['id' => ':id']) }}`.replace(':id', proposalId);
 
-                                function showtoastmessage(response) {
-
-
-                                    var toastEl = document.getElementById('liveToast');
-                                    if (toastEl) {
-                                        var toastbody = document.getElementById('toastmessage_body');
-                                        var toastheader = document.getElementById('toastheader');
-                                        toastheader.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-info', 'bg-warning', 'bg-secondary');
-
-                                        if (response && response.type) {
-                                            if (response.type == "success") {
-                                                toastheader.classList.add('bg-success');
-                                            }
-                                            else if (response.type == "warning") {
-                                                toastheader.classList.add('bg-warning');
-                                            }
-                                            else {
-                                                toastheader.classList.add('bg-danger');
-                                            }
-                                        }
-                                        else {
-                                            toastheader.classList.add('bg-danger');
-                                        }
-                                        toastbody.innerText = response && response.message ? response.message : "No Message";
-                                        var toast = new bootstrap.Toast(toastEl, {
-                                            autohide: true,
-                                            delay: 2000
-                                        });
-                                        toast.show();
-                                    }
-                                }
-
+                               
                                 // Function to fetch expenditures data 
                                 function fetchresearchdesign() {
                                     $.ajax({
@@ -822,38 +728,7 @@
                                 // Assuming prop is passed to the Blade view from the Laravel controller
                                 const workplanurl = `{{ route('api.proposals.fetchworkplanitems', ['id' => ':id']) }}`.replace(':id', proposalId);
 
-                                function showtoastmessage(response) {
-
-
-                                    var toastEl = document.getElementById('liveToast');
-                                    if (toastEl) {
-                                        var toastbody = document.getElementById('toastmessage_body');
-                                        var toastheader = document.getElementById('toastheader');
-                                        toastheader.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-info', 'bg-warning', 'bg-secondary');
-
-                                        if (response && response.type) {
-                                            if (response.type == "success") {
-                                                toastheader.classList.add('bg-success');
-                                            }
-                                            else if (response.type == "warning") {
-                                                toastheader.classList.add('bg-warning');
-                                            }
-                                            else {
-                                                toastheader.classList.add('bg-danger');
-                                            }
-                                        }
-                                        else {
-                                            toastheader.classList.add('bg-danger');
-                                        }
-                                        toastbody.innerText = response && response.message ? response.message : "No Message";
-                                        var toast = new bootstrap.Toast(toastEl, {
-                                            autohide: true,
-                                            delay: 2000
-                                        });
-                                        toast.show();
-                                    }
-                                }
-
+                                
                                 // Function to fetch expenditures data 
                                 function fetchworkplanitems() {
                                     $.ajax({
@@ -897,183 +772,6 @@
                         </script>
                     </div>
 
-                    <!-- Submit -->
-                    <div role="tabpanel" class="tab-pane" id="panel-submit">
-                        @csrf
-                        <div class="row form-group">
-                            <h5 class="mt-2 text-center">Submit Your Application</h5>
-
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-12">
-                                <table id="progresstable" class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 60%;">Item</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Basic Details</td>
-                                            <td id="td_basic">Incomplete</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Research Details</td>
-                                            <td id="td_researchinfo">Incomplete</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Collaborators</td>
-                                            <td id="td_col">Not Filled</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Publications</td>
-                                            <td id="td_pub">Not Filled</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Financials</td>
-                                            <td id="td_financials">Incomplete</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Research Design</td>
-                                            <td id="td_design">Incomplete</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Workplan</td>
-                                            <td id="td_workplan">Incomplete</td>
-                                        </tr>
-                                        <!-- Add more rows as needed -->
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col text-center">
-                                <button id="btn_refreshstatus" type="button" class="btn btn-info text-light "
-                                    style="width:200px; margin-top:8px;">Check Status</button>
-
-                            </div>
-                            <div class="col text-center">
-                                <button id="btn_submitapplication" type="button" class="btn btn-success text-light "
-                                    style="width:200px; margin-top:8px;" disabled>Submit</button>
-
-                            </div>
-                        </div>
-                        <script>
-                            $(document).ready(function () {
-                                var refreshbutton = document.getElementById('btn_refreshstatus');
-                                var submit = document.getElementById('btn_submitapplication');
-                                var td_basic = document.getElementById('td_basic');
-                                var td_researchinfo = document.getElementById('td_researchinfo');
-                                var td_collaborators = document.getElementById('td_col');
-                                var td_publications = document.getElementById('td_pub');
-                                var td_workplan = document.getElementById('td_workplan');
-                                var td_design = document.getElementById('td_design');
-                                var td_financials = document.getElementById('td_financials');
-                                refreshbutton.addEventListener('click', function () {
-                                    fetchapplicationstatus();
-                                });
-                                submit.addEventListener('click', function () {
-                                    submitproposal();
-                                });
-                                let proposalId = "{{isset($prop) ? $prop->proposalid : ''}}"
-                                const statusurl = `{{ route('api.proposals.submissionstatus', ['id' => ':id']) }}`.replace(':id', proposalId);
-                                const submiturl = `{{ route('api.proposals.submitproposal', ['id' => ':id']) }}`.replace(':id', proposalId);
-
-                                function fetchapplicationstatus() {
-                                    $.ajax({
-                                        url: statusurl,
-                                        type: 'GET',
-                                        dataType: 'json',
-                                        success: function (response) {
-                                            td_basic.innerText = response.data.basic == 2 ? 'Completed' : 'Incomplete';
-                                            td_researchinfo.innerText = response.data.researchinfo == 2 ? 'Completed' : 'Incomplete';
-                                            td_collaborators.innerText = response.data.collaborators == 2 ? 'Completed' : 'Incomplete';
-                                            td_publications.innerText = response.data.publications == 2 ? 'Completed' : 'Incomplete';
-                                            td_financials.innerText = response.data.expenditure == 2 ? 'Completed' : 'Incomplete';
-                                            td_design.innerText = response.data.design == 2 ? 'Completed' : 'Incomplete';
-                                            td_workplan.innerText = response.data.workplan == 2 ? 'Completed' : 'Incomplete';
-
-
-                                            // Select the table by ID
-                                            const table = document.getElementById('progresstable');
-                                            const allCells = table.querySelectorAll('table td');
-                                            const matchingCells = [];
-
-                                            // Loop through all table cells and check their innerText
-                                            allCells.forEach(cell => {
-                                                if (cell.innerText.trim() === "Incomplete") {
-                                                    cell.classList.remove('text-dark', 'text-danger', 'font-weight-bold');
-                                                    cell.classList.add('text-danger', 'font-weight-bold');
-                                                }
-                                            });
-                                            if (response.cansubmitstatus) {
-                                                submit.disabled = false;
-                                            }
-                                            else {
-                                                submit.disabled = true;
-                                            }
-
-                                        },
-                                        error: function (xhr, status, error) {
-                                            console.error('Error fetching data:', error);
-                                        }
-                                    });
-                                }
-
-                                function showtoastmessage(response) {
-
-
-                                    var toastEl = document.getElementById('liveToast');
-                                    if (toastEl) {
-                                        var toastbody = document.getElementById('toastmessage_body');
-                                        var toastheader = document.getElementById('toastheader');
-                                        toastheader.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-info', 'bg-warning', 'bg-secondary');
-
-
-                                        if (response && response.type) {
-                                            if (response.type == "success") {
-                                                toastheader.classList.add('bg-success');
-                                            }
-                                            else if (response.type == "warning") {
-                                                toastheader.classList.add('bg-warning');
-                                            }
-                                            else {
-                                                toastheader.classList.add('bg-danger');
-                                            }
-                                        }
-                                        else {
-                                            toastheader.classList.add('bg-danger');
-                                        }
-                                        toastbody.innerText = response && response.message ? response.message : "No Message";
-                                        var toast = new bootstrap.Toast(toastEl, {
-                                            autohide: true,
-                                            delay: 2000
-                                        });
-                                        toast.show();
-                                    }
-                                }
-
-                                function submitproposal() {
-                                    var csrfToken = document.getElementsByName('_token')[0].value;
-                                    $.ajax({
-                                        url: submiturl,
-                                        type: 'POST',
-                                        data: { _token: csrfToken },
-                                        dataType: 'json',
-                                        success: function (response) {
-                                            showtoastmessage(response);
-                                        },
-                                        error: function (xhr, status, error) {
-                                            console.error('Error fetching data:', error);
-                                        }
-                                    });
-                                }
-                            });
-
-
-                        </script>
-                    </div>
 
                     <!-- Office Use -->
                     <div role="tabpanel" class="tab-pane" id="panel-officeuse">
@@ -1085,12 +783,14 @@
                                 </div>
                             @endif
 
+
                             @if(Auth::user()->canenableediting($prop->proposalid))
                                 <div class="col text-center">
                                     <button id="btn_enableproposalediting" type="button" class="btn btn-info ">Enable
                                         Editing</button>
                                 </div>
                             @endif
+
 
                             @if(Auth::user()->candisableediting($prop->proposalid))
                                 <div class="col text-center">
@@ -1099,12 +799,14 @@
                                 </div>
                             @endif
 
+
                             @if(Auth::user()->canproposechanges($prop->proposalid))
                                 <div class="col text-center">
                                     <button id="btn_open_proposalchangeform" type="button" class="btn btn-info "
                                         data-bs-toggle="modal" data-bs-target="#proposalchangeModal">Propose Changes</button>
                                 </div>
                             @endif
+
 
                             @if(Auth::user()->canrejectproposal($prop->proposalid))
                                 <div class="col text-center">
@@ -1114,6 +816,7 @@
                                 </div>
                             @endif
 
+
                             @if(Auth::user()->canapproveproposal($prop->proposalid))
                                 <div class="col text-center">
                                     <button id="btn_openapprove_proposalmodal" type="button" class="btn btn-success "
@@ -1121,6 +824,7 @@
                                         data-action="approve">Approve</button>
                                 </div>
                             @endif
+
 
 
                         </div>
@@ -1432,5 +1136,4 @@
             </div>
         </div>
     @endif 
-@endauth
 @endsection

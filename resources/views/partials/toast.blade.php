@@ -1,5 +1,5 @@
 <div class="position-fixed bottom-0 end-0 p-1 mr-5 " style="z-index:1051">
-  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+  <div id="liveToast" class="toast custom-toast" role="alert" aria-live="assertive" aria-atomic="true">
 
     <div id="toastheader" class="toast-header text-white ">
       <strong id="toastmessage_body" class="me-auto py-2 text-center">
@@ -36,6 +36,7 @@
         }
         toastbody.innerText = response && response.message ? response.message : "No Message";
         var toast = new bootstrap.Toast(toastEl, {
+          animation:true,
           autohide: true,
           delay: 2000
         });

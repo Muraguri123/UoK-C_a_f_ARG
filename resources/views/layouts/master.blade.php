@@ -53,15 +53,15 @@
         }
       }
 
-      sidebarToggle.addEventListener('click', () => { 
+      sidebarToggle.addEventListener('click', () => {
         toggleSidebar();
       });
 
-      closeSidebar.addEventListener('click', () => { 
+      closeSidebar.addEventListener('click', () => {
         toggleSidebar();
       });
 
-      overlay.addEventListener('click', () => { 
+      overlay.addEventListener('click', () => {
         toggleSidebar();
       });
     });

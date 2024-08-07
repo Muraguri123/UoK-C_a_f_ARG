@@ -48,6 +48,9 @@ return new class extends Migration
             $table->text('socio_impact')->nullable();
             $table->text('res_findings')->nullable();            
             $table->text('comment')->nullable();
+            $table->uuid('approvedrejectedbywhofk')->nullable();            
+            $table->foreign('approvedrejectedbywhofk')->references('userid')->on('users')->onDelete('restrict');
+
             //others
             $table->timestamps();
         });

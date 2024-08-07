@@ -22,6 +22,8 @@ use App\Http\Controllers\{
     DepartmentsController,
     Auth\CustomPasswordResetController,
     Auth\CustomVerificationController,
+    FinancesController,
+    ProjectsController,
     TestController
 };
 
@@ -139,6 +141,9 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::post('/users/updaterole/{id}', [UsersController::class, 'updaterole'])->name('api.users.updaterole');
     Route::post('/users/resetpassword/{id}', [RegisterController::class, 'resetuserpassword'])->name('api.users.resetpassword');
 
+    //finances
+    Route::get('/finances', [FinancesController::class, 'home'])->name('pages.finances.home');
+
     //collaborators
     Route::post('/collaborators/post', [CollaboratorsController::class, 'postcollaborator'])->name('api.collaborators.post');
     Route::get('/collaborators/fetchsearch', [CollaboratorsController::class, 'fetchsearch'])->name('api.collaborators.fetchsearch');
@@ -171,6 +176,10 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/researchdesign/fetchall', [ResearchdesignController::class, 'fetchall'])->name('api.researchdesign.fetchall');
     Route::get('/researchdesign/edit/{id}', [ResearchdesignController::class, 'geteditsingleexpenditurepage'])->name('pages.researchdesign.editexpenditures');
 
+
+    //projects
+    Route::get('/projects/myprojects', [ProjectsController::class, 'myprojects'])->name('pages.projects.myprojects');
+    Route::get('/projects/allprojects', [ProjectsController::class, 'allprojects'])->name('pages.projects.allprojects');
 
     //profile
     Route::get('/myprofile', [MyProfileController::class, 'myprofile'])->name('pages.myprofile');
