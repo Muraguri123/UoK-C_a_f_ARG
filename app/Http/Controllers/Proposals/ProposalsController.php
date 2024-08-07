@@ -355,19 +355,20 @@ class ProposalsController extends Controller
     }
     public function getsingleproposalpage($id)
     {
-        if (!auth()->user()->haspermission('canreadproposaldetails')) {
+        $user = Auth::user();        
+        // Find the proposal by ID or fail with a 404 error
+        $prop = Proposal::findOrFail($id);
+
+        if (!$user->haspermission('canreadproposaldetails') && $user->userid!=$prop->useridfk) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to read the requested Proposal!");
         }
-        // Find the proposal by ID or fail with a 404 error
-        $user = Auth::user();
-        $prop = Proposal::findOrFail($id);
         $isreadonlypage = true;
         $isadminmode = true;
         $grants = Grant::all();
         $departments = Department::all();
         $themes = ResearchTheme::all();
 
-        return view('pages.proposals.proposalform', compact('prop', 'isreadonlypage', 'isadminmode', 'departments', 'grants', 'themes'));
+        return view('pages.proposals.readproposalform', compact('prop', 'isreadonlypage', 'isadminmode', 'departments', 'grants', 'themes'));
     }
     public function geteditsingleproposalpage(Request $req, $id)
     {

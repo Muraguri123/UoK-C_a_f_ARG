@@ -97,8 +97,8 @@ class Proposal extends Model
     public function isEditable()
     {
         try {
-            $user = Auth::user();
-            if (($user->userid == $this->useridfk)  && $this->approvalstatus == 'Pending' && $this->caneditstatus ) {
+            
+            if ($this->approvalstatus == 'Pending' && $this->caneditstatus ) {
                 return true;
             } else {
                 return false;

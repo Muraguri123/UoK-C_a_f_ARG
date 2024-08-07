@@ -3,7 +3,7 @@
 @section('content')
 <div class="row bg-light" style="padding-right:0px">
    @auth
-      @if (Auth::check() && Auth::user()->role == 1)
+      @if (Auth::check() && Auth::user()->haspermission('canviewadmindashboard'))
 
         <div class="row text-center " style="padding-top:8px">
          <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -51,51 +51,73 @@
            <br />
            <h5><b>Applications Count by Themes</b></h5>
          </div>
-         <div id="barchart_material" class="col-xs-12 " style="width: 99%;height: 300px;margin:8px">
-         </div>
-         <script type="text/javascript">
-           google.charts.load('current', { 'packages': ['bar'] });
-           google.charts.setOnLoadCallback(drawChart); 
-           function drawChart() {
-            var data = google.visualization.arrayToDataTable({{ Js::from($themeCounts) }});
-            var chart = new google.charts.Bar(document.getElementById('barchart_material'));
-            var options = {
-               legend: { position: 'none', maxLines: 3 },
-               chartArea: { width: '100%' },
-               isStacked: false,
-               colors: ['#9fc5e8', '#6aa84f'],
-               bar: { groupWidth: '75%' },
-               bars: 'horizontal',
-               hAxis: { title: 'Proposal Counts' },
-               vAxis: { title: 'Research Themes', minValue: 0 },
-               animation: { startup: true, duration: 1000, easing: 'out' }
-            };
-
-            chart.draw(data, google.charts.Bar.convertOptions(options));
-            window.addEventListener('resize', () => {
-               chart.draw(data, google.charts.Bar.convertOptions(options));
-            });
-           }
-         </script>
-        </div>
-     @elseif (Auth::check() && Auth::user()->role == 2)
-        <div>
-         <div class="row bg-white">
-           <div class="col-12 ">
-            <div>
-               <h5 class="text-dark text-center">Welcome, {{Auth::user()->name}}</h5>
-
-            </div>
-            <div>
-               
-            </div>
+         <div class="chartcard">
+           <!-- <p class="text-center mt-2"><u><b>Theme Analysis Chart (Gender and Proposal Status)</b></u></p> -->
+           <div class="col-xs-12 " style="width: 99%;height: 300px;margin:8px">
+            <canvas id="dashboardchart" style="width: 100%; height: 100%;"></canvas>
            </div>
          </div>
+
         </div>
-     @else
-        <div class=" text-center"><b>Unknown Role kindly consult admin</b></div>
-     @endif
+      @endif
 
    @endauth
 </div>
+<script>
+   $(document).ready(function () {
+
+      // Function to search data using AJAX
+      function fetchData(themefilter, departmentfilter) {
+
+         $.ajax({
+            url: "{{ route('api.dashboard.chartdata') }}",
+            type: 'GET',
+            dataType: 'json',
+            success: function (response) {
+               populatedashboardChart(response);
+            },
+            error: function (xhr, status, error) {
+               console.error('Error searching data:', error);
+            }
+         });
+      }
+
+      // Function to populate the chart
+      function populatedashboardChart(data) {
+         const canvas = document.getElementById('dashboardchart');
+         const ctx = canvas.getContext('2d');
+
+         // Destroy existing chart instance if it exists
+         if (Chart.getChart(canvas)) {
+            Chart.getChart(canvas).destroy();
+         }
+
+         new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: {
+               responsive: true,
+               maintainAspectRatio: false,
+               scales: {
+                  y: {
+                     beginAtZero: true
+                  }
+               },
+               plugins: {
+                  decimation: {
+                     enabled: false,
+                     algorithm: 'min-max',
+                  },
+               },
+            }
+         });
+      }
+
+      // Initial fetch when the page loads
+      fetchData(null, null);
+
+   });
+
+
+</script>
 @endsection

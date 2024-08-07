@@ -321,8 +321,8 @@ $.ajax({
                                             @foreach ($permissions->where('targetrole', 1)->toQuery()->orderBy('permissionlevel')->orderBy('priorityno')->get() as $perm)
                                                 <tr> 
                                                     <td>
-                                                        <input id="{{$perm->pid}}" class="form-check-input" value="{{$perm->pid}}"
-                                                            type="checkbox" {{ isset($user) && $user->haspermission($perm->shortname) ? 'checked' : '' }}>
+                                                        <input id=" {{$perm->pid}} " class="form-check-input" value=" {{$perm->pid}} " type="checkbox" 
+                                                        {{ isset($user) && $user->haspermission($perm->shortname) ? 'checked' : '' }}>
                                                     </td>
                                                     <td>
                                                         <label for="{{$perm->pid}}"

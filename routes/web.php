@@ -81,6 +81,7 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     //dashboard & home
     Route::get('/home', [DashboardController::class, 'home'])->name('pages.home');
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('pages.dashboard');
+    Route::get('/dashboard/chart', [DashboardController::class, 'chartdata'])->name('api.dashboard.chartdata');
 
     //proposals
     Route::get('/proposals/newproposal', [ProposalsController::class, 'getnewproposalpage'])->name('pages.proposals.viewnewproposal');
@@ -179,4 +180,8 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
 
     //reports
     Route::get('/reports/home', [ReportsController::class, 'home'])->name('pages.reports.home');
+    Route::get('/api/reports/proposals/all', [ReportsController::class, 'getallproposals'])->name('api.reports.proposals.all');
+    Route::get('/api/reports/proposals/byschool', [ReportsController::class, 'getproposalsbyschool'])->name('api.reports.proposals.byschool');
+    Route::get('/api/reports/proposals/bytheme', [ReportsController::class, 'getproposalsbytheme'])->name('api.reports.proposals.bytheme');
+    Route::get('/api/reports/proposals/bygrant', [ReportsController::class, 'getproposalsbygrant'])->name('api.reports.proposals.bygrant');
 });

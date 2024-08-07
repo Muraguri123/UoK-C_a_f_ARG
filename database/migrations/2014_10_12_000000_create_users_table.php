@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('pfno')->unique(); 
             $table->string('phonenumber')->unique();
+            $table->string('gender');
             $table->integer('role');
             $table->boolean('isadmin');
             $table->boolean('isactive');

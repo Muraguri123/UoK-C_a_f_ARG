@@ -7,24 +7,44 @@
         <!-- Nav tabs -->
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                <button class="nav-link active" id="nav-personal-tab" data-bs-toggle="tab"
-                    data-bs-target="#panel-basicdetails" type="button" role="tab" aria-controls="panel-basicdetails"
+                <button class="nav-link active" id="nav-allproposals-tab" data-bs-toggle="tab"
+                    data-bs-target="#panel-allproposals" type="button" role="tab" aria-controls="panel-allproposals"
                     aria-selected="true">Proposals</button>
-                <button class="nav-link" id="nav-research-tab" data-bs-toggle="tab" data-bs-target="#panel-research"
-                    type="button" role="tab" aria-controls="panel-profile" aria-selected="false">School Analysis</button>
-                <button class="nav-link" id="nav-collaboration-tab" data-bs-toggle="tab"
-                    data-bs-target="#panel-collaboration" type="button" role="tab" aria-controls="panel-collaboration"
-                    aria-selected="false">Theme Analysis</button>
-                <button class="nav-link" id="nav-finance-tab" data-bs-toggle="tab" data-bs-target="#panel-finance"
-                    type="button" role="tab" aria-controls="panel-finance" aria-selected="false">Year & Gender</button>
-                <button class="nav-link" id="nav-researchdesign-tab" data-bs-toggle="tab"
-                    data-bs-target="#panel-researchdesign" type="button" role="tab" aria-controls="panel-researchdesign"
-                    aria-selected="false">Archives</button>
-                <button class="nav-link" id="nav-workplan-tab" data-bs-toggle="tab" data-bs-target="#panel-workplan"
-                    type="button" role="tab" aria-controls="panel-workplan" aria-selected="false">Workplan</button>
-
+                <button class="nav-link" id="nav-byschool-tab" data-bs-toggle="tab" data-bs-target="#panel-byschool"
+                    type="button" role="tab" aria-controls="panel-byschool" aria-selected="false">Department
+                    Analysis</button>
+                <button class="nav-link" id="nav-bytheme-tab" data-bs-toggle="tab" data-bs-target="#panel-bytheme"
+                    type="button" role="tab" aria-controls="panel-bytheme" aria-selected="false">Theme Analysis</button>
+                <button class="nav-link" id="nav-bygrantyear-tab" data-bs-toggle="tab"
+                    data-bs-target="#panel-bygrantyear" type="button" role="tab" aria-controls="panel-bygrantyear"
+                    aria-selected="false">Grant/Year Analysis</button>
             </div>
         </nav>
+
+        <!-- Tab panes -->
+        <div class="tab-content prop-tabpanel">
+            <!-- All proposals -->
+            <div role="tabpanel" class="tab-pane active" id="panel-allproposals">
+                @include('pages.reports.allproposals')
+            </div>
+
+
+            <!-- byschool tab -->
+            <div role="tabpanel" class="tab-pane" id="panel-byschool">
+                @include('pages.reports.proposalsbyschool')
+            </div>
+            <!-- bytheme tab -->
+            <div role="tabpanel" class="tab-pane" id="panel-bytheme">
+            @include('pages.reports.proposalsbytheme')
+            </div>
+
+
+            <!-- bygrantyear tab -->
+            <div role="tabpanel" class="tab-pane" id="panel-bygrantyear">
+            @include('pages.reports.proposalsbygrantandyear')
+            </div> 
+        </div>
     </div>
+</div>
 </div>
 @endsection

@@ -69,6 +69,19 @@ html {
 .mainfooter-text{
   font-size: small;
 }
+.chartcard {
+  border-color: #cdc8c8;
+  border-radius: 8px;
+  border-width: 1px;
+  border-style: solid;
+  background-color: #F8F9F9;
+  margin-top: 1rem;
+}
+
+.filterback {
+  margin-top: 1rem;
+  background-color: #F8F9F9;
+}
 @media (max-width: 767.98px) {
   .sidebar {
     width: 50%;

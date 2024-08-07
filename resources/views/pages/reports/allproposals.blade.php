@@ -1,6 +1,3 @@
-@extends('layouts.master')
-
-@section('content')
 <div class="row">
     <style>
         #searchInput::placeholder {
@@ -21,18 +18,17 @@
                 style="margin:4px">
                 <thead class="bg-secondary text-white">
                     <tr>
-                        <th scope="col">S/No</th>
+                        <th scope="col">#NO</th>
+                        <th scope="col">Applicant</th>
                         <th scope="col">Grant No</th>
                         <th scope="col">Theme</th>
                         <th scope="col">Qualification</th>
                         <th scope="col">Department</th>
                         <th scope="col">Submitted?</th>
                         <th scope="col">Date</th>
-                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-
                 </tbody>
             </table>
         </div>
@@ -42,32 +38,20 @@
     $(document).ready(function () {
 
         var routeUrlTemplate = "{{ route('pages.proposals.viewproposal', ['id' => '__ID__']) }}";
-        var routeeditUrlTemplate = "{{ route('pages.proposals.editproposal', ['id' => '__ID__']) }}";
-
-        // Function to fetch data using AJAX
-        function fetchData() {
-            $.ajax({
-                url: "{{ route('api.proposals.fetchmyapplications') }}",
-                type: 'GET',
-                dataType: 'json',
-                success: function (response) {
-                    populateTable(response);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error fetching data:', error);
-                }
-            });
-        }
-
         // Function to search data using AJAX
         function searchData(searchTerm) {
+            let query={};
+            if (searchTerm != '') {
+                query = {
+                    search: searchTerm
+                }
+            }
+
             $.ajax({
-                url: "{{ route('api.proposals.fetchsearchproposals') }}",
+                url: "{{ route('api.reports.proposals.all') }}",
                 type: 'GET',
                 dataType: 'json',
-                data: {
-                    search: searchTerm
-                },
+                data: query,
                 success: function (response) {
 
                     populateTable(response);
@@ -79,34 +63,33 @@
         }
 
         // Function to populate table with data
-        function populateTable(data) { 
+        function populateTable(data) {
             var tbody = $('#proposalstable tbody');
             tbody.empty(); // Clear existing table rows
             if (data.length > 0) {
                 $.each(data, function (index, data) {
                     var proposalUrl = routeUrlTemplate.replace('__ID__', data.proposalid);
-                    var editurl = routeeditUrlTemplate.replace('__ID__', data.proposalid);
                     var row = '<tr>' +
-                        '<td><a class="nav-link" href="' + proposalUrl + '">' + data.proposalcode + '</a></td>' +
-                        '<td>' + (data.grantitem ? data.grantitem?.grantid + ' - (' + data.grantitem?.finyear + ')' : '') + '</td>' +
+                        '<td><a class="nav-link pt-0 pb-0" href="' + proposalUrl + '">' + data.proposalcode + '</a></td>' +
+                        '<td>' + data.applicant.name + '</td>' +
+                        '<td>' + (data.grantitem ? data.grantitem.grantid + ' - (' + data.grantitem.finyear + ')' : '') + '</td>' +
                         '<td>' + (data.themeitem ? data.themeitem.themename : '') + '</td>' +
                         '<td>' + data.highqualification + '</td>' +
                         '<td>' + (data.department ? data.department.shortname : '') + '</td>' +
                         '<td>' + (data.submittedstatus == 1 ? "Yes" : "No") + '</td>' +
                         '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
-                        '<td><a class="nav-link" href="' + (data.iseditable ? editurl : proposalUrl) + '"><i class="bi bi-pencil"></i>Edit</a></td>' +
                         '</tr>';
                     tbody.append(row);
                 });
             }
             else {
-                var row = '<tr><td colspan="8">No data found</td></tr>';
+                var row = '<tr><td colspan="8" class="text-center text-dark"><b>No Applications found</b></td></tr>';
                 tbody.append(row);
             }
         }
 
         // Initial fetch when the page loads
-        fetchData();
+        searchData('');
 
         // Search input keyup event
         $('#searchInput').on('keyup', function () {
@@ -119,4 +102,3 @@
         });
     });
 </script>
-@endsection

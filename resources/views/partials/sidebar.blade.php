@@ -16,10 +16,10 @@
         <i class="bi bi-arrow-right-short"></i>{{ $menuitem->menuname }}</a>
       </li>
     @endforeach 
-      <li class="nav-item ">
+      <!-- <li class="nav-item ">
         <a class="nav-link " href="{{route('pages.notifications')}}">
           <i class="bi bi-bell-fill"></i> Notifications </a>
-      </li>
+      </li> -->
       <li class="nav-item">
         <a class="nav-link" href="{{route("pages.myprofile")}}"> <i class="bi bi-person-circle"> </i>My
           Account</a>

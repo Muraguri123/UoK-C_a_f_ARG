@@ -5,11 +5,14 @@
 
 
 
+
+
+
     @if (isset($grants) && ($grants->count() > 0))
         <div>
             @if (isset($hasmessage) && $hasmessage)
                 <script>
-                    $(document).ready(function () { 
+                    $(document).ready(function () {
                         showtoastmessage({ 'message': "{{$hasmessage}}" });
                     });
                 </script>
@@ -61,12 +64,7 @@
                                 type="button" role="tab" aria-controls="panel-submit" aria-selected="false">Submit</button>
                         @endif
 
-                        @if (isset($prop) && Auth::user()->haspermission('canviewofficeuse') && $prop->submittedstatus)
-                            <button class="nav-link" id="nav-officeuse-tab" data-bs-toggle="tab" data-bs-target="#panel-officeuse"
-                                type="button" role="tab" aria-controls="panel-officeuse" aria-selected="false">Office Use</button>
-
-
-                        @endif
+                        
 
                     </div>
                 </nav>
@@ -128,7 +126,7 @@
                                             </option>
 
                                         @endforeach 
-                                                                        </select>
+                                                                                                </select>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -163,7 +161,7 @@
                                             </option>
 
                                         @endforeach 
-                                                                        </select>
+                                                                                                </select>
                                 </div>
                             </div>
 
@@ -174,8 +172,7 @@
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="highestqualification" name="highestqualification"
                                         placeholder="Highest Qualification" class="form-control"
-                                        value="{{ isset($prop) ? $prop->highqualification : '' }}" @if($isreadonlypage) readonly
-                                        @endif>
+                                        value="{{ isset($prop) ? $prop->highqualification : '' }}" >
                                 </div>
                             </div>
 
@@ -186,7 +183,7 @@
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="officephone" name="officephone" placeholder="Office Telephone"
                                         class="form-control" value="{{ isset($prop) ? $prop->officephone : '' }}"
-                                        @if($isreadonlypage) readonly @endif>
+                                        >
                                 </div>
                             </div>
 
@@ -197,7 +194,7 @@
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="cellphone" name="cellphone" placeholder="Cellphone"
                                         class="form-control" value="{{ isset($prop) ? $prop->cellphone : '' }}"
-                                        @if($isreadonlypage) readonly @endif>
+                                        >
                                 </div>
                             </div>
 
@@ -208,7 +205,7 @@
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="faxnumber" name="faxnumber" placeholder="Fax Number"
                                         class="form-control" value="{{ isset($prop) ? $prop->faxnumber : '' }}"
-                                        @if($isreadonlypage) readonly @endif>
+                                        >
                                 </div>
                             </div>
 
@@ -244,7 +241,7 @@
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="researchtitle" name="researchtitle" placeholder="Research Title"
                                         class="form-control" value="{{ isset($prop) ? $prop->researchtitle : '' }}"
-                                        @if($isreadonlypage) disabled readonly @endif>
+                                        >
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -281,8 +278,7 @@
                                     <label class="form-control-label">Objectives</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="objectives" placeholder="Objectives" class="form-control" @if ($isreadonlypage) disabled readonly
-                                    @endif>{{ isset($prop) ? $prop->objectives : '' }}</textarea>
+                                    <textarea name="objectives" placeholder="Objectives" class="form-control" >{{ isset($prop) ? $prop->objectives : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -291,8 +287,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="hypothesis" placeholder="Question or Hypothesis" class="form-control"
-                                        @if($isreadonlypage) disabled readonly
-                                        @endif>{{ isset($prop) ? $prop->hypothesis : '' }}</textarea>
+                                        >{{ isset($prop) ? $prop->hypothesis : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -301,8 +296,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="significance" placeholder="Significance or Justification"
-                                        class="form-control" @if($isreadonlypage) disabled readonly
-                                        @endif>{{ isset($prop) ? $prop->significance : '' }}</textarea>
+                                        class="form-control" >{{ isset($prop) ? $prop->significance : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -311,8 +305,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="ethicals" placeholder="Ethical Considerations" class="form-control"
-                                        @if($isreadonlypage) disabled readonly
-                                        @endif>{{ isset($prop) ? $prop->ethicals : '' }}</textarea>
+                                        >{{ isset($prop) ? $prop->ethicals : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -320,8 +313,7 @@
                                     <label class="form-control-label">Expected Outputs</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="outputs" placeholder="Expected Outputs" class="form-control" @if ($isreadonlypage) disabled readonly
-                                    @endif>{{ isset($prop) ? $prop->expoutput : '' }}</textarea>
+                                    <textarea name="outputs" placeholder="Expected Outputs" class="form-control" >{{ isset($prop) ? $prop->expoutput : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -329,8 +321,7 @@
                                     <label class="form-control-label">Socio-Economic Impact</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="economicimpact" placeholder="Socio-Economic Impact" class="form-control" @if ($isreadonlypage) disabled readonly
-                                    @endif>{{ isset($prop) ? $prop->socio_impact : '' }}</textarea>
+                                    <textarea name="economicimpact" placeholder="Socio-Economic Impact" class="form-control" >{{ isset($prop) ? $prop->socio_impact : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -339,8 +330,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="res_findings" placeholder="Dissemination of Research Findings"
-                                        class="form-control" @if($isreadonlypage) disabled readonly
-                                        @endif>{{ isset($prop) ? $prop->res_findings : '' }}</textarea>
+                                        class="form-control">{{ isset($prop) ? $prop->res_findings : '' }}</textarea>
                                 </div>
                             </div>
                         </form>
@@ -466,7 +456,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="collaboratorname" placeholder="Collaborator Name"
-                                                        class="form-control" @if($isreadonlypage) readonly @endif>
+                                                        class="form-control" >
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -475,7 +465,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="position" placeholder="Position"
-                                                        class="form-control" @if($isreadonlypage) readonly @endif>
+                                                        class="form-control" >
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -484,7 +474,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="institution" placeholder="Institution"
-                                                        class="form-control" @if($isreadonlypage) readonly @endif>
+                                                        class="form-control" >
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -493,7 +483,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="researcharea" placeholder="Research Area"
-                                                        class="form-control" @if($isreadonlypage) readonly @endif>
+                                                        class="form-control" >
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -502,7 +492,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="experience" placeholder="Research Experience"
-                                                        class="form-control" @if($isreadonlypage) readonly @endif>
+                                                        class="form-control" >
                                                 </div>
                                             </div>
                                         </form>
@@ -534,7 +524,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="authors" placeholder="Authors" class="form-control"
-                                                        @if($isreadonlypage) readonly @endif>
+                                                        >
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -543,7 +533,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="year" placeholder="Year" class="form-control"
-                                                        @if($isreadonlypage) readonly @endif>
+                                                        >
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -552,7 +542,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="pubtitle" placeholder="Title" class="form-control"
-                                                        @if($isreadonlypage) readonly @endif>
+                                                        >
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -561,7 +551,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="researcharea" placeholder="Research Area"
-                                                        class="form-control" @if($isreadonlypage) readonly @endif>
+                                                        class="form-control" >
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -570,7 +560,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="publisher" placeholder="Publisher"
-                                                        class="form-control" @if($isreadonlypage) readonly @endif>
+                                                        class="form-control" >
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -579,7 +569,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="volume" placeholder="Volume" class="form-control"
-                                                        @if($isreadonlypage) readonly @endif>
+                                                        >
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -588,7 +578,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="pubpages" placeholder="Pages" class="form-control"
-                                                        @if($isreadonlypage) readonly @endif>
+                                                        >
                                                 </div>
                                             </div>
                                         </form>
@@ -624,7 +614,7 @@
                                         type: 'POST',
                                         data: formData,
                                         dataType: 'json',
-                                        success: function (response) { 
+                                        success: function (response) {
                                             showtoastmessage(response);
                                             // Close the modal
                                             var button = document.getElementById('closecollaboratormodal_button');
@@ -969,7 +959,7 @@
                                             type: 'POST',
                                             data: formData,
                                             dataType: 'json',
-                                            success: function (response) { 
+                                            success: function (response) {
                                                 if (closebtn) { closebtn.click(); }
                                                 showtoastmessage(response);
 
@@ -1045,7 +1035,7 @@
                                             let consumables = 0;
                                             let facilities = 0;
                                             let others = 0;
-                                            let total = 0; 
+                                            let total = 0;
                                             $.each(data, function (index, data) {
                                                 total += parseFloat(data.total);
                                                 if (data.itemtype == "Facilities") {
@@ -1584,7 +1574,7 @@
                                         url: statusurl,
                                         type: 'GET',
                                         dataType: 'json',
-                                        success: function (response) { 
+                                        success: function (response) {
                                             td_basic.innerText = response.data.basic == 2 ? 'Completed' : 'Incomplete';
                                             td_researchinfo.innerText = response.data.researchinfo == 2 ? 'Completed' : 'Incomplete';
                                             td_collaborators.innerText = response.data.collaborators == 2 ? 'Completed' : 'Incomplete';
@@ -1660,7 +1650,7 @@
                                         type: 'POST',
                                         data: { _token: csrfToken },
                                         dataType: 'json',
-                                        success: function (response) { 
+                                        success: function (response) {
                                             showtoastmessage(response);
                                         },
                                         error: function (xhr, status, error) {
@@ -1705,14 +1695,15 @@
                                 @if(Auth::user()->canrejectproposal($prop->proposalid))
                                     <div class="col text-center">
                                         <button id="btn_openreject_proposalmodal" type="button" class="btn btn-danger "
-                                            data-bs-toggle="modal" data-bs-target="#approveproposalModal">Reject
+                                            data-bs-toggle="modal" data-bs-target="#approveproposalModal" data-action="reject">Reject
                                             Application</button>
                                     </div>
                                 @endif
                                 @if(Auth::user()->canapproveproposal($prop->proposalid))
                                     <div class="col text-center">
                                         <button id="btn_openapprove_proposalmodal" type="button" class="btn btn-success "
-                                            data-bs-toggle="modal" data-bs-target="#approveproposalModal">Approve</button>
+                                            data-bs-toggle="modal" data-bs-target="#approveproposalModal"
+                                            data-action="approve">Approve</button>
                                     </div>
                                 @endif
 
@@ -1811,7 +1802,22 @@
                                         </div>
                                     </div>
                                 </div>
+                                <script>
+                                     // Script to handle the data attributes and pass them to the modal
+                                     $('#approveproposalModal').on('show.bs.modal', function (event) {                                        var button = $(event.relatedTarget); // Button that triggered the modal
+                                        var action = button.data('action'); // Extract info from data-* attributes 
+                                        console.log(action);
+                                        if (action == 'approve') {
+                                            $('button_approve_proposal')?.setAttribute('visibility', 'visible')
+                                            $('button_reject_proposal')?.setAttribute('visibility', 'hidden')
+                                        }
+                                    });
+                                   
+                                </script>
                             </div>
+
+
+
                             <script>
                                 $(document).ready(function () {
 
