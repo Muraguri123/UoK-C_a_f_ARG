@@ -33,8 +33,6 @@ class ProposalsController extends Controller
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Make a new Proposal!");
         }
         $isnewprop = true;
-        $isreadonlypage = false;
-        $isadminmode = false;
         $departments = Department::all();
         $themes = ResearchTheme::all();
         $user = auth()->user();
@@ -43,7 +41,7 @@ class ProposalsController extends Controller
                 $query->where('useridfk', $user->userid);
             })
             ->get();
-        return view('pages.proposals.proposalform', compact('isnewprop', 'isadminmode', 'isreadonlypage', 'departments', 'grants', 'themes'));
+        return view('pages.proposals.proposalform', compact('isnewprop', 'departments', 'grants', 'themes'));
     }
 
     public function postnewproposal(Request $request)
@@ -361,14 +359,12 @@ class ProposalsController extends Controller
 
         if (!$user->haspermission('canreadproposaldetails') && $user->userid!=$prop->useridfk) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to read the requested Proposal!");
-        }
-        $isreadonlypage = true;
-        $isadminmode = true;
+        } 
         $grants = Grant::all();
         $departments = Department::all();
         $themes = ResearchTheme::all();
 
-        return view('pages.proposals.readproposalform', compact('prop', 'isreadonlypage', 'isadminmode', 'departments', 'grants', 'themes'));
+        return view('pages.proposals.readproposalform', compact('prop', 'departments', 'grants', 'themes'));
     }
     public function geteditsingleproposalpage(Request $req, $id)
     {
@@ -379,14 +375,12 @@ class ProposalsController extends Controller
         if (!$prop->isEditable()) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "The Proposal is not Editable!");
         }
-        $isreadonlypage = false;
-        // $isadminmode = true;
         $grants = Grant::all();
         $departments = Department::all();
         $themes = ResearchTheme::all();
         $hasmessage = ($req->input('has_message', 0) == 1) ? true : false;
         // Return the view with the proposal data
-        return view('pages.proposals.proposalform', compact('prop', 'isreadonlypage', 'departments', 'grants', 'themes', 'hasmessage'));
+        return view('pages.proposals.proposalform', compact('prop', 'departments', 'grants', 'themes', 'hasmessage'));
 
     }
 

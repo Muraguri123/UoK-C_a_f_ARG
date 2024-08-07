@@ -4,11 +4,7 @@
 @auth 
 
 
-
-
-
-
-    @if (isset($grants) && ($grants->count() > 0))
+    @if (isset($grants))
         <div>
             @if (isset($hasmessage) && $hasmessage)
                 <script>
@@ -59,12 +55,12 @@
                         <button class="nav-link" id="nav-workplan-tab" data-bs-toggle="tab" data-bs-target="#panel-workplan"
                             type="button" role="tab" aria-controls="panel-workplan" aria-selected="false">Workplan</button>
 
-                        @if (isset($prop) && (isset($isreadonlypage) && !$isreadonlypage) && !$prop->submittedstatus)
+                        @if (isset($prop) && !$prop->submittedstatus)
                             <button class="nav-link" id="nav-submit-tab" data-bs-toggle="tab" data-bs-target="#panel-submit"
                                 type="button" role="tab" aria-controls="panel-submit" aria-selected="false">Submit</button>
                         @endif
 
-                        
+
 
                     </div>
                 </nav>
@@ -116,17 +112,14 @@
                                     <label class="form-control-label">Grant Number</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <select type="text" id="grantnofk" name="grantnofk" class="form-control"
-                                        @if($isreadonlypage) disabled @endif>
+                                    <select type="text" id="grantnofk" name="grantnofk" class="form-control">
                                         <option value="">Select a Grant Item</option>
                                         @foreach ($grants as $grant)
-
                                             <option value="{{ $grant->grantid }}" {{ (isset($prop) && $prop->grantnofk == $grant->grantid) ? 'selected' : '' }}>
                                                 {{ $grant->grantid . ' - (' . $grant->finyear . ')'}}
                                             </option>
-
                                         @endforeach 
-                                                                                                </select>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -134,8 +127,7 @@
                                     <label class="form-control-label">Research Theme</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <select type="text" id="themefk" name="themefk" class="form-control" @if ($isreadonlypage)
-                                    disabled @endif>
+                                    <select type="text" id="themefk" name="themefk" class="form-control">
                                         <option value="">Select a Theme</option>
                                         @foreach ($themes as $theme)
 
@@ -143,7 +135,8 @@
                                                 {{ $theme->themename}}
                                             </option>
 
-                                        @endforeach </select>
+                                        @endforeach 
+                                            </select>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -152,7 +145,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <select type="text" id="departmentfk" name="departmentfk" placeholder="Department"
-                                        class="form-control" @if($isreadonlypage) disabled @endif>
+                                        class="form-control">
                                         <option value="">Select a Department</option>
                                         @foreach ($departments as $department)
 
@@ -161,7 +154,7 @@
                                             </option>
 
                                         @endforeach 
-                                                                                                </select>
+                                                                                                        </select>
                                 </div>
                             </div>
 
@@ -172,7 +165,7 @@
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="highestqualification" name="highestqualification"
                                         placeholder="Highest Qualification" class="form-control"
-                                        value="{{ isset($prop) ? $prop->highqualification : '' }}" >
+                                        value="{{ isset($prop) ? $prop->highqualification : '' }}">
                                 </div>
                             </div>
 
@@ -182,8 +175,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="officephone" name="officephone" placeholder="Office Telephone"
-                                        class="form-control" value="{{ isset($prop) ? $prop->officephone : '' }}"
-                                        >
+                                        class="form-control" value="{{ isset($prop) ? $prop->officephone : '' }}">
                                 </div>
                             </div>
 
@@ -193,8 +185,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="cellphone" name="cellphone" placeholder="Cellphone"
-                                        class="form-control" value="{{ isset($prop) ? $prop->cellphone : '' }}"
-                                        >
+                                        class="form-control" value="{{ isset($prop) ? $prop->cellphone : '' }}">
                                 </div>
                             </div>
 
@@ -204,24 +195,18 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="faxnumber" name="faxnumber" placeholder="Fax Number"
-                                        class="form-control" value="{{ isset($prop) ? $prop->faxnumber : '' }}"
-                                        >
+                                        class="form-control" value="{{ isset($prop) ? $prop->faxnumber : '' }}">
                                 </div>
                             </div>
 
-                            @unless($isreadonlypage)
-                                @if(isset($isreadonlypage) && !$isreadonlypage)
-                                    <div class="row form-group">
-                                        <div class="col-lg-6 col-md-6 col-sm-12 offset-lg-4 offset-md-4">
-                                            <button id="submitbasic_button" type="submit" class="btn btn-primary"
-                                                style="width:200px; margin-top:8px;">
-                                                Save Basic Details
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endif
-
-                            @endunless
+                            <div class="row form-group">
+                                <div class="col-lg-6 col-md-6 col-sm-12 offset-lg-4 offset-md-4">
+                                    <button id="submitbasic_button" type="submit" class="btn btn-primary"
+                                        style="width:200px; margin-top:8px;">
+                                        Save Basic Details
+                                    </button>
+                                </div>
+                            </div>
                         </form>
 
 
@@ -240,8 +225,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="researchtitle" name="researchtitle" placeholder="Research Title"
-                                        class="form-control" value="{{ isset($prop) ? $prop->researchtitle : '' }}"
-                                        >
+                                        class="form-control" value="{{ isset($prop) ? $prop->researchtitle : '' }}">
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -278,7 +262,8 @@
                                     <label class="form-control-label">Objectives</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="objectives" placeholder="Objectives" class="form-control" >{{ isset($prop) ? $prop->objectives : '' }}</textarea>
+                                    <textarea name="objectives" placeholder="Objectives"
+                                        class="form-control">{{ isset($prop) ? $prop->objectives : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -286,8 +271,8 @@
                                     <label class="form-control-label">Question/Hypothesis</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="hypothesis" placeholder="Question or Hypothesis" class="form-control"
-                                        >{{ isset($prop) ? $prop->hypothesis : '' }}</textarea>
+                                    <textarea name="hypothesis" placeholder="Question or Hypothesis"
+                                        class="form-control">{{ isset($prop) ? $prop->hypothesis : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -296,7 +281,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="significance" placeholder="Significance or Justification"
-                                        class="form-control" >{{ isset($prop) ? $prop->significance : '' }}</textarea>
+                                        class="form-control">{{ isset($prop) ? $prop->significance : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -304,8 +289,8 @@
                                     <label class="form-control-label">Ethical Considerations</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="ethicals" placeholder="Ethical Considerations" class="form-control"
-                                        >{{ isset($prop) ? $prop->ethicals : '' }}</textarea>
+                                    <textarea name="ethicals" placeholder="Ethical Considerations"
+                                        class="form-control">{{ isset($prop) ? $prop->ethicals : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -313,7 +298,8 @@
                                     <label class="form-control-label">Expected Outputs</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="outputs" placeholder="Expected Outputs" class="form-control" >{{ isset($prop) ? $prop->expoutput : '' }}</textarea>
+                                    <textarea name="outputs" placeholder="Expected Outputs"
+                                        class="form-control">{{ isset($prop) ? $prop->expoutput : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -321,7 +307,8 @@
                                     <label class="form-control-label">Socio-Economic Impact</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="economicimpact" placeholder="Socio-Economic Impact" class="form-control" >{{ isset($prop) ? $prop->socio_impact : '' }}</textarea>
+                                    <textarea name="economicimpact" placeholder="Socio-Economic Impact"
+                                        class="form-control">{{ isset($prop) ? $prop->socio_impact : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -334,16 +321,14 @@
                                 </div>
                             </div>
                         </form>
-                        @if (!isset($prop) || (isset($isreadonlypage) && !$isreadonlypage))
-                            <div class="row form-group">
-                                <div class="col-lg-6 col-md-6 col-sm-12 offset-lg-4 offset-md-4">
-                                    <button id="saveresearchinfobutton" form="form_researchinfo" type="submit"
-                                        class="btn btn-primary" style="width:200px; margin-top:8px;">
-                                        Save Research Details
-                                    </button>
-                                </div>
+                        <div class="row form-group">
+                            <div class="col-lg-6 col-md-6 col-sm-12 offset-lg-4 offset-md-4">
+                                <button id="saveresearchinfobutton" form="form_researchinfo" type="submit"
+                                    class="btn btn-primary" style="width:200px; margin-top:8px;">
+                                    Save Research Details
+                                </button>
                             </div>
-                        @endif
+                        </div>
 
                     </div>
 
@@ -361,29 +346,25 @@
 
 
                         <!-- Buttons to add collaborator and publication -->
-                        @unless ($isreadonlypage)
-                            <form class="form form-group">
-                                @csrf
-                                <div class="row form-group">
-                                    <!-- Button trigger modal -->
-                                    <div class="col-lg-2 col-md-3 col-sm-12">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#collaboratormodal">
-                                            Add Collaborator
-                                        </button>
-                                    </div>
-                                    <div class="col-lg-2 col-md-3 col-sm-12">
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#publicationmodal">
-                                            Add Publication
-                                        </button>
-                                    </div>
-
+                        <form class="form form-group">
+                            @csrf
+                            <div class="row form-group">
+                                <!-- Button trigger modal -->
+                                <div class="col-lg-2 col-md-3 col-sm-12">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#collaboratormodal">
+                                        Add Collaborator
+                                    </button>
                                 </div>
-                            </form>
+                                <div class="col-lg-2 col-md-3 col-sm-12">
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#publicationmodal">
+                                        Add Publication
+                                    </button>
+                                </div>
 
-                        @endunless
-
+                            </div>
+                        </form>
                         <!-- Collaborators details table -->
                         <div class="row form-group">
                             <div>collaborators</div>
@@ -456,7 +437,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="collaboratorname" placeholder="Collaborator Name"
-                                                        class="form-control" >
+                                                        class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -465,7 +446,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="position" placeholder="Position"
-                                                        class="form-control" >
+                                                        class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -474,7 +455,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="institution" placeholder="Institution"
-                                                        class="form-control" >
+                                                        class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -483,7 +464,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="researcharea" placeholder="Research Area"
-                                                        class="form-control" >
+                                                        class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -492,7 +473,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="experience" placeholder="Research Experience"
-                                                        class="form-control" >
+                                                        class="form-control">
                                                 </div>
                                             </div>
                                         </form>
@@ -523,8 +504,8 @@
                                                     <label class="form-control-label">Authors (s)</label>
                                                 </div>
                                                 <div class="col-12 col-md-9">
-                                                    <input type="text" name="authors" placeholder="Authors" class="form-control"
-                                                        >
+                                                    <input type="text" name="authors" placeholder="Authors"
+                                                        class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -532,8 +513,7 @@
                                                     <label class="form-control-label">Year</label>
                                                 </div>
                                                 <div class="col-12 col-md-9">
-                                                    <input type="text" name="year" placeholder="Year" class="form-control"
-                                                        >
+                                                    <input type="text" name="year" placeholder="Year" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -541,8 +521,7 @@
                                                     <label class="form-control-label">Title</label>
                                                 </div>
                                                 <div class="col-12 col-md-9">
-                                                    <input type="text" name="pubtitle" placeholder="Title" class="form-control"
-                                                        >
+                                                    <input type="text" name="pubtitle" placeholder="Title" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -551,7 +530,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="researcharea" placeholder="Research Area"
-                                                        class="form-control" >
+                                                        class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -560,7 +539,7 @@
                                                 </div>
                                                 <div class="col-12 col-md-9">
                                                     <input type="text" name="publisher" placeholder="Publisher"
-                                                        class="form-control" >
+                                                        class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -568,8 +547,7 @@
                                                     <label class="form-control-label">Volume</label>
                                                 </div>
                                                 <div class="col-12 col-md-9">
-                                                    <input type="text" name="volume" placeholder="Volume" class="form-control"
-                                                        >
+                                                    <input type="text" name="volume" placeholder="Volume" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row form-group">
@@ -577,8 +555,7 @@
                                                     <label class="form-control-label">Pages</label>
                                                 </div>
                                                 <div class="col-12 col-md-9">
-                                                    <input type="text" name="pubpages" placeholder="Pages" class="form-control"
-                                                        >
+                                                    <input type="text" name="pubpages" placeholder="Pages" class="form-control">
                                                 </div>
                                             </div>
                                         </form>
@@ -828,17 +805,14 @@
                                     <input type="text" id="totalfunds" placeholder="0.00" readonly disabled
                                         class="form-control bold-input">
                                 </div>
-                                @if (!isset($prop) || (isset($isreadonlypage) && !$isreadonlypage))
-
-                                    <div class="form-group col-lg-3 -col-md-3">
-                                        <label class="form-control-label"></label>
-                                        <!-- Trigger Button -->
-                                        <button type="button" class="form-control btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#expenditureModal">
-                                            Add Expenditure
-                                        </button>
-                                    </div>
-                                @endif
+                                <div class="form-group col-lg-3 -col-md-3">
+                                    <label class="form-control-label"></label>
+                                    <!-- Trigger Button -->
+                                    <button type="button" class="form-control btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#expenditureModal">
+                                        Add Expenditure
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="row form-group">
@@ -1093,70 +1067,67 @@
                     <!-- Research Design -->
                     <div role="tabpanel" class="tab-pane" id="panel-researchdesign">
                         <!-- Research design details form -->
-                        @if (!isset($prop) || (isset($isreadonlypage) && !$isreadonlypage))
-
-                            <form id="form_researchdesign" method="POST" class="form-horizontal">
-                                @csrf
-                                <!-- Collaborators details form fields -->
-                                <div class="row form-group">
-                                    <div class="col-lg-3 col-md-3 col-sm-4">
-                                        <label class=" form-control-label">Project Summary</label>
-                                    </div>
-                                    <div class="col-lg-9 col-md-9 col-sm-8">
-                                        <input type="text" name="projectsummary" placeholder="Project Summary" class="form-control">
-                                    </div>
+                        <form id="form_researchdesign" method="POST" class="form-horizontal">
+                            @csrf
+                            <!-- Collaborators details form fields -->
+                            <div class="row form-group">
+                                <div class="col-lg-3 col-md-3 col-sm-4">
+                                    <label class=" form-control-label">Project Summary</label>
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col-lg-3 col-md-3 col-sm-4">
-                                        <label class=" form-control-label">Indicators</label>
-                                    </div>
-                                    <div class="col-lg-9 col-md-9 col-sm-8">
-                                        <input type="text" name="indicators" placeholder="Measurable Indicators"
-                                            class="form-control">
-                                    </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="text" name="projectsummary" placeholder="Project Summary" class="form-control">
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col-lg-3 col-md-3 col-sm-4">
-                                        <label class=" form-control-label">Verification</label>
-                                    </div>
-                                    <div class="col-lg-9 col-md-9 col-sm-8">
-                                        <input type="text" name="verification" placeholder="Means of Verification"
-                                            class="form-control">
-                                    </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-3 col-md-3 col-sm-4">
+                                    <label class=" form-control-label">Indicators</label>
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col-lg-3 col-md-3 col-sm-4">
-                                        <label class=" form-control-label">Assumptions</label>
-                                    </div>
-                                    <div class="col-lg-9 col-md-9 col-sm-8">
-                                        <input type="text" name="assumptions" placeholder="Important Assumptions"
-                                            class="form-control">
-                                    </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="text" name="indicators" placeholder="Measurable Indicators"
+                                        class="form-control">
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col-lg-3 col-md-3 col-sm-4">
-                                        <label class=" form-control-label">Goal</label>
-                                    </div>
-                                    <div class="col-lg-9 col-md-9 col-sm-8">
-                                        <input type="text" name="goal" placeholder="Goal" class="form-control">
-                                    </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-3 col-md-3 col-sm-4">
+                                    <label class=" form-control-label">Verification</label>
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col-lg-3 col-md-3 col-sm-4">
-                                        <label class=" form-control-label">Purpose</label>
-                                    </div>
-                                    <div class="col-lg-9 col-md-9 col-sm-8">
-                                        <input type="text" name="purpose" placeholder="Purpose" class="form-control">
-                                    </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="text" name="verification" placeholder="Means of Verification"
+                                        class="form-control">
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col text-center">
-                                        <button id="saveresearchdesignButton" type="button" class="btn btn-primary ">Add Research
-                                            Design Item</button>
-                                    </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-3 col-md-3 col-sm-4">
+                                    <label class=" form-control-label">Assumptions</label>
                                 </div>
-                            </form>
-                        @endif
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="text" name="assumptions" placeholder="Important Assumptions"
+                                        class="form-control">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-3 col-md-3 col-sm-4">
+                                    <label class=" form-control-label">Goal</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="text" name="goal" placeholder="Goal" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-lg-3 col-md-3 col-sm-4">
+                                    <label class=" form-control-label">Purpose</label>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-8">
+                                    <input type="text" name="purpose" placeholder="Purpose" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col text-center">
+                                    <button id="saveresearchdesignButton" type="button" class="btn btn-primary ">Add Research
+                                        Design Item</button>
+                                </div>
+                            </div>
+                        </form>
                         <div class="row form-group">
                             <h5 class="mt-2">Research Design Items</h5>
                         </div>
@@ -1294,63 +1265,61 @@
 
                     <!-- Workplan -->
                     <div role="tabpanel" class="tab-pane" id="panel-workplan">
-                        @if (!isset($prop) || (isset($isreadonlypage) && !$isreadonlypage))
-                            <form id="form_workplan">
-                                @csrf
-                                <div class="row form-group">
-                                    <div class="col col-md-3">
-                                        <label class=" form-control-label">Activity</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="text" name="activity" placeholder="Activity undertaken" class="form-control">
-                                    </div>
+                        <form id="form_workplan">
+                            @csrf
+                            <div class="row form-group">
+                                <div class="col col-md-3">
+                                    <label class=" form-control-label">Activity</label>
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3">
-                                        <label class=" form-control-label">Time</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="text" name="time" placeholder="Time" class="form-control">
-                                    </div>
+                                <div class="col-12 col-md-9">
+                                    <input type="text" name="activity" placeholder="Activity undertaken" class="form-control">
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3">
-                                        <label class=" form-control-label">Input</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="text" name="input" placeholder="Input" class="form-control">
-                                    </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3">
+                                    <label class=" form-control-label">Time</label>
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3"><label class=" form-control-label">Facilities</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="text" name="facilities" placeholder="Facilities " class="form-control">
-                                    </div>
+                                <div class="col-12 col-md-9">
+                                    <input type="text" name="time" placeholder="Time" class="form-control">
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3"><label class=" form-control-label">By Whom</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="text" name="bywhom" placeholder="By Whom" class="form-control">
-                                    </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3">
+                                    <label class=" form-control-label">Input</label>
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3"><label class=" form-control-label">Outcome</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="text" name="outcome" placeholder="Outcome" class="form-control">
-                                    </div>
+                                <div class="col-12 col-md-9">
+                                    <input type="text" name="input" placeholder="Input" class="form-control">
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col text-center">
-                                        <button id="saveworkplanbutton" type="button" class="btn btn-primary ">Add Workplan
-                                            Item</button>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label class=" form-control-label">Facilities</label>
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <input type="text" name="facilities" placeholder="Facilities " class="form-control">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label class=" form-control-label">By Whom</label>
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <input type="text" name="bywhom" placeholder="By Whom" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label class=" form-control-label">Outcome</label>
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <input type="text" name="outcome" placeholder="Outcome" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col text-center">
+                                    <button id="saveworkplanbutton" type="button" class="btn btn-primary ">Add Workplan
+                                        Item</button>
 
-                                    </div>
                                 </div>
-                            </form>
-                        @endif
+                            </div>
+                        </form>
                         <div class="row form-group">
                             <h5 class="mt-1">Workplan Items</h5>
                         </div>
@@ -1664,356 +1633,6 @@
                         </script>
                     </div>
 
-                    <!-- Office Use -->
-                    <div role="tabpanel" class="tab-pane" id="panel-officeuse">
-                        @if(isset($prop))
-                            <div class="row form-group">
-                                @if(Auth::user()->canreceiveproposal($prop->proposalid))
-                                    <div class="col text-center">
-                                        <button id="btn_receiveproposal" type="button" class="btn btn-info ">Receive
-                                            Proposal</button>
-                                    </div>
-                                @endif
-                                @if(Auth::user()->canenableediting($prop->proposalid))
-                                    <div class="col text-center">
-                                        <button id="btn_enableproposalediting" type="button" class="btn btn-info ">Enable
-                                            Editing</button>
-                                    </div>
-                                @endif
-                                @if(Auth::user()->candisableediting($prop->proposalid))
-                                    <div class="col text-center">
-                                        <button id="btn_disableproposalediting" type="button" class="btn btn-info ">Disable
-                                            Editing</button>
-                                    </div>
-                                @endif
-                                @if(Auth::user()->canproposechanges($prop->proposalid))
-                                    <div class="col text-center">
-                                        <button id="btn_open_proposalchangeform" type="button" class="btn btn-info "
-                                            data-bs-toggle="modal" data-bs-target="#proposalchangeModal">Propose Changes</button>
-                                    </div>
-                                @endif
-                                @if(Auth::user()->canrejectproposal($prop->proposalid))
-                                    <div class="col text-center">
-                                        <button id="btn_openreject_proposalmodal" type="button" class="btn btn-danger "
-                                            data-bs-toggle="modal" data-bs-target="#approveproposalModal" data-action="reject">Reject
-                                            Application</button>
-                                    </div>
-                                @endif
-                                @if(Auth::user()->canapproveproposal($prop->proposalid))
-                                    <div class="col text-center">
-                                        <button id="btn_openapprove_proposalmodal" type="button" class="btn btn-success "
-                                            data-bs-toggle="modal" data-bs-target="#approveproposalModal"
-                                            data-action="approve">Approve</button>
-                                    </div>
-                                @endif
-
-                            </div>
-                            <div class="row form-group">
-                                <h5 class="mt-1 text-center">Proposal Changes History</h5>
-
-                            </div>
-                            <div>
-                                <table id="proposalchangestable"
-                                    class="table table-responsive table-bordered table-striped table-hover" style="margin:4px">
-                                    <thead class="bg-secondary text-white">
-                                        <tr>
-                                            <th scope="col">#No</th>
-                                            <th scope="col">Issue</th>
-                                            <th scope="col">Suggestion</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">By Who</th>
-                                            <th scope="col">Date</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- proposal , change Modal -->
-                            <div class="modal fade" id="proposalchangeModal" tabindex="-1" role="dialog"
-                                aria-labelledby="proposalchangeLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="proposalchangeLabel">Suggest Change</h5>
-                                            <button type="button" id="btn_close_proposalchangemodal" class="close"
-                                                data-bs-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form id="proposalchangeForm">
-                                                @csrf
-                                                <div class="form-group">
-                                                    <label for="item">Issue</label>
-                                                    <textarea type="text" class="form-control" id="issue" name="issue"
-                                                        required></textarea>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="quantity">Suggestion</label>
-                                                    <textarea type="text" class="form-control" id="suggestion" name="suggestion"
-                                                        required></textarea>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="unitprice">Status</label>
-                                                    <input type="text" class="form-control" value="Pending" id="unitprice" readonly>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Cancel</button>
-                                                    <button type="button" id="button_save_proposalchange"
-                                                        class="btn btn-primary">Save</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- approve proposal Modal -->
-                            <div class="modal fade" id="approveproposalModal" tabindex="-1" role="dialog"
-                                aria-labelledby="approverejectproposalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="approverejectproposalLabel"></h5>
-                                            <button type="button" id="btn_close_approveproposalmodal" class="close"
-                                                data-bs-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form id="proposalapprovalForm">
-                                                @csrf
-                                                <div class="form-group">
-                                                    <label for="comment">Comment</label>
-                                                    <textarea type="text" class="form-control" id="comment" name="comment"
-                                                        required></textarea>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">Cancel</button>
-                                                    <button type="button" id="button_approve_proposal"
-                                                        class="btn btn-success">Approve</button>
-                                                    <button type="button" id="button_reject_proposal"
-                                                        class="btn btn-danger">Reject</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                                <script>
-                                     // Script to handle the data attributes and pass them to the modal
-                                     $('#approveproposalModal').on('show.bs.modal', function (event) {                                        var button = $(event.relatedTarget); // Button that triggered the modal
-                                        var action = button.data('action'); // Extract info from data-* attributes 
-                                        console.log(action);
-                                        if (action == 'approve') {
-                                            $('button_approve_proposal')?.setAttribute('visibility', 'visible')
-                                            $('button_reject_proposal')?.setAttribute('visibility', 'hidden')
-                                        }
-                                    });
-                                   
-                                </script>
-                            </div>
-
-
-
-                            <script>
-                                $(document).ready(function () {
-
-
-                                    let proposalId = "{{ isset($prop) ? $prop->proposalid : '' }}"; // Check if proposalId is set
-                                    const receiveproposalurl = `{{ route('api.proposals.receiveproposal', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
-                                    const proposalchangeurl = `{{ route('api.proposals.proposalchanges', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
-                                    const approverejecturl = `{{ route('api.proposals.approvereject', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
-                                    var csrfToken = document.getElementsByName('_token')[0].value;
-
-                                    //receive proposal
-                                    document.getElementById('btn_receiveproposal').addEventListener('click', function () {
-                                        // Function to fetch data using AJAX
-                                        $.ajax({
-                                            url: receiveproposalurl,
-                                            type: 'POST',
-                                            data: { _token: csrfToken },
-                                            dataType: 'json',
-                                            success: function (response) {
-                                                showtoastmessage(response);
-                                            },
-                                            error: function (xhr, status, error) {
-                                                var mess = JSON.stringify(xhr.responseJSON.message);
-                                                var type = JSON.stringify(xhr.responseJSON.type);
-                                                var result = {
-                                                    message: mess,
-                                                    type: type
-                                                };
-                                                showtoastmessage(result);
-
-                                                console.error('Error fetching data:', error);
-                                            }
-                                        });
-                                    });
-
-                                    //save proposal change
-                                    document.getElementById('button_save_proposalchange').addEventListener('click', function () {
-
-                                        var formData = $('#proposalchangeForm').serialize();
-                                        if (proposalId) {
-                                            formData += '&proposalidfk=' + proposalId;
-                                        }
-                                        // Function to fetch data using AJAX
-                                        $.ajax({
-                                            url: "{{ route('api.proposalchanges.post') }}",
-                                            type: 'POST',
-                                            data: formData,
-                                            dataType: 'json',
-                                            success: function (response) {
-                                                var closebtn = document.getElementById('btn_close_proposalchangemodal');
-                                                if (closebtn) { closebtn.click(); }
-                                                showtoastmessage(response);
-                                                fetchproposalchanges();
-                                            },
-                                            error: function (xhr, status, error) {
-                                                var mess = JSON.stringify(xhr.responseJSON.message);
-                                                var type = JSON.stringify(xhr.responseJSON.type);
-                                                var result = {
-                                                    message: mess,
-                                                    type: type
-                                                };
-                                                showtoastmessage(result);
-
-                                                console.error('Error fetching data:', error);
-                                            }
-                                        });
-                                    });
-
-                                    document.getElementById('btn_openreject_proposalmodal').addEventListener('click', function () {
-                                        var rejectbtn = document.getElementById('button_reject_proposal').hidden = false;
-                                        var approvebtn = document.getElementById('button_approve_proposal').hidden = true;
-                                        document.getElementById('approverejectproposalLabel').innerText = "Reject Proposal";
-                                    });
-                                    document.getElementById('btn_openapprove_proposalmodal').addEventListener('click', function () {
-                                        var rejectbtn = document.getElementById('button_reject_proposal').hidden = true;
-                                        var approvebtn = document.getElementById('button_approve_proposal').hidden = false;
-                                        document.getElementById('approverejectproposalLabel').innerText = "Approve Proposal";
-
-                                    });
-                                    document.getElementById('button_approve_proposal').addEventListener('click', function () {
-                                        approverejectproposal('Approved');
-                                    });
-                                    document.getElementById('button_reject_proposal').addEventListener('click', function () {
-                                        approverejectproposal('Rejected');
-                                    });
-
-                                    function approverejectproposal(action) {
-                                        var formData = $('#proposalapprovalForm').serialize();
-                                        if (proposalId) {
-                                            formData += '&proposalidfk=' + proposalId;
-                                        }
-                                        if (action) {
-                                            formData += '&status=' + action;
-                                        }
-                                        // Function to fetch data using AJAX
-                                        $.ajax({
-                                            url: approverejecturl,
-                                            type: 'POST',
-                                            data: formData,
-                                            dataType: 'json',
-                                            success: function (response) {
-                                                var closebtn = document.getElementById('btn_close_approveproposalmodal');
-                                                if (closebtn) { closebtn.click(); }
-                                                showtoastmessage(response);
-                                                fetchproposalchanges();
-                                            },
-                                            error: function (xhr, status, error) {
-                                                var mess = JSON.stringify(xhr.responseJSON.message);
-                                                var type = JSON.stringify(xhr.responseJSON.type);
-                                                var result = {
-                                                    message: mess,
-                                                    type: type
-                                                };
-                                                showtoastmessage(result);
-
-                                                console.error('Error fetching data:', error);
-                                            }
-                                        });
-                                    }
-
-
-                                    function showtoastmessage(response) {
-
-
-                                        var toastEl = document.getElementById('liveToast');
-                                        if (toastEl) {
-                                            var toastbody = document.getElementById('toastmessage_body');
-                                            var toastheader = document.getElementById('toastheader');
-                                            toastheader.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-info', 'bg-warning', 'bg-secondary');
-
-                                            if (response && response.type) {
-                                                if (response.type == "success") {
-                                                    toastheader.classList.add('bg-success');
-                                                }
-                                                else if (response.type == "warning") {
-                                                    toastheader.classList.add('bg-warning');
-                                                }
-                                                else {
-                                                    toastheader.classList.add('bg-danger');
-                                                }
-                                            }
-                                            else {
-                                                toastheader.classList.add('bg-danger');
-                                            }
-                                            toastbody.innerText = response && response.message ? response.message : "No Message";
-                                            var toast = new bootstrap.Toast(toastEl, {
-                                                autohide: true,
-                                                delay: 2000
-                                            });
-                                            toast.show();
-                                        }
-                                    }
-
-                                    // Function to fetch expenditures data 
-                                    function fetchproposalchanges() {
-                                        $.ajax({
-                                            url: proposalchangeurl,
-                                            type: 'GET',
-                                            dataType: 'json',
-                                            success: function (response) {
-                                                populateproposalchanges(response);
-                                            },
-                                            error: function (xhr, status, error) {
-                                                console.error('Error fetching data:', error);
-                                            }
-                                        });
-                                    }
-
-                                    // Function to populate collaborators
-                                    function populateproposalchanges(data) {
-                                        var tbody = $('#proposalchangestable tbody');
-                                        tbody.empty(); // Clear existing table rows
-                                        if (data.length > 0) {
-                                            $.each(data, function (index, data) {
-                                                var row = '<tr>' +
-                                                    '<td>' + data.changeid + '</td>' +
-                                                    '<td>' + data.triggerissue + '</td>' +
-                                                    '<td>' + data.suggestedchange + '</td>' +
-                                                    '<td>' + data.status + '</td>' +
-                                                    '<td>' + data.suggestedby?.name + '</td>' +
-                                                    '<td>' + new Date(data.created_at).toDateString('en-US') + '</td>' +
-                                                    '</tr>';
-                                                tbody.append(row);
-                                            });
-                                        }
-                                        else {
-                                            var row = '<tr><td colspan="6" class="text-center">No Proposal Changes found</td></tr>';
-                                            tbody.append(row);
-                                        }
-                                    }
-
-                                    fetchproposalchanges();
-                                });
-                            </script>
-                        @endif
-                    </div>
                 </div>
             </div>
         </div>

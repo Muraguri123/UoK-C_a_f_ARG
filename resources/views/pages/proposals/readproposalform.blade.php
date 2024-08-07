@@ -181,7 +181,7 @@
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="researchtitle" name="researchtitle" placeholder="Research Title"
                                         class="form-control" value="{{ isset($prop) ? $prop->researchtitle : '' }}"
-                                        @if($isreadonlypage) disabled readonly @endif>
+                                       >
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -218,8 +218,7 @@
                                     <label class="form-control-label">Objectives</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="objectives" placeholder="Objectives" class="form-control" @if ($isreadonlypage) disabled readonly
-                                    @endif>{{ isset($prop) ? $prop->objectives : '' }}</textarea>
+                                    <textarea name="objectives" placeholder="Objectives" class="form-control">{{ isset($prop) ? $prop->objectives : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -228,8 +227,8 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="hypothesis" placeholder="Question or Hypothesis" class="form-control"
-                                        @if($isreadonlypage) disabled readonly
-                                        @endif>{{ isset($prop) ? $prop->hypothesis : '' }}</textarea>
+                                     disabled readonly
+                                        >{{ isset($prop) ? $prop->hypothesis : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -238,8 +237,8 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="significance" placeholder="Significance or Justification"
-                                        class="form-control" @if($isreadonlypage) disabled readonly
-                                        @endif>{{ isset($prop) ? $prop->significance : '' }}</textarea>
+                                        class="form-control"  readonly
+                                        >{{ isset($prop) ? $prop->significance : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -248,8 +247,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="ethicals" placeholder="Ethical Considerations" class="form-control"
-                                        @if($isreadonlypage) disabled readonly
-                                        @endif>{{ isset($prop) ? $prop->ethicals : '' }}</textarea>
+                                       readonly>{{ isset($prop) ? $prop->ethicals : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -257,8 +255,7 @@
                                     <label class="form-control-label">Expected Outputs</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="outputs" placeholder="Expected Outputs" class="form-control" @if ($isreadonlypage) disabled readonly
-                                    @endif>{{ isset($prop) ? $prop->expoutput : '' }}</textarea>
+                                    <textarea name="outputs" placeholder="Expected Outputs" class="form-control"  readonly>{{ isset($prop) ? $prop->expoutput : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -266,8 +263,7 @@
                                     <label class="form-control-label">Socio-Economic Impact</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="economicimpact" placeholder="Socio-Economic Impact" class="form-control" @if ($isreadonlypage) disabled readonly
-                                    @endif>{{ isset($prop) ? $prop->socio_impact : '' }}</textarea>
+                                    <textarea name="economicimpact" placeholder="Socio-Economic Impact" class="form-control" readonly>{{ isset($prop) ? $prop->socio_impact : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -276,12 +272,11 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <textarea name="res_findings" placeholder="Dissemination of Research Findings"
-                                        class="form-control" @if($isreadonlypage) disabled readonly
-                                        @endif>{{ isset($prop) ? $prop->res_findings : '' }}</textarea>
+                                        class="form-control" readonly>{{ isset($prop) ? $prop->res_findings : '' }}</textarea>
                                 </div>
                             </div>
                         </form>
-                        @if (!isset($prop) || (isset($isreadonlypage) && !$isreadonlypage))
+                        @if (!isset($prop) )
                             <div class="row form-group">
                                 <div class="col-lg-6 col-md-6 col-sm-12 offset-lg-4 offset-md-4">
                                     <button id="saveresearchinfobutton" form="form_researchinfo" type="submit"
@@ -291,7 +286,6 @@
                                 </div>
                             </div>
                         @endif
-
 
                     </div>
 
