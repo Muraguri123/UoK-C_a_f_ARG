@@ -24,7 +24,8 @@ use App\Http\Controllers\{
     Auth\CustomVerificationController,
     FinancesController,
     ProjectsController,
-    TestController
+    TestController,
+    PDFController
 };
 
 
@@ -104,14 +105,17 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/proposals/proposalchanges/{id}', [ProposalsController::class, 'fetchproposalchanges'])->name('api.proposals.proposalchanges');
     Route::post('/proposals/submit/{id}', [ProposalsController::class, 'submitproposal'])->name('api.proposals.submitproposal');
     Route::post('/proposals/receive/{id}', [ProposalsController::class, 'receiveproposal'])->name('api.proposals.receiveproposal');
+    Route::post('/proposals/changeeditstatus/{id}', [ProposalsController::class, 'changeeditstatus'])->name('api.proposals.changeeditstatus');
     Route::post('/proposals/approvereject/{id}', [ProposalsController::class, 'approverejectproposal'])->name('api.proposals.approvereject');
     Route::get('/proposals/view/{id}', [ProposalsController::class, 'getsingleproposalpage'])->name('pages.proposals.viewproposal');
     Route::get('/proposals/edit/{id}', [ProposalsController::class, 'geteditsingleproposalpage'])->name('pages.proposals.editproposal');
+    Route::get('/proposals/generatePDF', [ProposalsController::class, 'generatePDF'])->name('api.proposal.generatepdf');
     //changes
     Route::post('/proposals/changes/post', [ProposalChangesController::class, 'postproposalchanges'])->name('api.proposalchanges.post');
     Route::get('/proposals/changes/fetchsearch', [ProposalChangesController::class, 'fetchsearch'])->name('api.proposalchanges.fetchsearch');
     Route::get('/proposals/changes/{id}/fetchall', [ProposalChangesController::class, 'fetchall'])->name('api.proposalchanges.fetchall');
 
+    // printing
 
     //departments
     Route::post('/departments/post', [DepartmentsController::class, 'postnewdepartment'])->name('api.departments.post');
@@ -141,8 +145,6 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::post('/users/updaterole/{id}', [UsersController::class, 'updaterole'])->name('api.users.updaterole');
     Route::post('/users/resetpassword/{id}', [RegisterController::class, 'resetuserpassword'])->name('api.users.resetpassword');
 
-    //finances
-    Route::get('/finances', [FinancesController::class, 'home'])->name('pages.finances.home');
 
     //collaborators
     Route::post('/collaborators/post', [CollaboratorsController::class, 'postcollaborator'])->name('api.collaborators.post');
@@ -179,7 +181,14 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
 
     //projects
     Route::get('/projects/myprojects', [ProjectsController::class, 'myprojects'])->name('pages.projects.myprojects');
+    Route::get('/projects/fetchmyactiveprojects', [ProjectsController::class, 'fetchmyactiveprojects'])->name('api.projects.fetchmyactiveprojects');
+    Route::get('/projects/fetchmyallprojects', [ProjectsController::class, 'fetchmyallprojects'])->name('api.projects.fetchmyallprojects');
+    Route::get('/projects/myprojects/{id}', [ProjectsController::class, 'viewmyproject'])->name('pages.projects.viewmyproject');
     Route::get('/projects/allprojects', [ProjectsController::class, 'allprojects'])->name('pages.projects.allprojects');
+    Route::get('/projects/fetchallactiveprojects', [ProjectsController::class, 'fetchallactiveprojects'])->name('api.projects.fetchallactiveprojects');
+    Route::get('/projects/fetchallprojects', [ProjectsController::class, 'fetchallprojects'])->name('api.projects.fetchallprojects');
+    Route::get('/projects/fetchsearchallprojects', [ProjectsController::class, 'fetchsearchallprojects'])->name('api.projects.fetchsearchallprojects');
+    Route::get('/projects/allprojects/{id}', [ProjectsController::class, 'viewanyproject'])->name('pages.projects.viewanyproject');
 
     //profile
     Route::get('/myprofile', [MyProfileController::class, 'myprofile'])->name('pages.myprofile');

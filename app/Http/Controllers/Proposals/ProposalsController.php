@@ -12,6 +12,7 @@ use App\Models\Permission;
 use App\Models\Proposal;
 use App\Models\Publication;
 use App\Models\ResearchDesignItem;
+use App\Models\ResearchProject;
 use App\Models\ResearchTheme;
 use App\Models\Workplan;
 use App\Models\User;
@@ -22,6 +23,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Notification;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 
 class ProposalsController extends Controller
@@ -124,7 +128,7 @@ class ProposalsController extends Controller
         }
     }
 
-  
+
     public function updatebasicdetails(Request $request, $id)
     {
         $proposal = Proposal::findOrFail($id);
@@ -247,7 +251,7 @@ class ProposalsController extends Controller
                 $mailingController = new MailingController();
                 $mailingController->notifyusersnewProposal($proposal);
 
-              
+
             }
             return response(['message' => 'Application Submitted Successfully!!', 'type' => 'success']);
         } else {
@@ -257,14 +261,30 @@ class ProposalsController extends Controller
     }
     public function receiveproposal(Request $request, $id)
     {
-        if (!auth()->user()->haspermission('canreceiveproposal') ) {
+        if (!auth()->user()->haspermission('canreceiveproposal')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to receive this Proposal!");
-        }  
+        }
 
         $proposal = Proposal::findOrFail($id);
 
         $proposal->receivedstatus = true;
-        $proposal->caneditstatus=false;
+        $proposal->caneditstatus = false;
+        $proposal->save();
+        $mailingController = new MailingController();
+        $mailingController->notifyUserReceivedProposal($proposal);
+        return response(['message' => 'Proposal received Successfully!!', 'type' => 'success']);
+
+
+    }
+    public function changeeditstatus(Request $request, $id)
+    {
+        if (!auth()->user()->haspermission('canenabledisableproposaledit')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Enable or Disable editing of this Proposal!");
+        }
+
+        $proposal = Proposal::findOrFail($id);
+
+        $proposal->caneditstatus = false;
         $proposal->save();
         $mailingController = new MailingController();
         $mailingController->notifyUserReceivedProposal($proposal);
@@ -274,11 +294,9 @@ class ProposalsController extends Controller
     }
     public function approverejectproposal(Request $request, $id)
     {
-        if ($request->input('status') == "Approved" && auth()->user()->haspermission('canapproveproposal') ) {
-        }
-        else if ($request->input('status') == "Rejected" && auth()->user()->haspermission('canrejectproposal')) {
-        }
-        else{
+        if ($request->input('status') == "Approved" && auth()->user()->haspermission('canapproveproposal')) {
+        } else if ($request->input('status') == "Rejected" && auth()->user()->haspermission('canrejectproposal')) {
+        } else {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to  Approve/Reject this Proposal!");
         }
 
@@ -296,14 +314,32 @@ class ProposalsController extends Controller
 
         $proposal = Proposal::findOrFail($id);
 
-        $proposal->approvalstatus = $request->input('status');
-        $proposal->comment = $request->input('comment');
-        $proposal->save();
-       
+        DB::transaction(function () use ($id, $request) {
+            $proposal = Proposal::findOrFail($id);
+            $proposal->approvalstatus = $request->input('status');
+            $proposal->comment = $request->input('comment');
+            $proposal->saveOrFail();
+
+            $grant = Grant::findOrFail($proposal->grantnofk);
+
+            if ($request->input('status') == "Approved") {
+                $lastRecord = ResearchProject::orderBy('researchid', 'desc')->first();
+                $incrementNumber = $lastRecord ? $lastRecord->proposalid + 1 : 1;
+                $generatedCode = 'UOK/ARG/' . $grant->finyear . '/' . $incrementNumber;
+                // new project
+                $project = new ResearchProject();
+                $project->researchnumber = $generatedCode;
+                $project->proposalidfk = $proposal->proposalid;
+                $project->projectstatus = 'Active';
+                $project->iscompleted = false;
+                $project->saveOrFail();
+            }
+
+        });
         if ($request->input('status') == "Approved") {
             $mailingController = new MailingController();
             $mailingController->notifyusersapprovedproposal($proposal);
-            return response(['message' => 'Proposal Approved Successfully!!', 'type' => 'success']);
+            return response(['message' => 'Proposal Approved Successfully! Project Started!', 'type' => 'success']);
         } else if ($request->input('status') == "Rejected") {
             return response(['message' => 'Proposal Rejected Successfully!!', 'type' => 'success']);
         } else {
@@ -353,18 +389,30 @@ class ProposalsController extends Controller
     }
     public function getsingleproposalpage($id)
     {
-        $user = Auth::user();        
+        $user = Auth::user();
         // Find the proposal by ID or fail with a 404 error
         $prop = Proposal::findOrFail($id);
 
-        if (!$user->haspermission('canreadproposaldetails') && $user->userid!=$prop->useridfk) {
+        if (!$user->haspermission('canreadproposaldetails') && $user->userid != $prop->useridfk) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to read the requested Proposal!");
-        } 
+        }
         $grants = Grant::all();
         $departments = Department::all();
         $themes = ResearchTheme::all();
 
         return view('pages.proposals.readproposalform', compact('prop', 'departments', 'grants', 'themes'));
+    }
+    public function generatePDF()
+    {
+        $proposal = Proposal::with(['applicant', 'department', 'themeitem'])->get()->first();
+        // Load your Blade view here
+        $pdf = Pdf::loadView('pages.proposals.printproposal', compact('proposal'));
+
+        // Optionally, you can set the paper size and orientation
+        $pdf->setPaper('A4', 'potrait');
+        // Return the generated PDF
+        return $pdf->stream('document.pdf'); 
+        // return response()->json($proposal);
     }
     public function geteditsingleproposalpage(Request $req, $id)
     {

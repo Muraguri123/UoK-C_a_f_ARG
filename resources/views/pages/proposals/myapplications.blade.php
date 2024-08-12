@@ -79,7 +79,7 @@
         }
 
         // Function to populate table with data
-        function populateTable(data) { 
+        function populateTable(data) {
             var tbody = $('#proposalstable tbody');
             tbody.empty(); // Clear existing table rows
             if (data.length > 0) {
@@ -94,7 +94,8 @@
                         '<td>' + (data.department ? data.department.shortname : '') + '</td>' +
                         '<td>' + (data.submittedstatus == 1 ? "Yes" : "No") + '</td>' +
                         '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
-                        '<td><a class="nav-link" href="' + (data.iseditable ? editurl : proposalUrl) + '"><i class="bi bi-pencil"></i>Edit</a></td>' +
+                        (data.iseditable ? '<td><a class="nav-link" href="' + editurl + '"><i class="bi bi-pencil"></i>Edit</a></td>' :
+                            '<td><a class="nav-link" href="' + proposalUrl + '">View</a></td>') +
                         '</tr>';
                     tbody.append(row);
                 });

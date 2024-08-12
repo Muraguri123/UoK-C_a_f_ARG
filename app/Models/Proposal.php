@@ -44,7 +44,8 @@ class Proposal extends Model
         'approvalstatus',
         'faxnumber',
         'cellphone',
-        'officephone'
+        'officephone',
+        'submittedstatus'
     ];
 
 
@@ -68,7 +69,10 @@ class Proposal extends Model
     {
         return $this->belongsTo(ResearchTheme::class, 'themefk', 'themeid');
     }
-
+    public function researchProject()
+    {
+        return $this->belongsTo(ResearchProject::class, 'research_project_id', 'id');
+    }
     public function proposalchanges()
     {
         return $this->belongsTo(ResearchTheme::class, 'themefk', 'themeid');
@@ -92,13 +96,13 @@ class Proposal extends Model
         }
     }
 
-
-
     public function isEditable()
     {
         try {
-            
-            if ($this->approvalstatus == 'Pending' && $this->caneditstatus ) {
+            if ($this->approvalstatus == 'Rejected' || $this->approvalstatus == 'Approved' || !$this->caneditstatus) {
+                return false;
+            }
+            if ($this->approvalstatus == 'Pending') {
                 return true;
             } else {
                 return false;
@@ -111,11 +115,10 @@ class Proposal extends Model
     public function hasPendingUpdates()
     {
         try {
-            $changes=$this->proposalchanges()->get();
-            if($changes->where('status','Pending' )){
+            $changes = $this->proposalchanges()->get();
+            if ($changes->where('status', 'Pending')) {
                 return true;
-            }
-            else{
+            } else {
                 return false;
             }
         } catch (\Exception $exception) {

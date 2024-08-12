@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class ResearchProject extends Model
 {
@@ -34,6 +35,15 @@ class ResearchProject extends Model
         'researchnumber',
         'proposalidfk',
         'projectstatus',
-        'iscompleted',
+        'ispaused',
     ];
+
+    public function proposal()
+    {
+        return $this->hasOne(Proposal::class, 'proposalid', 'proposalidfk');
+    }
+    public function applicant()
+    {
+        return $this->hasOneThrough(User::class, Proposal::class, 'proposalid', 'userid', null, 'useridfk');
+    }
 }

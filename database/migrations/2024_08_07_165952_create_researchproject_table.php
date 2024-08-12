@@ -15,9 +15,9 @@ return new class extends Migration {
         Schema::create('researchprojects', function (Blueprint $table) {
             $table->id('researchid'); //for computer identification
             $table->string('researchnumber')->unique();//for human identification
-            $table->unsignedBigInteger('proposalidfk');
-            $table->string('projectstatus')->default('active'); //paused,cancelled,completed
-            $table->boolean('iscompleted')->default(false);
+            $table->unsignedBigInteger('proposalidfk')->unique();
+            $table->string('projectstatus')->default('active'); //active,cancelled,completed
+            $table->boolean('ispaused')->default(false);
             $table->foreign('proposalidfk')->references('proposalid')->on('proposals')->onDelete('restrict');
             $table->timestamps();
         });

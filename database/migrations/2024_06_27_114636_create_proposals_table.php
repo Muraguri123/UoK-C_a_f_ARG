@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('themefk');
             $table->boolean('submittedstatus')->default(false);  
             $table->boolean('receivedstatus')->default(false);  
-            $table->boolean('caneditstatus')->default(false);  
+            $table->boolean('caneditstatus')->default(true);  
             $table->string('approvalstatus')->default('Pending');
             $table->string('highqualification');
             $table->string('officephone');

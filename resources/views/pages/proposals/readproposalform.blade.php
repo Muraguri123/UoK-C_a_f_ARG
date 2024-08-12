@@ -52,6 +52,7 @@
 
 
 
+
                     </div>
                 </nav>
 
@@ -163,8 +164,6 @@
 
 
                         </form>
-
-
                     </div>
 
 
@@ -286,6 +285,7 @@
                                 </div>
                             </div>
                         @endif
+
 
 
                     </div>
@@ -542,7 +542,7 @@
 
 
 
-                                    
+
                                     // Function to fetch expenditures data 
                                     function fetchexpenditures() {
                                         $.ajax({
@@ -652,7 +652,7 @@
                                 // Assuming prop is passed to the Blade view from the Laravel controller
                                 const researchurl = `{{ route('api.proposals.researchdesignitems', ['id' => ':id']) }}`.replace(':id', proposalId);
 
-                               
+
                                 // Function to fetch expenditures data 
                                 function fetchresearchdesign() {
                                     $.ajax({
@@ -728,7 +728,7 @@
                                 // Assuming prop is passed to the Blade view from the Laravel controller
                                 const workplanurl = `{{ route('api.proposals.fetchworkplanitems', ['id' => ':id']) }}`.replace(':id', proposalId);
 
-                                
+
                                 // Function to fetch expenditures data 
                                 function fetchworkplanitems() {
                                     $.ajax({
@@ -784,12 +784,14 @@
                             @endif
 
 
+
                             @if(Auth::user()->canenableediting($prop->proposalid))
                                 <div class="col text-center">
                                     <button id="btn_enableproposalediting" type="button" class="btn btn-info ">Enable
                                         Editing</button>
                                 </div>
                             @endif
+
 
 
                             @if(Auth::user()->candisableediting($prop->proposalid))
@@ -800,12 +802,14 @@
                             @endif
 
 
+
                             @if(Auth::user()->canproposechanges($prop->proposalid))
                                 <div class="col text-center">
                                     <button id="btn_open_proposalchangeform" type="button" class="btn btn-info "
                                         data-bs-toggle="modal" data-bs-target="#proposalchangeModal">Propose Changes</button>
                                 </div>
                             @endif
+
 
 
                             @if(Auth::user()->canrejectproposal($prop->proposalid))
@@ -817,6 +821,7 @@
                             @endif
 
 
+
                             @if(Auth::user()->canapproveproposal($prop->proposalid))
                                 <div class="col text-center">
                                     <button id="btn_openapprove_proposalmodal" type="button" class="btn btn-success "
@@ -824,6 +829,7 @@
                                         data-action="approve">Approve</button>
                                 </div>
                             @endif
+
 
 
 
@@ -945,10 +951,11 @@
                                 const receiveproposalurl = `{{ route('api.proposals.receiveproposal', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
                                 const proposalchangeurl = `{{ route('api.proposals.proposalchanges', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
                                 const approverejecturl = `{{ route('api.proposals.approvereject', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
+                                const enableediting = `{{ route('api.proposals.changeeditstatus', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
                                 var csrfToken = document.getElementsByName('_token')[0].value;
 
                                 //receive proposal
-                                document.getElementById('btn_receiveproposal').addEventListener('click', function () {
+                                document.getElementById('btn_receiveproposal')?.addEventListener('click', function () {
                                     // Function to fetch data using AJAX
                                     $.ajax({
                                         url: receiveproposalurl,
@@ -971,9 +978,34 @@
                                         }
                                     });
                                 });
+                                
+                                //enable editing proposal
+                                document.getElementById('_btn_enableproposalediting')?.addEventListener('click', function () {
+                                    // Function to fetch data using AJAX
+                                    $.ajax({
+                                        url: enableediting,
+                                        type: 'POST',
+                                        data: { _token: csrfToken },
+                                        dataType: 'json',
+                                        success: function (response) {
+                                            showtoastmessage(response);
+                                        },
+                                        error: function (xhr, status, error) {
+                                            var mess = JSON.stringify(xhr.responseJSON.message);
+                                            var type = JSON.stringify(xhr.responseJSON.type);
+                                            var result = {
+                                                message: mess,
+                                                type: type
+                                            };
+                                            showtoastmessage(result);
+
+                                            console.error('Error fetching data:', error);
+                                        }
+                                    });
+                                });
 
                                 //save proposal change
-                                document.getElementById('button_save_proposalchange').addEventListener('click', function () {
+                                document.getElementById('button_save_proposalchange')?.addEventListener('click', function () {
 
                                     var formData = $('#proposalchangeForm').serialize();
                                     if (proposalId) {
@@ -1005,21 +1037,21 @@
                                     });
                                 });
 
-                                document.getElementById('btn_openreject_proposalmodal').addEventListener('click', function () {
+                                document.getElementById('btn_openreject_proposalmodal')?.addEventListener('click', function () {
                                     var rejectbtn = document.getElementById('button_reject_proposal').hidden = false;
                                     var approvebtn = document.getElementById('button_approve_proposal').hidden = true;
                                     document.getElementById('approverejectproposalLabel').innerText = "Reject Proposal";
                                 });
-                                document.getElementById('btn_openapprove_proposalmodal').addEventListener('click', function () {
+                                document.getElementById('btn_openapprove_proposalmodal')?.addEventListener('click', function () {
                                     var rejectbtn = document.getElementById('button_reject_proposal').hidden = true;
                                     var approvebtn = document.getElementById('button_approve_proposal').hidden = false;
                                     document.getElementById('approverejectproposalLabel').innerText = "Approve Proposal";
 
                                 });
-                                document.getElementById('button_approve_proposal').addEventListener('click', function () {
+                                document.getElementById('button_approve_proposal')?.addEventListener('click', function () {
                                     approverejectproposal('Approved');
                                 });
-                                document.getElementById('button_reject_proposal').addEventListener('click', function () {
+                                document.getElementById('button_reject_proposal')?.addEventListener('click', function () {
                                     approverejectproposal('Rejected');
                                 });
 
@@ -1057,38 +1089,6 @@
                                     });
                                 }
 
-
-                                function showtoastmessage(response) {
-
-
-                                    var toastEl = document.getElementById('liveToast');
-                                    if (toastEl) {
-                                        var toastbody = document.getElementById('toastmessage_body');
-                                        var toastheader = document.getElementById('toastheader');
-                                        toastheader.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-info', 'bg-warning', 'bg-secondary');
-
-                                        if (response && response.type) {
-                                            if (response.type == "success") {
-                                                toastheader.classList.add('bg-success');
-                                            }
-                                            else if (response.type == "warning") {
-                                                toastheader.classList.add('bg-warning');
-                                            }
-                                            else {
-                                                toastheader.classList.add('bg-danger');
-                                            }
-                                        }
-                                        else {
-                                            toastheader.classList.add('bg-danger');
-                                        }
-                                        toastbody.innerText = response && response.message ? response.message : "No Message";
-                                        var toast = new bootstrap.Toast(toastEl, {
-                                            autohide: true,
-                                            delay: 2000
-                                        });
-                                        toast.show();
-                                    }
-                                }
 
                                 // Function to fetch expenditures data 
                                 function fetchproposalchanges() {

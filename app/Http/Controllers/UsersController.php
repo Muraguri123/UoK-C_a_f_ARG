@@ -104,7 +104,7 @@ class UsersController extends Controller
                 $user->permissions()->attach($permission->pid, ['id' => (string) Str::uuid()]);
             }
 
-            $user->save();
+            $user->saveOrFail();
         });
 
         return response()->json(['message' => 'Role updated successfully!', 'type' => 'success']);
