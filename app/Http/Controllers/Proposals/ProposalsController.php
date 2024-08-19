@@ -20,6 +20,7 @@ use App\Models\ProposalChanges;
 use App\Notifications\ProposalSubmitted;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Routing\RouteUri;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Notification;
@@ -411,7 +412,7 @@ class ProposalsController extends Controller
         // Optionally, you can set the paper size and orientation
         $pdf->setPaper('A4', 'potrait');
         // Return the generated PDF
-        return $pdf->stream('document.pdf'); 
+        return $pdf->stream('document.pdf');
         // return response()->json($proposal);
     }
     public function geteditsingleproposalpage(Request $req, $id)
@@ -496,7 +497,37 @@ class ProposalsController extends Controller
     {
         $data = Expenditureitem::where('proposalidfk', $id)
             ->get();
-        return response()->json($data); // Return filtered data as JSON
+        $summary = [];
+        $totalOthers = $data->where('itemtype', 'Others')
+            ->sum('total');
+
+        $totalTravels = $data->where('itemtype', 'Travels')
+            ->sum('total');
+
+        $totalConsumables = $data->where('itemtype', 'Consumables')
+            ->sum('total');
+
+        $totalFacilities = $data->where('itemtype', 'Facilities')
+            ->sum('total');
+        $summary['totalOthers'] = $totalOthers;
+        $summary['totalTravels'] = $totalTravels;
+        $summary['totalConsumables'] = $totalConsumables;
+        $summary['totalFacilities'] = $totalFacilities;
+        $summary['totalExpenditures'] = $totalFacilities + $totalConsumables + $totalTravels + $totalOthers;
+        $rule_40 = $totalOthers + $totalTravels;
+        $rule_60 = $totalFacilities + $totalConsumables;
+        $summary['isValidBudget'] = $this->getIsValidBudget($rule_40, $rule_60);
+
+        return response(compact(['data', 'summary'])); // Return filtered data as JSON
+    }
+    private function getIsValidBudget($rule_40, $rule_60)
+    {
+        $total = $rule_40 + $rule_60;
+        if ($rule_40 <= (0.4 * $total)) {
+            return true;
+        } else {
+            return false;
+        }
     }
     public function fetchworkplanitems($id)
     {

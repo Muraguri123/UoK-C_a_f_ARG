@@ -16,6 +16,8 @@
 
 
 
+
+
         <style>
             .prop-tabcontainer {
                 background-color: #FAF9F6;
@@ -61,6 +63,8 @@
                         <button class="nav-link" id="nav-submit-tab" data-bs-toggle="tab" data-bs-target="#panel-submit"
                             type="button" role="tab" aria-controls="panel-submit" aria-selected="false">Submit</button>
                     @endif
+
+
 
 
 
@@ -118,11 +122,11 @@
                                 <select type="text" id="grantnofk" name="grantnofk" class="form-control">
                                     <option value="">Select a Grant Item</option>
                                     @foreach ($grants as $grant)
-                                                                <option value="{{ $grant->grantid }}" {{ (isset($prop) && $prop->grantnofk == $grant->grantid) ? 'selected' : '' }}>
+                                                                                <option value="{{ $grant->grantid }}" {{ (isset($prop) && $prop->grantnofk == $grant->grantid) ? 'selected' : '' }}>
                                             {{ $grant->grantid . ' - (' . $grant->finyear . ')'}}
                                         </option>
                                     @endforeach 
-                                                    </select>
+                                                            </select>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -134,12 +138,12 @@
                                     <option value="">Select a Theme</option>
                                     @foreach ($themes as $theme)
 
-                                                                <option value="{{ $theme->themeid }}" {{ (isset($prop) && $prop->themefk == $theme->themeid) ? 'selected' : '' }}>
+                                                                                <option value="{{ $theme->themeid }}" {{ (isset($prop) && $prop->themefk == $theme->themeid) ? 'selected' : '' }}>
                                             {{ $theme->themename}}
                                         </option>
 
                                     @endforeach 
-                                                            </select>
+                                                                    </select>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -152,12 +156,12 @@
                                     <option value="">Select a Department</option>
                                     @foreach ($departments as $department)
 
-                                                                <option value="{{ $department->depid }}" {{ (isset($prop) && $prop->departmentidfk == $department->depid) ? 'selected' : '' }}>
+                                                                                <option value="{{ $department->depid }}" {{ (isset($prop) && $prop->departmentidfk == $department->depid) ? 'selected' : '' }}>
                                             {{ $department->shortname }}
                                         </option>
 
                                     @endforeach 
-                                                                                                                        </select>
+                                                                                                                                </select>
                             </div>
                         </div>
 
@@ -809,6 +813,11 @@
                                     class="form-control bold-input">
                             </div>
                             <div class="form-group col-lg-3 -col-md-3">
+                                <label  class="form-control-label">60/40 Rule Valid?</label>
+                                <input type="text" id="budgetvalidstatuslabel" placeholder="Status" readonly disabled
+                                class="form-control bold-input">
+                            </div>
+                            <div class="form-group col-lg-3 -col-md-3">
                                 <label class="form-control-label"></label>
                                 <!-- Trigger Button -->
                                 <button type="button" class="form-control btn btn-primary" data-bs-toggle="modal"
@@ -956,40 +965,6 @@
                                     });
                                 });
 
-
-                                function showtoastmessage(response) {
-
-
-                                    var toastEl = document.getElementById('liveToast');
-                                    if (toastEl) {
-                                        var toastbody = document.getElementById('toastmessage_body');
-                                        var toastheader = document.getElementById('toastheader');
-                                        toastheader.classList.remove('bg-primary', 'bg-success', 'bg-danger', 'bg-info', 'bg-warning', 'bg-secondary');
-
-
-                                        if (response && response.type) {
-                                            if (response.type == "success") {
-                                                toastheader.classList.add('bg-success');
-                                            }
-                                            else if (response.type == "warning") {
-                                                toastheader.classList.add('bg-warning');
-                                            }
-                                            else {
-                                                toastheader.classList.add('bg-danger');
-                                            }
-                                        }
-                                        else {
-                                            toastheader.classList.add('bg-danger');
-                                        }
-                                        toastbody.innerText = response && response.message ? response.message : "No Message";
-                                        var toast = new bootstrap.Toast(toastEl, {
-                                            autohide: true,
-                                            delay: 2000
-                                        });
-                                        toast.show();
-                                    }
-                                }
-
                                 // Function to fetch expenditures data 
                                 function fetchexpenditures() {
                                     $.ajax({
@@ -1006,14 +981,14 @@
                                     });
                                 }
 
-                                function populatetopfields(data) {
-                                    if (data.length > 0) {
+                                function populatetopfields(response) {
+                                    if (response?.data?.length > 0) {
                                         let travel = 0;
                                         let consumables = 0;
                                         let facilities = 0;
                                         let others = 0;
                                         let total = 0;
-                                        $.each(data, function (index, data) {
+                                        $.each(response?.data, function (index, data) {
                                             total += parseFloat(data.total);
                                             if (data.itemtype == "Facilities") {
                                                 facilities += parseFloat(data.total);
@@ -1033,35 +1008,38 @@
                                         document.getElementById('equipmentscost').value = facilities;
                                         document.getElementById('othercost').value = others;
                                         document.getElementById('consumablescost').value = consumables;
-                                    };
-                                }
-
-                                // Function to populate collaborators
-                                function populateexpenditures(data) {
-                                    var tbody = $('#expenditurestable tbody');
-                                    tbody.empty(); // Clear existing table rows
-                                    if (data.length > 0) {
-                                        $.each(data, function (index, data) {
-                                            var row = '<tr>' +
-                                                '<td>' + data.item + '</td>' +
-                                                '<td>' + data.itemtype + '</td>' +
-                                                '<td>' + data.quantity + '</td>' +
-                                                '<td>' + data.unitprice + '</td>' +
-                                                '<td>' + data.total + '</td>' +
-                                                '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
-                                                '<td>Edit</td>' +
-                                                '</tr>';
-                                            tbody.append(row);
-                                        });
+                                        document.getElementById('budgetvalidstatuslabel').value = response?.summary?.isValidBudget?.toString();
+                                        };
                                     }
-                                    else {
-                                        var row = '<tr><td colspan="6" class="text-center">No Expenditures found</td></tr>';
+
+                            // Function to populate collaborators
+                            function populateexpenditures(response) {
+                                var tbody = $('#expenditurestable tbody');
+                                tbody.empty(); // Clear existing table rows
+                                if (response?.data?.length > 0) {
+                                    $.each(response.data, function (index, data) {
+                                        console.log(data);
+
+                                        var row = '<tr>' +
+                                            '<td>' + data.item + '</td>' +
+                                            '<td>' + data.itemtype + '</td>' +
+                                            '<td>' + data.quantity + '</td>' +
+                                            '<td>' + data.unitprice + '</td>' +
+                                            '<td>' + data.total + '</td>' +
+                                            '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
+                                            '<td>Edit</td>' +
+                                            '</tr>';
                                         tbody.append(row);
-                                    }
+                                    });
                                 }
+                                else {
+                                    var row = '<tr><td colspan="6" class="text-center">No Expenditures found</td></tr>';
+                                    tbody.append(row);
+                                }
+                            }
 
-                                fetchexpenditures();
-                            });
+                            fetchexpenditures();
+                                });
                         </script>
                     </div>
 
@@ -1554,7 +1532,7 @@
                                         console.error('Error fetching data:', error);
                                     }
                                 });
-                          
+
                             });
                             let proposalId = "{{isset($prop) ? $prop->proposalid : ''}}"
                             const statusurl = `{{ route('api.proposals.submissionstatus', ['id' => ':id']) }}`.replace(':id', proposalId);
@@ -1634,7 +1612,7 @@
                                 }
                             }
 
-                             
+
                         });
 
 
@@ -1645,6 +1623,8 @@
         </div>
     </div>
 @else
+
+
 
 
 

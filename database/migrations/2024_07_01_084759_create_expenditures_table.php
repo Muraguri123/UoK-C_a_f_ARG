@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -15,12 +14,12 @@ return new class extends Migration
     {
         Schema::create('expenditures', function (Blueprint $table) {
             $table->string('expenditureid')->primary();
-            $table->unsignedBigInteger('proposalidfk'); 
-            $table->string('item'); 
-            $table->string('itemtype'); 
+            $table->unsignedBigInteger('proposalidfk');
+            $table->string('item');
+            $table->string('itemtype');
             $table->integer('quantity');
-            $table->decimal('unitprice'); 
-            $table->decimal('total'); 
+            $table->decimal('unitprice');
+            $table->decimal('total', 15, 2);
             $table->foreign('proposalidfk')->references('proposalid')->on('proposals')->onDelete('restrict');
             $table->timestamps();
         });
