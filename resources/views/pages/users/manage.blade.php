@@ -112,7 +112,7 @@
                 return 'Committee';
             }
             else if(roleid==2){
-                return 'Applicant';
+                return 'Researcher';
             }  
             else if(roleid==3){
                 return 'Co-opted';

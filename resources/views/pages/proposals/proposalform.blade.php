@@ -15,6 +15,7 @@
 
 
 
+
         <style>
             .prop-tabcontainer {
                 background-color: #FAF9F6;
@@ -62,6 +63,7 @@
                     @endif
 
 
+
                 </div>
             </nav>
 
@@ -69,7 +71,7 @@
             <div class="tab-content prop-tabpanel">
                 <!-- Basic Details -->
                 <div role="tabpanel" class="tab-pane active" id="panel-basicdetails">
-                    
+
                     <!-- Personal Details Form -->
                     <form method="POST" id="basicdetails"
                         action="{{ isset($prop) ? route('route.proposals.updatebasicdetails', ['id' => $prop->proposalid]) : route('route.proposals.post') }}"
@@ -116,11 +118,11 @@
                                 <select type="text" id="grantnofk" name="grantnofk" class="form-control">
                                     <option value="">Select a Grant Item</option>
                                     @foreach ($grants as $grant)
-                                                        <option value="{{ $grant->grantid }}" {{ (isset($prop) && $prop->grantnofk == $grant->grantid) ? 'selected' : '' }}>
+                                                                <option value="{{ $grant->grantid }}" {{ (isset($prop) && $prop->grantnofk == $grant->grantid) ? 'selected' : '' }}>
                                             {{ $grant->grantid . ' - (' . $grant->finyear . ')'}}
                                         </option>
                                     @endforeach 
-                                                </select>
+                                                    </select>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -132,12 +134,12 @@
                                     <option value="">Select a Theme</option>
                                     @foreach ($themes as $theme)
 
-                                                        <option value="{{ $theme->themeid }}" {{ (isset($prop) && $prop->themefk == $theme->themeid) ? 'selected' : '' }}>
+                                                                <option value="{{ $theme->themeid }}" {{ (isset($prop) && $prop->themefk == $theme->themeid) ? 'selected' : '' }}>
                                             {{ $theme->themename}}
                                         </option>
 
                                     @endforeach 
-                                                        </select>
+                                                            </select>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -150,12 +152,12 @@
                                     <option value="">Select a Department</option>
                                     @foreach ($departments as $department)
 
-                                                        <option value="{{ $department->depid }}" {{ (isset($prop) && $prop->departmentidfk == $department->depid) ? 'selected' : '' }}>
+                                                                <option value="{{ $department->depid }}" {{ (isset($prop) && $prop->departmentidfk == $department->depid) ? 'selected' : '' }}>
                                             {{ $department->shortname }}
                                         </option>
 
                                     @endforeach 
-                                                                                                                    </select>
+                                                                                                                        </select>
                             </div>
                         </div>
 
@@ -1533,7 +1535,26 @@
                                 fetchapplicationstatus();
                             });
                             submit.addEventListener('click', function () {
-                                submitproposal();
+                                // Get the button element
+                                var button = this;
+
+                                // Disable the button to prevent double clicks
+                                button.disabled = true;
+
+                                var csrfToken = document.getElementsByName('_token')[0].value;
+                                $.ajax({
+                                    url: submiturl,
+                                    type: 'POST',
+                                    data: { _token: csrfToken },
+                                    dataType: 'json',
+                                    success: function (response) {
+                                        showtoastmessage(response);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error fetching data:', error);
+                                    }
+                                });
+                          
                             });
                             let proposalId = "{{isset($prop) ? $prop->proposalid : ''}}"
                             const statusurl = `{{ route('api.proposals.submissionstatus', ['id' => ':id']) }}`.replace(':id', proposalId);
@@ -1613,21 +1634,7 @@
                                 }
                             }
 
-                            function submitproposal() {
-                                var csrfToken = document.getElementsByName('_token')[0].value;
-                                $.ajax({
-                                    url: submiturl,
-                                    type: 'POST',
-                                    data: { _token: csrfToken },
-                                    dataType: 'json',
-                                    success: function (response) {
-                                        showtoastmessage(response);
-                                    },
-                                    error: function (xhr, status, error) {
-                                        console.error('Error fetching data:', error);
-                                    }
-                                });
-                            }
+                             
                         });
 
 
@@ -1638,6 +1645,7 @@
         </div>
     </div>
 @else
+
 
 
     <div class="col text-dark text-center">

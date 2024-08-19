@@ -106,8 +106,8 @@
 
                             </div>
                             <div class="col-12 col-md-9">
-                                <input type="text" placeholder="Your Registration Date"
-                                    value="{{ ($user->role == 1) ? 'Admin' : 'Applicant' }}" class="form-control" readonly>
+                                <input type="text" placeholder="Your Role"
+                                    value="{{ $user->role }}" class="form-control" readonly>
                             </div>
                         </div>
                         @if (Auth::user()->haspermission('canedituserprofile'))

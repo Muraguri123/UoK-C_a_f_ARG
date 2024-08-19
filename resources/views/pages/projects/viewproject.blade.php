@@ -141,7 +141,7 @@
                                                 (canviewuser ? '<td><a class="nav-link pt-0 pb-0" href="' + userurl + '">' + data.email + '</a></td>' : '<td>' + data.email + '</td>') +
                                                 '<td>' + data.pfno + '</td>' +
                                                 '<td>' + Boolean(data.isactive) + '</td>' +
-                                                '<td>' + getrolename(data.role) + '</td>' +
+                                                '<td>' + data.role + '</td>' +
                                                 '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
                                                 '</tr>';
                                             tbody.append(row);
@@ -152,21 +152,7 @@
                                         tbody.append(row);
                                     }
                                 }
-                                function getrolename(roleid) {
-                                    if (roleid == 1) {
-                                        return 'Committee';
-                                    }
-                                    else if (roleid == 2) {
-                                        return 'Applicant';
-                                    }
-                                    else if (roleid == 3) {
-                                        return 'Co-opted';
-                                    }
-                                    else {
-                                        return 'unknown';
-                                    }
-                                }
-                                // Initial fetch when the page loads
+                                 // Initial fetch when the page loads
                                 fetchData();
 
                                 // Search input keyup event
@@ -290,7 +276,7 @@
                                                 (canviewuser ? '<td><a class="nav-link pt-0 pb-0" href="' + userurl + '">' + data.email + '</a></td>' : '<td>' + data.email + '</td>') +
                                                 '<td>' + data.pfno + '</td>' +
                                                 '<td>' + Boolean(data.isactive) + '</td>' +
-                                                '<td>' + getrolename(data.role) + '</td>' +
+                                                '<td>' + data.role + '</td>' +
                                                 '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
                                                 '</tr>';
                                             tbody.append(row);
@@ -300,22 +286,7 @@
                                         var row = '<tr><td colspan="3">No Reports found</td></tr>';
                                         tbody.append(row);
                                     }
-                                }
-                                function getrolename(roleid) {
-                                    if (roleid == 1) {
-                                        return 'Committee';
-                                    }
-                                    else if (roleid == 2) {
-                                        return 'Applicant';
-                                    }
-                                    else if (roleid == 3) {
-                                        return 'Co-opted';
-                                    }
-                                    else {
-                                        return 'unknown';
-                                    }
-                                }
-                                // Initial fetch when the page loads
+                                }  // Initial fetch when the page loads
                                 fetchData();
 
                                 // Search input keyup event
@@ -418,7 +389,7 @@
                                                 (canviewuser ? '<td><a class="nav-link pt-0 pb-0" href="' + userurl + '">' + data.email + '</a></td>' : '<td>' + data.email + '</td>') +
                                                 '<td>' + data.pfno + '</td>' +
                                                 '<td>' + Boolean(data.isactive) + '</td>' +
-                                                '<td>' + getrolename(data.role) + '</td>' +
+                                                '<td>' + data.role + '</td>' +
                                                 '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
                                                 '</tr>';
                                             tbody.append(row);
@@ -429,22 +400,7 @@
                                         tbody.append(row);
                                     }
                                 }
-                                function getrolename(roleid) {
-                                    if (roleid == 1) {
-                                        return 'Committee';
-                                    }
-                                    else if (roleid == 2) {
-                                        return 'Applicant';
-                                    }
-                                    else if (roleid == 3) {
-                                        return 'Co-opted';
-                                    }
-                                    else {
-                                        return 'unknown';
-                                    }
-                                }
-                                // Initial fetch when the page loads
-                                fetchData();
+                                  fetchData();
 
                                 // Search input keyup event
                                 $('#searchInput').on('keyup', function () {
