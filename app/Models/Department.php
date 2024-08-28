@@ -42,4 +42,9 @@ class Department extends Model
         'shortname',         
         'description'
     ];
+
+    public function school()
+    {
+        return $this->belongsTo(School::class, 'schoolfk', 'schoolid');
+    }
 }

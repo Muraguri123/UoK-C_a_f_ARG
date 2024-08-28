@@ -20,6 +20,7 @@ use App\Http\Controllers\{
     Proposals\ProposalChangesController,
     NotificationsController,
     DepartmentsController,
+    SchoolsController,
     Auth\CustomPasswordResetController,
     Auth\CustomVerificationController,
     FinancesController,
@@ -117,15 +118,25 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/proposals/changes/{id}/fetchall', [ProposalChangesController::class, 'fetchall'])->name('api.proposalchanges.fetchall');
 
 
-    //departments
-    Route::post('/departments/post', [DepartmentsController::class, 'postnewdepartment'])->name('api.departments.post');
-    Route::get('/departments/home', [DepartmentsController::class, 'viewalldepartments'])->name('pages.departments.home');
-    Route::get('/departments/fetchsearchdepartments', [DepartmentsController::class, 'fetchsearchdepartments'])->name('api.departments.fetchsearchdepartments');
-    Route::get('/departments/fetchalldepartments', [DepartmentsController::class, 'fetchalldepartments'])->name('api.departments.fetchalldepartments');
-    Route::get('/departments/view/{id}', [DepartmentsController::class, 'getviewdepartmentpage'])->name('pages.departments.viewdepartment');
-    Route::get('/departments/edit/{id}', [DepartmentsController::class, 'geteditdepartmentpage'])->name('pages.departments.editdepartment');
-    Route::post('/departments/edit/{id}', [DepartmentsController::class, 'updatedepartment'])->name('api.departments.updatedepartment');
+    //schools
+    Route::post('/schools/post', [SchoolsController::class, 'postnewschool'])->name('api.schools.post');
+    Route::get('/schools/home', [SchoolsController::class, 'viewallschools'])->name('pages.schools.home');
+    Route::get('/schools/fetchsearchschools', [SchoolsController::class, 'fetchsearchschools'])->name('api.schools.fetchsearchschools');
+    Route::get('/schools/fetchallschools', [SchoolsController::class, 'fetchallschools'])->name('api.schools.fetchallschools');
+    Route::get('/schools/view/{id}', [SchoolsController::class, 'getviewschoolpage'])->name('pages.schools.viewschool');
+    Route::get('/schools/edit/{id}', [SchoolsController::class, 'geteditschoolpage'])->name('pages.schools.editschool');
+    Route::post('/schools/edit/{id}', [SchoolsController::class, 'updateschool'])->name('api.schools.updateschool');
 
+     //departments
+     Route::post('/departments/post', [DepartmentsController::class, 'postnewdepartment'])->name('api.departments.post');
+     Route::get('/departments/home', [DepartmentsController::class, 'viewalldepartments'])->name('pages.departments.home');
+     Route::get('/departments/fetchsearchdepartments', [DepartmentsController::class, 'fetchsearchdepartments'])->name('api.departments.fetchsearchdepartments');
+     Route::get('/departments/fetchalldepartments', [DepartmentsController::class, 'fetchalldepartments'])->name('api.departments.fetchalldepartments');
+     Route::get('/departments/view/{id}', [DepartmentsController::class, 'getviewdepartmentpage'])->name('pages.departments.viewdepartment');
+     Route::get('/departments/edit/{id}', [DepartmentsController::class, 'geteditdepartmentpage'])->name('pages.departments.editdepartment');
+     Route::post('/departments/edit/{id}', [DepartmentsController::class, 'updatedepartment'])->name('api.departments.updatedepartment');
+
+     
     //grants
     Route::post('/grants/post', [GrantsController::class, 'postnewgrant'])->name('api.grants.post');
     Route::get('/grants/home', [GrantsController::class, 'viewallgrants'])->name('pages.grants.home');

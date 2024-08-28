@@ -71,6 +71,7 @@
                                                     class="form-control">
                                             </div>
                                         </div>
+                                      
                                         <div class="row form-group mt-2">
                                             <div class="col col-md-3">
                                                 <label class="form-control-label">Description</label>
@@ -100,7 +101,7 @@
                                     style="::placeholder { color: red; }" placeholder="Search by School Name">
                             </div>
                             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">
-                                @if (auth()->user()->haspermission('canaddschool'))
+                                @if (auth()->user()->haspermission('canaddoreditschool'))
                                     <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
                                         data-bs-target="#addschoolmodal">
                                         Add School
@@ -114,7 +115,7 @@
                         style="margin:4px">
                         <thead class="bg-secondary text-white">
                             <tr>
-                                <th scope="col">Dep No</th>
+                                <th scope="col">##</th>
                                 <th scope="col">Full Name</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Date Created</th>
@@ -133,15 +134,15 @@
 
                             // Function to fetch data using AJAX
                             $.ajax({
-                                url: "{{ route('api.departments.post') }}",
+                                url: "{{ route('api.schools.post') }}",
                                 type: 'POST',
                                 data: formData,
                                 dataType: 'json',
                                 success: function (response) {
-                                    var closebtn = document.getElementById('btn_closedepartmentmodal');
+                                    var closebtn = document.getElementById('btn_closeschoolmodal');
                                     if (closebtn) { closebtn.click(); }
                                     showtoastmessage(response);
-                                    fetchdepartmentsData();
+                                    fetchschoolsData();
                                 },
                                 error: function (xhr, status, error) {
                                     var mess = JSON.stringify(xhr.responseJSON.message);
@@ -159,13 +160,13 @@
 
 
                         // Function to fetch data using AJAX
-                        function fetchdepartmentsData() {
+                        function fetchschoolsData() {
                             $.ajax({
-                                url: "{{ route('api.departments.fetchalldepartments') }}",
+                                url: "{{ route('api.schools.fetchallschools') }}",
                                 type: 'GET',
                                 dataType: 'json',
                                 success: function (response) {
-                                    populateTable(response);
+                                    populateschoolsTable(response);
                                 },
                                 error: function (xhr, status, error) {
                                     console.error('Error fetching data:', error);
@@ -176,7 +177,7 @@
                         // Function to search data using AJAX
                         function searchData(searchTerm) {
                             $.ajax({
-                                url: "{{ route('api.departments.fetchsearchdepartments') }}",
+                                url: "{{ route('api.schools.fetchsearchschools') }}",
                                 type: 'GET',
                                 dataType: 'json',
                                 data: {
@@ -184,7 +185,7 @@
                                 },
                                 success: function (response) {
 
-                                    populateTable(response);
+                                    populateschoolsTable(response);
                                 },
                                 error: function (xhr, status, error) {
                                     console.error('Error searching data:', error);
@@ -192,17 +193,17 @@
                             });
                         }
 
-                        var routeUrlTemplate = "{{ route('pages.departments.viewdepartment', ['id' => '__ID__']) }}";
+                        var routeUrlTemplate = "{{ route('pages.schools.viewschool', ['id' => '__ID__']) }}";
                         // Function to populate table with data
-                        function populateTable(data) {
+                        function populateschoolsTable(data) {
                             var tbody = $('#schoolstable tbody');
                             tbody.empty(); // Clear existing table rows
                             if (data.length > 0) {
                                 $.each(data, function (index, data) {
-                                    var depurl = routeUrlTemplate.replace('__ID__', data.depid);
+                                    var depurl = routeUrlTemplate.replace('__ID__', data.schoolid);
                                     var row = '<tr>' +
-                                        '<td>' + data.depid + '</td>' +
-                                        '<td><a class="nav-link" href="' + depurl + '">' + data.shortname + '</a></td>' +
+                                        '<td>' + data.schoolid + '</td>' +
+                                        '<td><a class="nav-link" href="' + depurl + '">' + data.schoolname + '</a></td>' +
                                         '<td>' + data.description + '</td>' +
                                         '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
                                         '</tr>';
@@ -216,7 +217,7 @@
                         }
 
                         // Initial fetch when the page loads
-                        fetchdepartmentsData();
+                        fetchschoolsData();
 
                         // Search input keyup event
                         $('#searchInput').on('keyup', function () {
@@ -255,6 +256,22 @@
                                             <div class="col-12 col-md-9">
                                                 <input type="text" name="shortname" placeholder="Department Name"
                                                     class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="row form-group">
+                                            <div class="col col-md-3">
+                                                <label class="form-control-label">Name</label>
+                                            </div>
+                                            <div class="col-12 col-md-9">
+                                                <select type="text" id="schoolfk" name="schoolfk" placeholder="School"
+                                                    class="form-control">
+                                                    <option value="">Select a School</option>
+                                                    @foreach ($schools as $school)
+                                                        <option value="{{ $school->schoolid }}">
+                                                            {{ $school->schoolname }}
+                                                        </option>
+                                                    @endforeach 
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="row form-group mt-2">

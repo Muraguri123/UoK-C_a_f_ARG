@@ -157,11 +157,11 @@
                                     @foreach ($departments as $department)
 
                                                                                 <option value="{{ $department->depid }}" {{ (isset($prop) && $prop->departmentidfk == $department->depid) ? 'selected' : '' }}>
-                                            {{ $department->shortname }}
+                                            {{ $department->school->schoolname }} - {{ $department->shortname }}
                                         </option>
 
                                     @endforeach 
-                                                                                                                                </select>
+                                </select>
                             </div>
                         </div>
 
