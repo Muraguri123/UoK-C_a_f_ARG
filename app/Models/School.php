@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class Department extends Model
+class School extends Model
 {
     use HasFactory;
-    protected $table = 'departments';
+    protected $table = 'schools';
 
     // Use UUIDs instead of auto-incrementing IDs
     public $incrementing = false;
@@ -19,7 +19,7 @@ class Department extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'depid';
+    protected $primaryKey = 'schoolid';
 
     // Boot method to auto-generate UUIDs
     protected static function boot()
@@ -37,9 +37,8 @@ class Department extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'depid',   
-        'schoolfk',     
-        'shortname',         
+        'schoolid',        
+        'schoolname',         
         'description'
     ];
 }

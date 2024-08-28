@@ -304,7 +304,8 @@ $.ajax({
                         <h5 class="text-center">Select permissions preffered for this user only!</h5>
                         @if (!(isset($user) && $user->issuperadmin()))
                             <div id="permissions_list_div" class="container mt-1">
-                                <div class="card">
+                            @if ($user->role=='1' || $user->role=='3')
+                            <div class="card">
                                     <div class="card-header">
                                         Admin Rights
                                     </div>
@@ -343,6 +344,8 @@ $.ajax({
                                         @endif
                                     </div>
                                 </div>
+                            @endif    
+                          
                                 <div class="row col-12 form-group">
                                     
                                 </div>

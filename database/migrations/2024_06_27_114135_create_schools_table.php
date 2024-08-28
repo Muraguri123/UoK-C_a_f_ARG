@@ -13,12 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->uuid('depid')->primary(); 
-            $table->uuid('schoolfk');
-            $table->string('shortname'); 
+        Schema::create('schools', function (Blueprint $table) {
+            $table->uuid('schoolid')->primary(); 
+            $table->string('schoolname'); 
             $table->string('description'); 
-            $table->foreign('schoolfk')->references('schoolid')->on('schools')->onDelete('restrict');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('schools');
     }
 };

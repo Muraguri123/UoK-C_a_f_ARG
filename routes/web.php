@@ -25,7 +25,8 @@ use App\Http\Controllers\{
     FinancesController,
     ProjectsController,
     TestController,
-    PDFController
+    PDFController,
+    SupervisionController
 };
 
 
@@ -115,7 +116,6 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/proposals/changes/fetchsearch', [ProposalChangesController::class, 'fetchsearch'])->name('api.proposalchanges.fetchsearch');
     Route::get('/proposals/changes/{id}/fetchall', [ProposalChangesController::class, 'fetchall'])->name('api.proposalchanges.fetchall');
 
-    // printing
 
     //departments
     Route::post('/departments/post', [DepartmentsController::class, 'postnewdepartment'])->name('api.departments.post');
@@ -189,6 +189,9 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/projects/fetchallprojects', [ProjectsController::class, 'fetchallprojects'])->name('api.projects.fetchallprojects');
     Route::get('/projects/fetchsearchallprojects', [ProjectsController::class, 'fetchsearchallprojects'])->name('api.projects.fetchsearchallprojects');
     Route::get('/projects/allprojects/{id}', [ProjectsController::class, 'viewanyproject'])->name('pages.projects.viewanyproject');
+
+    //supervision
+    Route::get('/supervision/home', [SupervisionController::class, 'home'])->name('pages.supervision.home');
 
     //profile
     Route::get('/myprofile', [MyProfileController::class, 'myprofile'])->name('pages.myprofile');
