@@ -34,7 +34,7 @@ class ProposalsController extends Controller
     //
     public function getnewproposalpage()
     {
-        if (!auth()->user()->hasselfpermission('canmakenewproposal')) {
+        if (!auth()->user()->haspermission('canmakenewproposal')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Make a new Proposal!");
         }
         $isnewprop = true;
@@ -51,7 +51,7 @@ class ProposalsController extends Controller
 
     public function postnewproposal(Request $request)
     {
-        if (!auth()->user()->hasselfpermission('canmakenewproposal')) {
+        if (!auth()->user()->haspermission('canmakenewproposal')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Make a new Proposal!");
         }
         // Define validation rules
@@ -85,7 +85,7 @@ class ProposalsController extends Controller
         $currentYear = date('Y');
         $lastRecord = Proposal::orderBy('proposalid', 'desc')->first();
         $incrementNumber = $lastRecord ? $lastRecord->proposalid + 1 : 1;
-        $generatedCode = 'UOK/ARG/' . $grant->finyear . '/' . $incrementNumber;
+        $generatedCode = 'UOK/ARG/A/' . $currentYear . '/' . $incrementNumber;
 
         // Create a new proposal instance
         $proposal = new Proposal();
@@ -364,7 +364,7 @@ class ProposalsController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if ($user->isadmin || $user->haspermission($id)) {
+        if ($user->haspermission($id)) {
             return true;
         } else {
             return false;

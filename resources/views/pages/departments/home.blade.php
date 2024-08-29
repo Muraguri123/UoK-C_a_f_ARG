@@ -115,7 +115,6 @@
                         style="margin:4px">
                         <thead class="bg-secondary text-white">
                             <tr>
-                                <th scope="col">##</th>
                                 <th scope="col">Full Name</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Date Created</th>
@@ -202,7 +201,6 @@
                                 $.each(data, function (index, data) {
                                     var depurl = routeUrlTemplate.replace('__ID__', data.schoolid);
                                     var row = '<tr>' +
-                                        '<td>' + data.schoolid + '</td>' +
                                         '<td><a class="nav-link" href="' + depurl + '">' + data.schoolname + '</a></td>' +
                                         '<td>' + data.description + '</td>' +
                                         '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
@@ -264,7 +262,7 @@
                                             </div>
                                             <div class="col-12 col-md-9">
                                                 <select type="text" id="schoolfk" name="schoolfk" placeholder="School"
-                                                    class="form-control">
+                                                    class="form-control" >
                                                     <option value="">Select a School</option>
                                                     @foreach ($schools as $school)
                                                         <option value="{{ $school->schoolid }}">
@@ -317,7 +315,6 @@
                         style="margin:4px">
                         <thead class="bg-secondary text-white">
                             <tr>
-                                <th scope="col">Dep No</th>
                                 <th scope="col">Full Name</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Date Created</th>
@@ -404,7 +401,6 @@
                                 $.each(data, function (index, data) {
                                     var depurl = routeUrlTemplate.replace('__ID__', data.depid);
                                     var row = '<tr>' +
-                                        '<td>' + data.depid + '</td>' +
                                         '<td><a class="nav-link" href="' + depurl + '">' + data.shortname + '</a></td>' +
                                         '<td>' + data.description + '</td>' +
                                         '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +

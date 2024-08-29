@@ -33,7 +33,7 @@
                         aria-selected="true">Active</button>
                     <button class="nav-link" id="nav-allprojects-tab" data-bs-toggle="tab"
                         data-bs-target="#panel-allprojects" type="button" role="tab" aria-controls="panel-allprojects"
-                        aria-selected="false">Completed</button>
+                        aria-selected="false">All Projects</button>
                 </div>
             </nav>
 
@@ -80,7 +80,7 @@
                                 });
                             }
 
-                            var routeUrlTemplate = "{{ route('pages.projects.viewanyproject', ['id' => '__ID__']) }}";
+                            var routeUrlTemplate = "{{ route('pages.supervision.monitoring.monitoringpage', ['id' => '__ID__']) }}";
 
                             // Function to populate table with data
                             function populateActiveProjects(data) {
@@ -183,7 +183,7 @@
                                     }
                                 });
                             }
-                            var routeUrlTemplate = "{{ route('pages.projects.viewanyproject', ['id' => '__ID__']) }}";
+                            var routeUrlTemplate = "{{ route('pages.supervision.monitoring.monitoringpage', ['id' => '__ID__']) }}";
 
                             // Function to populate table with data
                             function populateallProjects(data) {

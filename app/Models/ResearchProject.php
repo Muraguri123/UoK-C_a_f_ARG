@@ -38,6 +38,17 @@ class ResearchProject extends Model
         'ispaused',
     ];
 
+    public function fundingsummary()
+    {
+        $fundings = ResearchFunding::where('researchidfk', $this->researchid)->get();
+        $total = $fundings->sum('amount');
+        $result = [
+            'total' => $total,
+            'fundingrows' => $fundings->count(),
+        ];
+        return $result;
+    }
+    
     public function proposal()
     {
         return $this->hasOne(Proposal::class, 'proposalid', 'proposalidfk');

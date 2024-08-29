@@ -17,5 +17,8 @@ class ResearchProgress extends Model
         'researchidfk',
         'report'
     ];
- 
+    public function applicant()
+    {
+        return $this->belongsTo(User::class, 'reportedbyfk', 'userid');
+    }
 }

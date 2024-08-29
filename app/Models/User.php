@@ -91,8 +91,8 @@ class User extends Authenticatable
     //functions
     public function permissions()
     {
-        if ($this->isadmin) {
-            return Permission::orderBy('priorityno');
+        if ($this->isadmin) {            
+            return Permission::where('issuperadminright',true)->orderBy('priorityno');
         } else {
 
             return $this->belongsToMany(Permission::class, 'userpermissions', 'useridfk', 'permissionidfk')->orderBy('priorityno');
@@ -107,16 +107,13 @@ class User extends Authenticatable
 
     public function haspermission($shortname)
     {
-        if ($this->issuperadmin()) {
-            return true;
-        } else {
-            return $this->permissions()->where('shortname', $shortname)->exists();
-        }
-    }
-    public function hasselfpermission($shortname)
-    {
         return $this->permissions()->where('shortname', $shortname)->exists();
+
     }
+    // public function hasselfpermission($shortname)
+    // {
+    //     return $this->permissions()->where('shortname', $shortname)->exists();
+    // }
     public function issuperadmin()
     {
         if ($this->isadmin) {

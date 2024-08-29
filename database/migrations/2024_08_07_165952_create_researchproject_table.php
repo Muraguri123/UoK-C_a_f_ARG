@@ -18,6 +18,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('proposalidfk')->unique();
             $table->string('projectstatus')->default('active'); //active,cancelled,completed
             $table->boolean('ispaused')->default(false);
+            $table->string('supervisorfk')->nullable();
+            $table->foreign('supervisorfk')->references('userid')->on('users')->onDelete('restrict');
             $table->foreign('proposalidfk')->references('proposalid')->on('proposals')->onDelete('restrict');
             $table->timestamps();
         });

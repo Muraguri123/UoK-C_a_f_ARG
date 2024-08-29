@@ -24,7 +24,7 @@
                         </div>
                         <div class="col-12 col-md-9">
                             <select type="text" id="schoolfk" name="schoolfk" placeholder="School"
-                                class="form-control" readonly >
+                                class="form-control"  disabled>
                                 <option value="">Select a School</option>
                                 @foreach ($schools as $schoolitem)
                                     <option value="{{ $schoolitem->schoolid }}" {{ (isset($department) && $department->schoolfk == $schoolitem->schoolid) ? 'selected' : '' }}>
@@ -66,7 +66,7 @@
                         document.getElementById('btn_editdepartment').addEventListener('click', function () {
 
                             document.getElementById('shortname').removeAttribute('readonly');
-                            document.getElementById('schoolfk').removeAttribute('readonly');
+                            document.getElementById('schoolfk').removeAttribute('disabled');
                             document.getElementById('description').removeAttribute('readonly');
                             document.getElementById('btn_updatedepartment').removeAttribute('hidden');
                             document.getElementById('btn_updatedepartment').removeAttribute('disabled');

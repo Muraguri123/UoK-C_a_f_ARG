@@ -31,17 +31,6 @@ class Department extends Model
             }
         });
     }
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'depid',   
-        'schoolfk',     
-        'shortname',         
-        'description'
-    ];
 
     public function school()
     {

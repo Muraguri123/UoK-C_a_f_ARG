@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('researchidfk');
             $table->uuid('supervisorfk');
             $table->text('report');
+            $table->text('remark');
             $table->foreign('researchidfk')->references('researchid')->on('researchprojects')->onDelete('restrict');
             $table->foreign('supervisorfk')->references('userid')->on('users')->onDelete('restrict');
             $table->timestamps();

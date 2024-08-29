@@ -127,16 +127,16 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/schools/edit/{id}', [SchoolsController::class, 'geteditschoolpage'])->name('pages.schools.editschool');
     Route::post('/schools/edit/{id}', [SchoolsController::class, 'updateschool'])->name('api.schools.updateschool');
 
-     //departments
-     Route::post('/departments/post', [DepartmentsController::class, 'postnewdepartment'])->name('api.departments.post');
-     Route::get('/departments/home', [DepartmentsController::class, 'viewalldepartments'])->name('pages.departments.home');
-     Route::get('/departments/fetchsearchdepartments', [DepartmentsController::class, 'fetchsearchdepartments'])->name('api.departments.fetchsearchdepartments');
-     Route::get('/departments/fetchalldepartments', [DepartmentsController::class, 'fetchalldepartments'])->name('api.departments.fetchalldepartments');
-     Route::get('/departments/view/{id}', [DepartmentsController::class, 'getviewdepartmentpage'])->name('pages.departments.viewdepartment');
-     Route::get('/departments/edit/{id}', [DepartmentsController::class, 'geteditdepartmentpage'])->name('pages.departments.editdepartment');
-     Route::post('/departments/edit/{id}', [DepartmentsController::class, 'updatedepartment'])->name('api.departments.updatedepartment');
+    //departments
+    Route::post('/departments/post', [DepartmentsController::class, 'postnewdepartment'])->name('api.departments.post');
+    Route::get('/departments/home', [DepartmentsController::class, 'viewalldepartments'])->name('pages.departments.home');
+    Route::get('/departments/fetchsearchdepartments', [DepartmentsController::class, 'fetchsearchdepartments'])->name('api.departments.fetchsearchdepartments');
+    Route::get('/departments/fetchalldepartments', [DepartmentsController::class, 'fetchalldepartments'])->name('api.departments.fetchalldepartments');
+    Route::get('/departments/view/{id}', [DepartmentsController::class, 'getviewdepartmentpage'])->name('pages.departments.viewdepartment');
+    Route::get('/departments/edit/{id}', [DepartmentsController::class, 'geteditdepartmentpage'])->name('pages.departments.editdepartment');
+    Route::post('/departments/edit/{id}', [DepartmentsController::class, 'updatedepartment'])->name('api.departments.updatedepartment');
 
-     
+
     //grants
     Route::post('/grants/post', [GrantsController::class, 'postnewgrant'])->name('api.grants.post');
     Route::get('/grants/home', [GrantsController::class, 'viewallgrants'])->name('pages.grants.home');
@@ -200,9 +200,23 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/projects/fetchallprojects', [ProjectsController::class, 'fetchallprojects'])->name('api.projects.fetchallprojects');
     Route::get('/projects/fetchsearchallprojects', [ProjectsController::class, 'fetchsearchallprojects'])->name('api.projects.fetchsearchallprojects');
     Route::get('/projects/allprojects/{id}', [ProjectsController::class, 'viewanyproject'])->name('pages.projects.viewanyproject');
+    //project progresss
+    Route::post('/projects/submitmyprogress/{id}', [ProjectsController::class, 'submitmyprogress'])->name('api.projects.submitmyprogress');
+    Route::get('/projects/fetchprojectprogress/{id}', [ProjectsController::class, 'fetchprojectprogress'])->name('api.projects.fetchprojectprogress');
+    Route::post('/projects/pauseproject/{id}', [ProjectsController::class, 'pauseproject'])->name('api.projects.pauseproject');
+    Route::post('/projects/resumeproject/{id}', [ProjectsController::class, 'resumeproject'])->name('api.projects.resumeproject');
+    Route::post('/projects/cancelproject/{id}', [ProjectsController::class, 'cancelproject'])->name('api.projects.cancelproject');
+    Route::post('/projects/completeproject/{id}', [ProjectsController::class, 'completeproject'])->name('api.projects.completeproject');
+
+    //project funding
+    Route::post('/projects/addfunding/{id}', [ProjectsController::class, 'addfunding'])->name('api.projects.addfunding');
+    Route::get('/projects/fetchprojectfunding/{id}', [ProjectsController::class, 'fetchprojectfunding'])->name('api.projects.fetchprojectfunding');
 
     //supervision
     Route::get('/supervision/home', [SupervisionController::class, 'home'])->name('pages.supervision.home');
+    Route::get('/supervision/monitoring/{id}', [SupervisionController::class, 'viewmonitoringpage'])->name('pages.supervision.monitoring.monitoringpage');
+    Route::post('/supervision/monitoring/addreport/{id}', [SupervisionController::class, 'addreport'])->name('api.supervision.monitoring.addreport');
+    Route::get('/supervision/monitoring/fetchmonitoringreport/{id}', [SupervisionController::class, 'fetchmonitoringreport'])->name('api.supervision.monitoring.fetchmonitoringreport');
 
     //profile
     Route::get('/myprofile', [MyProfileController::class, 'myprofile'])->name('pages.myprofile');

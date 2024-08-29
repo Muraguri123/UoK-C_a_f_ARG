@@ -1,268 +1,434 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="row">
-    <style>
-        #searchInput::placeholder {
-            color: #cdc8c8;
-            /* Change to your desired color */
-        }
-    </style>
+@auth
+    <div>
 
-    @auth
+        <style>
+            .prop-tabcontainer {
+                background-color: #FAF9F6;
+                border-radius: 4px;
+            }
 
-        <div class="row form-group" style="padding-top:4px">
+            .prop-tabpanel {
+                border-width: 1px;
+                border-color: gray;
+                background-color: #FAF9F6;
+                border-style: solid;
+                border-radius: 4px;
+                padding: 8px;
+            }
 
-            <!--add grant Modal -->
-            <div class="modal fade" id="addgrantmodal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-                aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">Add Call for Grants</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="form_addgrant" method="POST">
-                                @csrf
-                                <div class="row form-group">
-                                    <div class="col col-md-3">
-                                        <label class="form-control-label">Grant Title</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="text" name="title" placeholder="Title for the grant"
-                                            class="form-control">
-                                    </div>
-                                </div>
-                                <div class="row form-group mt-2">
-                                    <div class="col col-md-3">
-                                        <label class="form-control-label">Financial Year</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="text" id="finyear" name="finyear" placeholder="Financial Year"
-                                            class="form-control" >
-                                    </div>
-                                </div>
-                                <div class="row form-group mt-2">
-                                    <div class="col col-md-3">
-                                        <label class="form-control-label">Start Date</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="date" id="startdate" name="startdate" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="row form-group mt-2">
-                                    <div class="col col-md-3">
-                                        <label class="form-control-label">End Date</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <input type="date" id="enddate" name="enddate" class="form-control">
-                                    </div>
-                                </div>
-                                <div class="row form-group mt-2">
-                                    <div class="col col-md-3">
-                                        <label class="form-control-label">Status</label>
-                                    </div>
-                                    <div class="col-12 col-md-9">
-                                        <select type="text" name="status" class="form-control">
+            .form-group {
+                margin-bottom: 6px;
+            }
+        </style>
 
-                                            <option>Open</option>
-                                            <option>Closed</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="btn_closegrantmodal" type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">Close</button>
-                            <button id="btn_savegrant" type="button" class="btn btn-primary">Save Grant</button>
-                        </div>
-                    </div>
+        <div class="prop-tabcontainer">
+            <!-- Nav tabs -->
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <button class="nav-link active" id="nav-grants-tab" data-bs-toggle="tab"
+                        data-bs-target="#panel-grants" type="button" role="tab" aria-controls="panel-grants"
+                        aria-selected="true">Grants</button>
+                    <button class="nav-link" id="nav-settings-tab" data-bs-toggle="tab"
+                        data-bs-target="#panel-settings" type="button" role="tab" aria-controls="panel-settings"
+                        aria-selected="false">Settings</button>
                 </div>
+            </nav>
+
+            <!-- Tab panes -->
+            <div class="tab-content prop-tabpanel">
+
+                <!-- grants Details -->
+                <div role="tabpanel" class="tab-pane active" id="panel-grants">
+                    <div class="row">
+                        <style>
+                            #searchInput::placeholder {
+                                color: #cdc8c8;
+                                /* Change to your desired color */
+                            }
+                        </style>
+
+                        @auth
+
+                            <div class="row form-group" style="padding-top:4px">
+
+                                <!--add grant Modal -->
+                                <div class="modal fade" id="addgrantmodal" data-bs-backdrop="static" data-bs-keyboard="false"
+                                    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">Add Call for Grants</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="form_addgrant" method="POST">
+                                                    @csrf
+                                                    <div class="row form-group">
+                                                        <div class="col col-md-3">
+                                                            <label class="form-control-label">Grant Title</label>
+                                                        </div>
+                                                        <div class="col-12 col-md-9">
+                                                            <input type="text" name="title" placeholder="Title for the grant"
+                                                                class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group mt-2">
+                                                        <div class="col col-md-3">
+                                                            <label class="form-control-label">Financial Year</label>
+                                                        </div>
+                                                        <div class="col-12 col-md-9">
+                                                            <input type="text" id="finyear" name="finyear"
+                                                                placeholder="Financial Year" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group mt-2">
+                                                        <div class="col col-md-3">
+                                                            <label class="form-control-label">Start Date</label>
+                                                        </div>
+                                                        <div class="col-12 col-md-9">
+                                                            <input type="date" id="startdate" name="startdate"
+                                                                class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group mt-2">
+                                                        <div class="col col-md-3">
+                                                            <label class="form-control-label">End Date</label>
+                                                        </div>
+                                                        <div class="col-12 col-md-9">
+                                                            <input type="date" id="enddate" name="enddate" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group mt-2">
+                                                        <div class="col col-md-3">
+                                                            <label class="form-control-label">Status</label>
+                                                        </div>
+                                                        <div class="col-12 col-md-9">
+                                                            <select type="text" name="status" class="form-control">
+
+                                                                <option>Open</option>
+                                                                <option>Closed</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button id="btn_closegrantmodal" type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button id="btn_savegrant" type="button" class="btn btn-primary">Save
+                                                    Grant</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <form class="form-horizontal">
+                                    <div class="row form-group">
+                                        <div class="col-lg-10 col-md-9 col-sm-9 col-xs-6">
+
+                                            <input type="text" id="searchInput" class="form-control text-center"
+                                                style="::placeholder { color: red; }"
+                                                placeholder="Search by Grant No, Year or Status">
+                                        </div>
+                                        <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">
+                                            @if (auth()->user()->haspermission('canaddgrant'))
+                                                <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
+                                                    data-bs-target="#addgrantmodal">
+                                                    Add Grant
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <table id="grantstable" class="table table-responsive table-bordered table-striped table-hover"
+                                    style="margin:4px">
+                                    <thead class="bg-secondary text-white">
+                                        <tr>
+                                            <th scope="col">Grant No</th>
+                                            <th scope="col">Title</th>
+                                            <th scope="col">Fin Year</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Date Created</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        @endauth
+                    </div>
+                    <script>
+                        $(document).ready(function () {
+                            document.getElementById('startdate').addEventListener('change', function () {
+                                calculateFinYear();
+                            });
+                            document.getElementById('enddate').addEventListener('change', function () {
+                                calculateFinYear();
+                            });
+                            document.getElementById('btn_savegrant').addEventListener('click', function () {
+
+                                var formData = $('#form_addgrant').serialize();
+
+                                // Function to fetch data using AJAX
+                                $.ajax({
+                                    url: "{{ route('api.grants.post') }}",
+                                    type: 'POST',
+                                    data: formData,
+                                    dataType: 'json',
+                                    success: function (response) {
+                                        var closebtn = document.getElementById('btn_closegrantmodal');
+                                        if (closebtn) { closebtn.click(); }
+                                        showtoastmessage(response);
+                                        fetchgrantsData();
+                                    },
+                                    error: function (xhr, status, error) {
+                                        var mess = JSON.stringify(xhr.responseJSON.message);
+                                        var type = JSON.stringify(xhr.responseJSON.type);
+                                        var result = {
+                                            message: mess,
+                                            type: type
+                                        };
+                                        showtoastmessage(result);
+
+                                        console.error('Error fetching data:', error);
+                                    }
+                                });
+                            });
+                            // Function to fetch data using AJAX
+                            function fetchgrantsData() {
+                                $.ajax({
+                                    url: "{{ route('api.grants.fetchallgrants') }}",
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    success: function (response) {
+                                        populateTable(response);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error fetching data:', error);
+                                    }
+                                });
+                            }
+
+                            // Function to search data using AJAX
+                            function searchData(searchTerm) {
+                                $.ajax({
+                                    url: "{{ route('api.grants.fetchsearchgrants') }}",
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    data: {
+                                        search: searchTerm
+                                    },
+                                    success: function (response) {
+
+                                        populateTable(response);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error searching data:', error);
+                                    }
+                                });
+                            }
+
+                            var routeUrlTemplate = "{{ route('pages.grants.viewgrant', ['id' => '__ID__']) }}";
+                            // Function to populate table with data
+                            function populateTable(data) {
+                                var tbody = $('#grantstable tbody');
+                                tbody.empty(); // Clear existing table rows
+                                if (data.length > 0) {
+                                    $.each(data, function (index, data) {
+                                        var granturl = routeUrlTemplate.replace('__ID__', data.grantid);
+                                        var row = '<tr>' +
+                                            '<td>' + data.grantid + '</td>' +
+                                            '<td><a class="nav-link" href="' + granturl + '">' + data.title + '</a></td>' +
+                                            '<td>' + data.finyear + '</td>' +
+                                            '<td>' + data.status + '</td>' +
+                                            '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
+                                            '</tr>';
+                                        tbody.append(row);
+                                    });
+                                }
+                                else {
+                                    var row = '<tr><td colspan="5" class="text-center text-dark"><b>No Grants found</b></td></tr>';
+                                    tbody.append(row);
+                                }
+                            }
+
+                            // Initial fetch when the page loads
+                            fetchgrantsData();
+
+                            // Search input keyup event
+                            $('#searchInput').on('keyup', function () {
+                                var searchTerm = $(this).val().toLowerCase();
+                                if (searchTerm.length >= 3) { // Optional: adjust the minimum search term length
+                                    searchData(searchTerm);
+                                } else if (searchTerm.length === 0) {
+                                    fetchgrantsData(); // Fetch all data when search input is empty
+                                }
+                            });
+
+
+                            function calculateFinYear() {
+                                try {
+                                    var startdate = document.getElementById('startdate').value;
+                                    var enddate = document.getElementById('enddate').value;
+                                    var enddate_el = document.getElementById('enddate');
+                                    var finyear = document.getElementById('finyear');
+                                    if (!startdate || !enddate) {
+                                        finyear.value = null;
+                                        return;
+                                    }
+
+                                    var startDate = new Date(startdate);
+                                    var startYear = startDate.getFullYear();
+
+                                    var endDate = new Date(enddate);
+                                    var endYear = startDate.getFullYear();
+                                    if (startDate >= endDate) {
+                                        alert('The Start Date must not be greater than Enddate!');
+                                        finyear.value = null;
+                                        return;
+                                    }
+                                    if ((endYear - startYear) !== 1) {
+                                        alert('The Year difference should be Exactly 1!');
+                                        finyear.value = null;
+                                        enddate_el.value = null;
+                                        return;
+                                    }
+                                    var financialYear;
+                                    financialYear = `${startYear}/${endYear}`;
+
+                                    finyear.value = financialYear;
+                                }
+                                catch {
+
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+
+                <!-- settings tab -->
+                <div role="tabpanel" class="tab-pane" id="panel-settings">
+                    <div>
+                        <form class="form-horizontal">
+                            <div class="row form-group">
+                                <div class="col-12">
+                                    <input type="text" id="searchInput" class="form-control text-center"
+                                        style="::placeholder { color: red; }"
+                                        placeholder="Search by Researcher Name or Status">
+                                </div>
+                            </div>
+                        </form>
+                        <table id="allprojectstable" class="table table-responsive table-bordered table-striped table-hover"
+                            style="margin:4px">
+                            <thead class="bg-secondary text-white">
+                                <tr>
+                                    <th scope="col">#ID</th>
+                                    <th scope="col">Researcher</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Is Paused?</th>
+                                    <th scope="col">Start Date</th>
+                                    <th scope="col">End Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <script>
+
+                        $(document).ready(function () {
+                            var canviewuser = false;
+                            @if(Auth::user()->haspermission('canedituserprofile'))
+                                canviewuser = true;
+                            @endif
+
+                            // Function to fetch data using AJAX
+                            function fetchallprojects() {
+                                $.ajax({
+                                    url: "{{ route('api.projects.fetchallprojects') }}",
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    success: function (response) {
+                                        populateallProjects(response);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error fetching data:', error);
+                                    }
+                                });
+                            }
+
+                            // Function to search data using AJAX
+                            function searchallprojects(searchTerm) {
+                                $.ajax({
+                                    url: "{{ route('api.projects.fetchsearchallprojects') }}",
+                                    type: 'GET',
+                                    dataType: 'json',
+                                    data: {
+                                        search: searchTerm
+                                    },
+                                    success: function (response) {
+                                        populateallProjects(response);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error('Error searching data:', error);
+                                    }
+                                });
+                            }
+                            var routeUrlTemplate = "{{ route('pages.supervision.monitoring.monitoringpage', ['id' => '__ID__']) }}";
+
+                            // Function to populate table with data
+                            function populateallProjects(data) {
+                                var canviewuser = false;
+                                var tbody = $('#allprojectstable tbody');
+                                tbody.empty(); // Clear existing table rows
+                                if (data.length > 0 && tbody) {
+                                    $.each(data, function (index, data) {
+                                        var projecturl = routeUrlTemplate.replace('__ID__', data.researchid);
+                                        var row = '<tr>' +
+                                            '<td><a class="nav-link pt-0 pb-0" href="' + projecturl + '">' + data.researchnumber + '</a></td>' +
+                                            '<td>' + data.applicant?.name + '</td>' +
+                                            '<td>' + data.projectstatus + '</td>' +
+                                            '<td>' + Boolean(data.ispaused) + '</td>' +
+                                            '<td>' + new Date(data.proposal?.commencingdate).toDateString("en-US") + '</td>' +
+                                            '<td>' + new Date(data.proposal?.terminationdate).toDateString("en-US") + '</td>' +
+                                            '</tr>';
+                                        tbody.append(row);
+                                    });
+                                }
+                                else {
+                                    var row = '<tr><td colspan="5">No Active Projects found</td></tr>';
+                                    tbody.append(row);
+                                }
+                            }
+
+                            // Search input keyup event
+                            $('#searchInput').on('keyup', function () {
+                                var searchTerm = $(this).val().toLowerCase();
+                                if (searchTerm.length >= 3) { // Optional: adjust the minimum search term length
+                                    searchallprojects(searchTerm);
+                                } else if (searchTerm.length === 0) {
+                                    fetchallprojects(); // Fetch all data when search input is empty
+                                }
+                            });
+
+                            // Initial fetch when the page loads
+                            fetchallprojects();
+                        });
+                    </script>
+
+
+                </div>
+
             </div>
-            <form class="form-horizontal">
-                <div class="row form-group">
-                    <div class="col-lg-10 col-md-9 col-sm-9 col-xs-6">
-
-                        <input type="text" id="searchInput" class="form-control text-center"
-                            style="::placeholder { color: red; }" placeholder="Search by Grant No, Year or Status">
-                    </div>
-                    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">
-                        @if (auth()->user()->haspermission('canaddgrant'))
-                            <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
-                                data-bs-target="#addgrantmodal">
-                                Add Grant
-                            </button>
-                        @endif
-                    </div>
-                </div>
-            </form>
-
-            <table id="grantstable" class="table table-responsive table-bordered table-striped table-hover"
-                style="margin:4px">
-                <thead class="bg-secondary text-white">
-                    <tr>
-                        <th scope="col">Grant No</th>
-                        <th scope="col">Title</th>
-                        <th scope="col">Fin Year</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Date Created</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-            </table>
         </div>
-    @endauth
-</div>
-<script>
-    $(document).ready(function () {
-        document.getElementById('startdate').addEventListener('change', function () {
-            
-            calculateFinYear();
-        });
-        document.getElementById('enddate').addEventListener('change', function () {
-            calculateFinYear();
-        });
-        document.getElementById('btn_savegrant').addEventListener('click', function () {
-
-            var formData = $('#form_addgrant').serialize();
-
-            // Function to fetch data using AJAX
-            $.ajax({
-                url: "{{ route('api.grants.post') }}",
-                type: 'POST',
-                data: formData,
-                dataType: 'json',
-                success: function (response) {
-                    var closebtn = document.getElementById('btn_closegrantmodal');
-                    if (closebtn) { closebtn.click(); }
-                    showtoastmessage(response);
-                    fetchgrantsData();
-                },
-                error: function (xhr, status, error) {
-                    var mess = JSON.stringify(xhr.responseJSON.message);
-                    var type = JSON.stringify(xhr.responseJSON.type);
-                    var result = {
-                        message: mess,
-                        type: type
-                    };
-                    showtoastmessage(result);
-
-                    console.error('Error fetching data:', error);
-                }
-            });
-        });
-        // Function to fetch data using AJAX
-        function fetchgrantsData() {
-            $.ajax({
-                url: "{{ route('api.grants.fetchallgrants') }}",
-                type: 'GET',
-                dataType: 'json',
-                success: function (response) {
-                    populateTable(response);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error fetching data:', error);
-                }
-            });
-        }
-
-        // Function to search data using AJAX
-        function searchData(searchTerm) {
-            $.ajax({
-                url: "{{ route('api.grants.fetchsearchgrants') }}",
-                type: 'GET',
-                dataType: 'json',
-                data: {
-                    search: searchTerm
-                },
-                success: function (response) {
-
-                    populateTable(response);
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error searching data:', error);
-                }
-            });
-        }
-
-        var routeUrlTemplate = "{{ route('pages.grants.viewgrant', ['id' => '__ID__']) }}";
-        // Function to populate table with data
-        function populateTable(data) {
-            var tbody = $('#grantstable tbody');
-            tbody.empty(); // Clear existing table rows
-            if (data.length > 0) {
-                $.each(data, function (index, data) {
-                    var granturl = routeUrlTemplate.replace('__ID__', data.grantid);
-                    var row = '<tr>' +
-                        '<td>' + data.grantid + '</td>' +
-                        '<td><a class="nav-link" href="' + granturl + '">' + data.title + '</a></td>' +
-                        '<td>' + data.finyear + '</td>' +
-                        '<td>' + data.status + '</td>' +
-                        '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
-                        '</tr>';
-                    tbody.append(row);
-                });
-            }
-            else {
-                var row = '<tr><td colspan="5" class="text-center text-dark"><b>No Grants found</b></td></tr>';
-                tbody.append(row);
-            }
-        }
-
-        // Initial fetch when the page loads
-        fetchgrantsData();
-
-        // Search input keyup event
-        $('#searchInput').on('keyup', function () {
-            var searchTerm = $(this).val().toLowerCase();
-            if (searchTerm.length >= 3) { // Optional: adjust the minimum search term length
-                searchData(searchTerm);
-            } else if (searchTerm.length === 0) {
-                fetchgrantsData(); // Fetch all data when search input is empty
-            }
-        });
 
 
-        function calculateFinYear() {
-            try {
-                var startdate = document.getElementById('startdate').value;
-                var enddate = document.getElementById('enddate').value;
-                var enddate_el = document.getElementById('enddate');
-                var finyear = document.getElementById('finyear');
-                if (!startdate || !enddate) {
-                    finyear.value=null;
-                    return;
-                }
-
-                var startDate = new Date(startdate);
-                var startYear = startDate.getFullYear();
-
-                var endDate = new Date(enddate);
-                var endYear = startDate.getFullYear();
-                if(startDate>=endDate){
-                    alert('The Start Date must not be greater than Enddate!');
-                    finyear.value=null;
-                    return;
-                }
-                if((endYear-startYear)!==1){
-                    alert('The Year difference should be Exactly 1!');
-                    finyear.value=null; 
-                    enddate_el.value=null;
-                    return;
-                }
-                var financialYear;
-                financialYear = `${startYear}/${endYear}`;
-
-                finyear.value = financialYear;
-            }
-            catch {
-
-            }
-        }
-    });
-</script>
+    </div>
+@endauth
 @endsection
