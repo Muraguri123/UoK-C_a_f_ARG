@@ -322,7 +322,7 @@ $.ajax({
                                             @foreach ($permissions->where('targetrole', 1)->toQuery()->orderBy('permissionlevel')->orderBy('priorityno')->get() as $perm)
                                                 <tr> 
                                                     <td>
-                                                        <input id=" {{$perm->pid}} " class="form-check-input" value=" {{$perm->pid}} " type="checkbox" 
+                                                        <input id="{{$perm->pid}}" class="form-check-input" value="{{$perm->pid}}" type="checkbox" 
                                                         {{ isset($user) && $user->haspermission($perm->shortname) ? 'checked' : '' }}>
                                                     </td>
                                                     <td>
@@ -355,14 +355,37 @@ $.ajax({
                                     </div>
                                     <div class="card-body">
                                         @if (isset($permissions))
-                                            @foreach ($permissions->where('targetrole', 2) as $perm)
-                                                <div class="form-check ">
-                                                    <input id="{{$perm->pid}}" class="form-check-input" value="{{$perm->pid}}"
-                                                        type="checkbox" {{ isset($user) && $user->haspermission($perm->shortname) ? 'checked' : '' }}>
-                                                    <label for="{{$perm->pid}}"
-                                                        class="form-check-label">{{$perm->menuname }}---{{$perm->description}}</label>
-                                                </div>
+                                        <table class="table table-responsive table-bordered table-hover">
+                                        <thead class="bg-secondary text-white">
+                                            <td>Value</td>
+                                            <td>Menu Name</td>
+                                            <td>Role</td>
+                                            <td>Description</td>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($permissions->where('targetrole', 2) as $perm)
+                                                <tr> 
+                                                    <td>
+                                                        <input id=" {{$perm->pid}} " class="form-check-input" value=" {{$perm->pid}} " type="checkbox" 
+                                                        {{ isset($user) && $user->haspermission($perm->shortname) ? 'checked' : '' }}>
+                                                    </td>
+                                                    <td>
+                                                        <label for="{{$perm->pid}}"
+                                                            class="form-check-label">{{$perm->menuname }}</label>
+                                                    </td>
+                                                    <td>
+                                                        <label for="{{$perm->pid}}"
+                                                            class="form-check-label">{{$perm->targetrole==1? 'Admin' : 'Non Admin'}}</label>
+                                                    </td> 
+                                                    <td>
+                                                        <label for="{{$perm->pid}}"
+                                                            class="form-check-label">{{$perm->description}}</label>
+                                                    </td> 
+                                                </tr>
                                             @endforeach
+                                        </tbody>
+                                    </table>    
+                                       
                                         @endif
                                     </div>
                                 </div>

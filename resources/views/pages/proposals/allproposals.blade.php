@@ -32,19 +32,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- @foreach ($allproposals as $prop)
-                            <tr style="height:16px">
-                                <td><a class="nav-link"
-                                        href="{{route("pages.proposals.viewproposal", ['id' => $prop->proposalid])}}">{{ $prop->applicant->name }}</a>
-                                </td>
-                                <td style="height:16px">{{ $prop->grantitem->grantid}}</td>
-                                <td>{{ $prop->themeitem->themename}}</td>
-                                <td>{{ $prop->highqualification }}</td>
-                                <td>{{ $prop->department->shortname }}</td>
-                                <td>{{ $prop->approvalstatus }}</td>
-                                <td>{{ $prop->created_at->format('F j, Y') }}</td>
-                            </tr>
-                        @endforeach -->
+                 
                 </tbody>
             </table>
         </div>
@@ -99,7 +87,7 @@
                     var row = '<tr>' +
                         '<td><a class="nav-link pt-0 pb-0" href="' + proposalUrl + '">' + data.proposalcode + '</a></td>' +
                         '<td>' + data.applicant.name + '</td>' +
-                        '<td>' + (data.grantitem ? data.grantitem.grantid + ' - (' + data.grantitem.finyear + ')' : '') + '</td>' +
+                        '<td>' + (data.grantitem ? data.grantitem.grantid + ' - (' + data.grantitem.title + ')' : '') + '</td>' +
                         '<td>' + (data.themeitem ? data.themeitem.themename : '') + '</td>' +
                         '<td>' + data.highqualification + '</td>' +
                         '<td>' + (data.department ? data.department.shortname : '') + '</td>' +

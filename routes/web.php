@@ -27,7 +27,8 @@ use App\Http\Controllers\{
     ProjectsController,
     TestController,
     PDFController,
-    SupervisionController
+    SupervisionController,
+    FinYearController,
 };
 
 
@@ -146,6 +147,14 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/grants/edit/{id}', [GrantsController::class, 'geteditsinglegrantpage'])->name('pages.grants.editgrant');
     Route::post('/grants/edit/{id}', [GrantsController::class, 'updategrant'])->name('api.grants.updategrant');
 
+     //finyears
+     Route::post('/finyear/post', [FinYearController::class, 'postnewfinyear'])->name('api.finyear.post');
+     Route::get('/finyear/fetchallfinyears', [FinYearController::class, 'fetchallfinyears'])->name('api.finyear.fetchallfinyears');
+    //  Route::get('/grants/fetchsearchgrants', [GrantsController::class, 'fetchsearchgrants'])->name('api.grants.fetchsearchgrants');
+    //  Route::get('/grants/view/{id}', [GrantsController::class, 'getviewsinglegrantpage'])->name('pages.grants.viewgrant');
+    //  Route::get('/grants/edit/{id}', [GrantsController::class, 'geteditsinglegrantpage'])->name('pages.grants.editgrant');
+    //  Route::post('/grants/edit/{id}', [GrantsController::class, 'updategrant'])->name('api.grants.updategrant');
+ 
     //users
     Route::get('/users/manage', [UsersController::class, 'viewallusers'])->name('pages.users.manage');
     Route::get('/users/view/{id}', [UsersController::class, 'viewsingleuser'])->name('pages.users.viewsingleuser');

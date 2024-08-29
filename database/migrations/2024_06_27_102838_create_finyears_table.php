@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('grants', function (Blueprint $table) {
-            $table->unsignedInteger('grantid')->autoIncrement();  
-            $table->string('title');
-            $table->unsignedBigInteger('finyearfk'); 
-            $table->string('status'); 
+        Schema::create('finyears', function (Blueprint $table) {
+            $table->id();
+            $table->string('finyear')->unique();
+            $table->date('startdate')->nullable();
+            $table->date('enddate')->nullable();
+            $table->string('description')->nullable();
             $table->timestamps();
-            $table->foreign('finyearfk')->references('id')->on('finyears')->onDelete('restrict');
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('grants');
+        Schema::dropIfExists('finyears');
     }
 };

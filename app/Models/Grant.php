@@ -25,4 +25,8 @@ class Grant extends Model
     {
         return $this->hasMany(Proposal::class,'grantnofk','grantid');
     }
+    public function financialyear(){
+        return $this->belongsTo(FinancialYear::class, 'finyearfk', 'id');
+
+    }
 }

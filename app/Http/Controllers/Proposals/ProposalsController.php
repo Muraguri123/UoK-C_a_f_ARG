@@ -7,6 +7,7 @@ use App\Http\Controllers\MailingController;
 use App\Models\Collaborator;
 use App\Models\Department;
 use App\Models\Expenditureitem;
+use App\Models\GlobalSetting;
 use App\Models\Grant;
 use App\Models\Permission;
 use App\Models\Proposal;
@@ -41,11 +42,12 @@ class ProposalsController extends Controller
         $departments = Department::all();
         $themes = ResearchTheme::all();
         $user = auth()->user();
-        $grants = Grant::where('status', 'Open')
+        $currentgrant = GlobalSetting::where('item', 'current_open_grant')->first();
+        $grants = Grant::where('grantid', $currentgrant->value1)
             ->whereDoesntHave('proposals', function ($query) use ($user) {
                 $query->where('useridfk', $user->userid);
-            })
-            ->get();
+            })->get();
+
         return view('pages.proposals.proposalform', compact('isnewprop', 'departments', 'grants', 'themes'));
     }
 
@@ -255,7 +257,8 @@ class ProposalsController extends Controller
 
             }
             return response(['message' => 'Application Submitted Successfully!!', 'type' => 'success']);
-        } else {
+        }
+        else {
             return response(['message' => 'Application not ready for Submission. Has incomplete Details!', 'type' => 'warning']);
         }
 
@@ -296,8 +299,10 @@ class ProposalsController extends Controller
     public function approverejectproposal(Request $request, $id)
     {
         if ($request->input('status') == "Approved" && auth()->user()->haspermission('canapproveproposal')) {
-        } else if ($request->input('status') == "Rejected" && auth()->user()->haspermission('canrejectproposal')) {
-        } else {
+        }
+        else if ($request->input('status') == "Rejected" && auth()->user()->haspermission('canrejectproposal')) {
+        }
+        else {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to  Approve/Reject this Proposal!");
         }
 
@@ -341,9 +346,11 @@ class ProposalsController extends Controller
             $mailingController = new MailingController();
             $mailingController->notifyusersapprovedproposal($proposal);
             return response(['message' => 'Proposal Approved Successfully! Project Started!', 'type' => 'success']);
-        } else if ($request->input('status') == "Rejected") {
+        }
+        else if ($request->input('status') == "Rejected") {
             return response(['message' => 'Proposal Rejected Successfully!!', 'type' => 'success']);
-        } else {
+        }
+        else {
             return response(['message' => 'Unknown Action on Status!!', 'type' => 'danger']);
         }
 
@@ -355,7 +362,8 @@ class ProposalsController extends Controller
         $response = $this->querysubmissionstatus($id);
         if ($response['basic'] == 2 && $response['design'] == 2 && $response['expenditure'] == 2 && $response['workplan'] == 2 && $response['researchinfo'] == 2) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
 
@@ -366,7 +374,8 @@ class ProposalsController extends Controller
 
         if ($user->haspermission($id)) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
 
@@ -525,7 +534,8 @@ class ProposalsController extends Controller
         $total = $rule_40 + $rule_60;
         if ($rule_40 <= (0.4 * $total)) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }

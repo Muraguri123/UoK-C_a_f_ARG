@@ -123,7 +123,7 @@
                                     <option value="">Select a Grant Item</option>
                                     @foreach ($grants as $grant)
                                                                                 <option value="{{ $grant->grantid }}" {{ (isset($prop) && $prop->grantnofk == $grant->grantid) ? 'selected' : '' }}>
-                                            {{ $grant->grantid . ' - (' . $grant->finyear . ')'}}
+                                            {{ $grant->grantid . ' - (' . $grant->title . ')'}}
                                         </option>
                                     @endforeach 
                                                             </select>
