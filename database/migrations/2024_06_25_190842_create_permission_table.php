@@ -13,7 +13,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('permissions', function (Blueprint $table) {
-            $table->uuid('pid')->primary(); // Auto-incrementing id column
+            $table->uuid('pid')->primary(); 
             $table->string('menuname'); // Menu name column
             $table->string('shortname')->unique(); // Role name column
             $table->string('path'); // Role URL column

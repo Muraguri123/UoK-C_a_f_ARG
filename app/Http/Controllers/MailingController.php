@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendEmailNotification;
 use App\Mail\VerificationMail;
+use App\Models\NotificationType;
 use App\Models\Permission;
 use App\Models\Proposal;
 use App\Models\User;
+use App\Notifications\GeneralProposalAction;
 use App\Notifications\ProposalApprovedNotification;
 use App\Notifications\ProposalReceivedNotification;
 use App\Notifications\ProposalSubmitted;
@@ -116,6 +118,8 @@ class MailingController extends Controller
 
     }
 
+
+
     //notify owner of their proposal being received
     public function notifyUserReceivedProposal($proposal)
     {
@@ -140,7 +144,7 @@ class MailingController extends Controller
                     // Notification::route('mail', $user->email)->notify($notification);
                     SendEmailNotification::dispatch($user->email, $notification);
                 } catch (Exception $e) {
-                    Log::error("Failed to send email to {$user->email}: " . $e->getMessage());
+                    Log::error("An error occurred while sending the proposal received notification: " . $e->getMessage());
                     // Handle the error accordingly, such as updating a database record
                 }
             }
@@ -224,4 +228,41 @@ class MailingController extends Controller
         }
 
     }
+
+    ///general function for proposlas
+    public function notifyUsersOfProposalActivity($activityname,$subject,$level,$introLines,$actionText,$actionUrl)
+    {
+        if (NotificationType::where('typename', $activityname)->exists()) {
+            $not_type = NotificationType::where('typename', $activityname)->first();
+            $users = $this->getNotificationTypeUsers($not_type->typeuuid); //->pluck('email')->toArray()
+            // $emails = $this->getNotificationTypeUsers($not_type->typeuuid)->pluck('email')->toArray();
+            $outroLines = ['If you received this message mistakenly, Kindly Ignore and report to the Administrator to prevent receiving this mail again in future.'];
+            $salutation = 'Best Regards';
+            // Send the notification to all email addresses
+            foreach ($users as $user) {
+                try {
+                    // notification instance
+                    $personName = $user->name;
+                    $greeting = 'Hello Dear, ' . $personName;
+                    $notification = new GeneralProposalAction($subject, $greeting, $level, $introLines, $actionUrl, $actionText, $outroLines, $salutation);
+                    // Notification::route('mail', $user->email)->notify($notification);
+                    SendEmailNotification::dispatch($user->email, $notification);
+                } catch (Exception $e) {
+                    Log::error("Failed to send email to {$user->email}: " . $e->getMessage());
+                    // Handle the error accordingly, such as updating a database record
+                }
+
+            }
+        }
+    }
+     //getmails with permission
+     public function getNotificationTypeUsers($typeid)
+     {
+         // Fetch emails of users who have the specified permission
+         $users = User::whereHas('notifiabletypes', function ($query) use ($typeid) {
+             $query->where('notificationfk', $typeid);
+         })->get();
+ 
+         return $users;
+     }
 }

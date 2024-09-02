@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class ProposalApprovedNotification extends Notification
+class GeneralProposalAction extends Notification
 {
     use Queueable;
     // properties

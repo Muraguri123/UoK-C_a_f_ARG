@@ -241,21 +241,11 @@ class ProposalsController extends Controller
             $proposal->save();
             //notifiable users to be informed of new proposal
             if (Permission::where('shortname', 'cangetnewproposalnotification')->exists()) {
-                // $permission = Permission::where('shortname', 'cangetnewproposalnotification')->first();
-
-                // $mailingController = new MailingController();
-                // $emails = $mailingController->getEmailsByPermission($permission->pid);
-                // $details = [
-                //     'title' => '',
-                //     'body' => 'New Proposal Received.'
-                // ];
-
                 // Create an instance of MailingController and call the sendMail function
                 $mailingController = new MailingController();
-                $mailingController->notifyusersnewProposal($proposal);
-
-
-            }
+                $url = route('pages.proposals.viewproposal', ['id' => $proposal->proposalid]);
+                $mailingController->notifyUsersOfProposalActivity('proposalsubmitted','New Proposal','success',['You have a New Proposal Pending Receival and processing.'],'View Proposal',$url);
+           }
             return response(['message' => 'Application Submitted Successfully!!', 'type' => 'success']);
         }
         else {
@@ -270,12 +260,15 @@ class ProposalsController extends Controller
         }
 
         $proposal = Proposal::findOrFail($id);
-
+        if ($proposal->receivedstatus) {
+            return response(['message' => 'This Proposal has been received before!!', 'type' => 'warning']);
+        }
         $proposal->receivedstatus = true;
         $proposal->caneditstatus = false;
         $proposal->save();
         $mailingController = new MailingController();
-        $mailingController->notifyUserReceivedProposal($proposal);
+        $Url = route('pages.proposals.viewproposal', ['id' => $proposal->proposalid]);
+        $mailingController->notifyUsersOfProposalActivity('proposalreceived', 'Proposal Received!', 'success', ['Your Proposal has been Received Successfully.'], 'View Proposal', $Url);
         return response(['message' => 'Proposal received Successfully!!', 'type' => 'success']);
 
 
@@ -319,25 +312,34 @@ class ProposalsController extends Controller
         }
 
         $proposal = Proposal::findOrFail($id);
-
+        if (!$proposal->submittedstatus ) {
+            return response(['message' => 'This Proposal has not been Submitted by the owner!!', 'type' => 'danger']);
+        }
+        if (!$proposal->receivedstatus ) {
+            return response(['message' => 'This Proposal has not been Received!!', 'type' => 'danger']);
+        }
+        if ($proposal->approvalstatus == 'Rejected' || ResearchProject::where('proposalidfk', $id)->exists()) {
+            return response(['message' => 'This Proposal has been Approved or Rejected before!!', 'type' => 'danger']);
+        }
         DB::transaction(function () use ($id, $request) {
             $proposal = Proposal::findOrFail($id);
             $proposal->approvalstatus = $request->input('status');
             $proposal->comment = $request->input('comment');
+            $proposal->caneditstatus = false;
             $proposal->saveOrFail();
 
             $grant = Grant::findOrFail($proposal->grantnofk);
 
             if ($request->input('status') == "Approved") {
                 $lastRecord = ResearchProject::orderBy('researchid', 'desc')->first();
-                $incrementNumber = $lastRecord ? $lastRecord->proposalid + 1 : 1;
+                $incrementNumber = $lastRecord ? $lastRecord->researchid + 1 : 1;
                 $generatedCode = 'UOK/ARG/' . $grant->finyear . '/' . $incrementNumber;
                 // new project
                 $project = new ResearchProject();
                 $project->researchnumber = $generatedCode;
                 $project->proposalidfk = $proposal->proposalid;
                 $project->projectstatus = 'Active';
-                $project->iscompleted = false;
+                $project->ispaused = false;
                 $project->saveOrFail();
             }
 

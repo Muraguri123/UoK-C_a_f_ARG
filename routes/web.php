@@ -160,10 +160,15 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/users/view/{id}', [UsersController::class, 'viewsingleuser'])->name('pages.users.viewsingleuser');
     Route::get('/users/fetchsearchusers', [UsersController::class, 'fetchsearchusers'])->name('api.users.fetchsearchusers');
     Route::get('/users/fetchallusers', [UsersController::class, 'fetchallusers'])->name('api.users.fetchallusers');
+    Route::get('/notificationtype/fetchalltypes', [UsersController::class, 'fetchallnotificationtypes'])->name('api.users.fetchallnotificationtypes');
     Route::post('/users/updatebasicdetails/{id}', [UsersController::class, 'updatebasicdetails'])->name('api.users.updatebasicdetails');
     Route::post('/users/permissions/{id}', [UsersController::class, 'updateuserpermissions'])->name('api.users.updatepermissions');
     Route::post('/users/updaterole/{id}', [UsersController::class, 'updaterole'])->name('api.users.updaterole');
     Route::post('/users/resetpassword/{id}', [RegisterController::class, 'resetuserpassword'])->name('api.users.resetpassword');
+    //notificationtypes
+    Route::get('/notificationtype/view/{id}', [UsersController::class, 'managenotificationtype'])->name('pages.notificationtype.managenotificationtype');
+    Route::get('/notificationtype/fetchalltypes', [UsersController::class, 'fetchallnotificationtypes'])->name('api.notificationtype.fetchallnotificationtypes');
+    Route::get('/notificationtype/fetchtypewiseusers/{id}', [UsersController::class, 'fetchtypewiseusers'])->name('api.notificationtype.fetchtypewiseusers');
 
 
     //collaborators

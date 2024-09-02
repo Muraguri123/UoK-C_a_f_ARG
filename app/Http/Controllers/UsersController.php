@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\NotifiableUsers;
+use App\Models\NotificationType;
 use App\Models\Permission;
 use App\Models\User;
 use Faker\Core\Number;
@@ -21,7 +23,7 @@ class UsersController extends Controller
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to View Users!");
         }
         $allusers = User::all();
-        return view('pages.users.manage', compact('allusers'));
+        return view('pages.users.home', compact('allusers'));
     }
 
     public function updateuserpermissions(Request $request, $id)
@@ -48,7 +50,8 @@ class UsersController extends Controller
                             $user->permissions()->attach($permission->pid, ['id' => (string) Str::uuid()]);
                         }
                     }
-                } else {
+                }
+                else {
                     $applicantpermissions = Permission::where('targetrole', $user->role)->get();
                     foreach ($applicantpermissions as $permission) {
                         $user->permissions()->attach($permission->pid, ['id' => (string) Str::uuid()]);
@@ -56,7 +59,8 @@ class UsersController extends Controller
                 }
             });
             return response()->json(['message' => 'Permissions updated successfully.', 'type' => "success"]);
-        } else {
+        }
+        else {
             return response()->json(['message' => 'Administrator has exclusively all rights!', 'type' => 'warning']);
         }
 
@@ -83,10 +87,12 @@ class UsersController extends Controller
             if ($request->has('isadmin') && $request->input('isadmin') == 'on') {
                 $user->isadmin = true;
                 $user->role = 1;
-            } elseif ($request->has('userrole')) {
+            }
+            elseif ($request->has('userrole')) {
                 $user->role = (int) $request->input('userrole');
                 $user->isadmin = false;
-            } else {
+            }
+            else {
                 $user->isadmin = false;
             }
 
@@ -96,7 +102,8 @@ class UsersController extends Controller
             // Update permissions based on the role
             if ($user->role == 2) {
                 $applicantPermissions = Permission::where('targetrole', $user->role)->get();
-            } else {
+            }
+            else {
                 $applicantPermissions = $this->getNonApplicantDefaultRights();
             }
 
@@ -183,17 +190,20 @@ class UsersController extends Controller
     {
         if (!auth()->user()->haspermission('canviewallusers')) {
             return response()->json([]);
-        } else {
+        }
+        else {
             $data = User::all();
             return response()->json($data); // Return  data as JSON
         }
     }
 
+
     public function fetchsearchusers(Request $request)
     {
         if (!auth()->user()->haspermission('canviewallusers')) {
             return response()->json([]);
-        } else {
+        }
+        else {
             $searchTerm = $request->input('search');
             $data = User::where('name', 'like', '%' . $searchTerm . '%')
                 ->orWhere('email', 'like', '%' . $searchTerm . '%')
@@ -206,4 +216,38 @@ class UsersController extends Controller
     }
 
 
+    ////////
+    //Notifications functions
+    ////////
+    public function managenotificationtype($id)
+    {
+        if (!auth()->user()->haspermission('canviewnotificationtypestab')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit this User!");
+        }
+        // Find the user by ID or fail with a 404 error
+        $notificationtype = NotificationType::findOrFail($id);
+        // Return the view with the proposal data
+        return view('pages.users.usernotifications', compact('notificationtype'));
+    }
+    public function fetchallnotificationtypes()
+    {
+        if (!auth()->user()->haspermission('canviewnotificationtypestab')) {
+            return response()->json([]);
+        }
+        else {
+            $data = NotificationType::all();
+            return response()->json($data); // Return  data as JSON
+        }
+    }
+
+    public function fetchtypewiseusers($id)
+    {
+        if (!auth()->user()->haspermission('canviewnotificationtypestab')) {
+            return response()->json([]);
+        }
+        else {
+            $data = NotifiableUsers::where('notificationfk',$id)->get();
+            return response()->json($data); // Return  data as JSON
+        }
+    }
 }

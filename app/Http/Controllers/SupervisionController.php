@@ -20,7 +20,7 @@ class SupervisionController extends Controller
     {
         $project = ResearchProject::with(['proposal.applicant'])->findOrFail($id);
 
-        if (!auth()->user()->hasPermission('canviewsupervisionpage') || $project->supervisorfk!=auth()->user()->userid) {
+        if (!auth()->user()->hasPermission('canviewmonitoringpage') || $project->supervisorfk!=auth()->user()->userid) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Monitor this Project!");
         }
 
@@ -30,7 +30,7 @@ class SupervisionController extends Controller
     public function fetchmonitoringreport($id)
     {
        
-        if (!auth()->user()->hasPermission('canviewsupervisionpage')) {
+        if (!auth()->user()->hasPermission('canviewmonitoringpage')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to view this Project Funding!");
         }
 
@@ -41,7 +41,7 @@ class SupervisionController extends Controller
     }
     public function addreport(Request $request, $id)
     {
-        if (!auth()->user()->hasPermission('canviewsupervisionpage')) {
+        if (!auth()->user()->hasPermission('canviewmonitoringpage')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Add funds to this Project!");
         }
 

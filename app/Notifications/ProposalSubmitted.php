@@ -60,7 +60,7 @@ class ProposalSubmitted extends Notification
     {
         return (new MailMessage)
         ->subject($this->subject)
-        ->markdown('notifications.proposalsubmitted', [
+        ->markdown('notifications.generalproposalactivity', [
             'greeting' => $this->greeting,
             'level' => $this->level,
             'introLines' => $this->introLines,

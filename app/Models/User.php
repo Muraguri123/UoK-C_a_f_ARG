@@ -98,7 +98,11 @@ class User extends Authenticatable
             return $this->belongsToMany(Permission::class, 'userpermissions', 'useridfk', 'permissionidfk')->orderBy('priorityno');
         }
     }
+    public function notifiabletypes()
+    {
+        return $this->belongsToMany(NotificationType::class, 'notifiableusers', 'useridfk', 'notificationfk');
 
+    }
     public function defaultpermissions()
     {
         $defaultp = Permission::where('targetrole', Auth::user()->role)->orderBy('priorityno');
