@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Proposal;
 use App\Models\ResearchFunding;
 use App\Models\ResearchProgress;
 use App\Models\ResearchProject;
@@ -165,12 +166,16 @@ class ProjectsController extends Controller
             return response(['message' => 'Fill all the required Fields!', 'type' => 'danger'], 400);
 
         }
-
+        $project=ResearchProject::with('applicant')->findOrFail($id);
         $item = new ResearchProgress();
         $item->researchidfk = $request->input('researchidfk');
         $item->reportedbyfk = $request->input('reportedbyfk');
         $item->report = $request->input('report');
         $item->save();
+        //notify
+        $mailingController = new MailingController();
+        $url = route('pages.projects.viewanyproject', ['id' => $item->researchidfk]);
+        $mailingController->notifyUsersOfProposalActivity('projectprogressreport', 'Project Progress!', 'success', ['Researcher ' . $project->applicant->name . ' has  Submitted his/her progress for this Project.', 'Project Refference : ' . $project->researchnumber], 'View Project', $url);
 
         // Optionally, return a response or redirect
         return response(['message' => 'Report Submitted Successfully!!', 'type' => 'success']);
@@ -182,12 +187,20 @@ class ProjectsController extends Controller
         if (!auth()->user()->hasPermission('canpauseresearchproject')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not authorized to pause this Project!");
         }
+
         $item = ResearchProject::findOrFail($id);
+
+        if ($item->ispaused) {
+            return redirect()->back()->with('projectalreadypausedmessage', 'This Project has already been Paused!');
+        }
         $item->ispaused = true;
         $item->save();
+        $mailingController = new MailingController();
+        $url = route('pages.projects.viewanyproject', ['id' => $item->researchid]);
+        $mailingController->notifyUsersOfProposalActivity('projectpaused', 'Project Paused!', 'success', ['This Project has been Paused Successfully.'], 'View Project', $url);
 
         // Optionally, return a response or redirect
-        return redirect(route('pages.projects.viewanyproject',['id'=>$id]));
+        return redirect(route('pages.projects.viewanyproject', ['id' => $id]));
 
 
     }
@@ -196,12 +209,20 @@ class ProjectsController extends Controller
         if (!auth()->user()->hasPermission('canresumeresearchproject')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not authorized to pause this Project!");
         }
+
         $item = ResearchProject::findOrFail($id);
+        if (!$item->ispaused) {
+            return redirect()->back()->with('projectnotpausedmessage', 'This Project cannot Resume because its not Paused!');
+        }
         $item->ispaused = false;
         $item->save();
 
+        $mailingController = new MailingController();
+        $url = route('pages.projects.viewanyproject', ['id' => $item->researchid]);
+        $mailingController->notifyUsersOfProposalActivity('projectpaused', 'Project Paused!', 'success', ['This Project has been Paused Successfully.'], 'View Project', $url);
+
         // Optionally, return a response or redirect
-        return redirect(route('pages.projects.viewanyproject',['id'=>$id]));
+        return redirect(route('pages.projects.viewanyproject', ['id' => $id]));
 
 
     }
@@ -211,23 +232,39 @@ class ProjectsController extends Controller
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not authorized to pause this Project!");
         }
         $item = ResearchProject::findOrFail($id);
+
+        if ($item->projectstatus != 'Active') {
+            return redirect()->back()->with('projectnotcancelledmessage', 'This Project cannot be Cancelled because its not Active!');
+        }
         $item->projectstatus = 'Cancelled';
         $item->save();
+        $mailingController = new MailingController();
+        $url = route('pages.projects.viewanyproject', ['id' => $item->researchid]);
+        $mailingController->notifyUsersOfProposalActivity('projectcancelled', 'Project Cancelled!', 'success', ['This Project has been Cancelled and Stopped Successfully.'], 'View Project', $url);
 
         // Optionally, return a response or redirect
-        return redirect(route('pages.projects.viewanyproject',['id'=>$id]));
+        return redirect(route('pages.projects.viewanyproject', ['id' => $id]));
     }
     public function completeproject(Request $request, $id)
     {
         if (!auth()->user()->hasPermission('cancompleteresearchproject')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not authorized to pause this Project!");
         }
+
         $item = ResearchProject::findOrFail($id);
+
+        if ($item->projectstatus != 'Active' || $item->ispaused) {
+            return redirect()->back()->with('projectnotcompletedmessage', 'This Project cannot be Completed because its not Active or it has been Paused!');
+        }
         $item->projectstatus = 'Completed';
         $item->save();
 
+        $mailingController = new MailingController();
+        $url = route('pages.projects.viewanyproject', ['id' => $item->researchid]);
+        $mailingController->notifyUsersOfProposalActivity('projectcompleted', 'Project Completed!', 'success', ['This Project has been Completed and Closed Successfully.'], 'View Project', $url);
+
         // Optionally, return a response or redirect
-        return redirect(route('pages.projects.viewanyproject',['id'=>$id]));
+        return redirect(route('pages.projects.viewanyproject', ['id' => $id]))->with('projectcompletedmessage', 'This Project has been Completed and Closed Successfully!');
     }
     public function fetchprojectprogress($id)
     {
@@ -257,14 +294,22 @@ class ProjectsController extends Controller
             return response(['message' => 'Fill all the required Fields!', 'type' => 'danger'], 400);
 
         }
+        $tranches = ResearchFunding::where('researchidfk', $id)->count();
+        if ($tranches >= 3) {
+            return redirect()->back()->with('projectfundinglimit', 'This Project has reached the Maximum number of Funding Tranches!');
+        }
         $item = new ResearchFunding();
         $item->researchidfk = $id;
         $item->createdby = Auth::user()->userid;
         $item->amount = $request->input('amount');
         $item->save();
 
+        $mailingController = new MailingController();
+        $url = route('pages.projects.viewanyproject', ['id' => $id]);
+        $mailingController->notifyUsersOfProposalActivity('projectdfundingreleased', 'Project Funding Released!', 'success', ['This Project has received a funding of Ksh ' . $request->input('amount') . ', Dispatched by ' . auth()->user()->name], 'View Project', $url);
+
         // Optionally, return a response or redirect
-        return response(['message' => 'Funding Submitted Successfully!!', 'type' => 'success']);
+        return response(['message' => 'Funding Release Submitted Successfully!!', 'type' => 'success']);
 
 
     }

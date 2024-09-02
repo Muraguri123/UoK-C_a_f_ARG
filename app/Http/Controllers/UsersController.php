@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\NotifiableUsers;
+use App\Models\NotifiableUser;
 use App\Models\NotificationType;
 use App\Models\Permission;
 use App\Models\User;
@@ -226,8 +226,98 @@ class UsersController extends Controller
         }
         // Find the user by ID or fail with a 404 error
         $notificationtype = NotificationType::findOrFail($id);
+        $currentnotifiableusers = NotifiableUser::where('notificationfk', $id)->get();
+        $allusers = User::all();
+        // Get the IDs of all currently notifiable users
+        $currentNotifiableUserIds = $currentnotifiableusers->pluck('useridfk')->toArray();
+
+        // Filter out the currently notifiable users from all users
+        $nonNotifiableUsers = $allusers->whereNotIn('userid', $currentNotifiableUserIds);
         // Return the view with the proposal data
-        return view('pages.users.usernotifications', compact('notificationtype'));
+        return view('pages.users.usernotifications', compact('notificationtype', 'nonNotifiableUsers'));
+    }
+    public function addnotifiableusers(Request $request, $id)
+    {
+        if (!auth()->user()->haspermission('canaddorremovenotifiableuser')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Add or Edit a Notifiable User!");
+        }
+        // Validate incoming request data if needed
+        // Define validation rules
+        $rules = [
+            'users' => 'required|array',
+        ];
+
+
+
+        // Validate incoming request
+        $validator = Validator::make($request->all(), $rules);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // return response()->json(['error' => $validator->errors()], 400);
+            return response(['message' => 'Fill all the required Fields!', 'type' => 'danger'], 400);
+
+        }
+        //user submitted ids
+        $users = $request->input('users');
+        // Fetch existing user IDs for the given notification
+        $existingUsers = NotifiableUser::where('notificationfk', $id)
+            ->whereIn('useridfk', $users)
+            ->pluck('useridfk')
+            ->toArray();
+
+        // Filter out existing user IDs
+        $newUsers = array_diff($users, $existingUsers);
+
+        // Prepare data for bulk insert
+        $notifiableUsers = [];
+        foreach ($newUsers as $userid) {
+            $notifiableUsers[] = [
+                'useridfk' => $userid,
+                'notificationfk' => $id,
+            ];
+        }
+
+        // Bulk insert only new records
+        if (!empty($notifiableUsers)) {
+            NotifiableUser::insert($notifiableUsers);
+        }
+        // Optionally, return a response or redirect 
+        return response(['message' => 'Notifiable Users Added Successfully!!', 'type' => 'success']);
+
+
+    }
+
+    public function removenotifiableuser(Request $request, $id)
+    {
+        if (!auth()->user()->haspermission('canaddorremovenotifiableuser')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Add or Remove a Notifiable User!");
+        }
+        // Validate incoming request data if needed
+        // Define validation rules
+        $rules = [
+            'users' => 'required|array',
+            'users.*' => 'exists:notifiableusers,useridfk' // Ensure each user ID exists in the notifiableusers table
+        ];
+
+
+
+        // Validate incoming request
+        $validator = Validator::make($request->all(), $rules);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // return response()->json(['error' => $validator->errors()], 400);
+            return response(['message' => 'Fill all the required Fields!', 'type' => 'danger'], 400);
+
+        }
+        //user submitted ids
+        $userIds = $request->input('users');
+        NotifiableUser::where('notificationfk', $id)->whereIn('useridfk', $userIds)->delete();
+        // Optionally, return a response or redirect 
+        return response(['message' => 'Notifiable Users Removed Successfully!!', 'type' => 'success']);
+
+
     }
     public function fetchallnotificationtypes()
     {
@@ -245,9 +335,7 @@ class UsersController extends Controller
         if (!auth()->user()->haspermission('canviewnotificationtypestab')) {
             return response()->json([]);
         }
-        else {
-            $data = NotifiableUsers::where('notificationfk',$id)->get();
-            return response()->json($data); // Return  data as JSON
-        }
+        $data = NotifiableUser::with('applicant')->where('notificationfk', $id)->get();
+        return response()->json($data); // Return  data as JSON
     }
 }

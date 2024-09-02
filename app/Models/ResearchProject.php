@@ -55,6 +55,6 @@ class ResearchProject extends Model
     }
     public function applicant()
     {
-        return $this->hasOneThrough(User::class, Proposal::class, 'proposalid', 'userid', null, 'useridfk');
+        return $this->hasOneThrough(User::class, Proposal::class, 'proposalid', 'userid', 'proposalidfk', 'useridfk');
     }
 }

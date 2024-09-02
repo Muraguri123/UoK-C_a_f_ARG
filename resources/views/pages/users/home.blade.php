@@ -186,19 +186,10 @@
 
                             <form class="form-horizontal">
                                 <div class="row form-group">
-                                    <div class="col-lg-10 col-md-9 col-sm-9 col-xs-6">
-
+                                    <div class="col-12">
                                         <input type="text" id="searchInput" class="form-control text-center"
                                             style="::placeholder { color: red; }"
-                                            placeholder="Search by Grant No, Year or Status">
-                                    </div>
-                                    <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">
-                                        @if (auth()->user()->haspermission('canaddoreditgrant'))
-                                            <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
-                                                data-bs-target="#addfinyearmodal">
-                                                Add Fin Year
-                                            </button>
-                                        @endif
+                                            placeholder="Search by User Name, Email, PFNO or Is Active Status">
                                     </div>
                                 </div>
                             </form>

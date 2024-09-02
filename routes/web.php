@@ -146,15 +146,20 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/grants/view/{id}', [GrantsController::class, 'getviewsinglegrantpage'])->name('pages.grants.viewgrant');
     Route::get('/grants/edit/{id}', [GrantsController::class, 'geteditsinglegrantpage'])->name('pages.grants.editgrant');
     Route::post('/grants/edit/{id}', [GrantsController::class, 'updategrant'])->name('api.grants.updategrant');
+    //globalsettings
+    Route::post('/grants/settings/finyear/post', [GrantsController::class, 'postcurrentfinyear'])->name('api.grants.settings.postcurrentfinyear');
+    Route::post('/grants/settings/currentgrant/post', [GrantsController::class, 'postcurrentgrant'])->name('api.grants.settings.postcurrentgrant');
 
-     //finyears
-     Route::post('/finyear/post', [FinYearController::class, 'postnewfinyear'])->name('api.finyear.post');
-     Route::get('/finyear/fetchallfinyears', [FinYearController::class, 'fetchallfinyears'])->name('api.finyear.fetchallfinyears');
+
+
+    //finyears
+    Route::post('/finyear/post', [FinYearController::class, 'postnewfinyear'])->name('api.finyear.post');
+    Route::get('/finyear/fetchallfinyears', [FinYearController::class, 'fetchallfinyears'])->name('api.finyear.fetchallfinyears');
     //  Route::get('/grants/fetchsearchgrants', [GrantsController::class, 'fetchsearchgrants'])->name('api.grants.fetchsearchgrants');
     //  Route::get('/grants/view/{id}', [GrantsController::class, 'getviewsinglegrantpage'])->name('pages.grants.viewgrant');
     //  Route::get('/grants/edit/{id}', [GrantsController::class, 'geteditsinglegrantpage'])->name('pages.grants.editgrant');
     //  Route::post('/grants/edit/{id}', [GrantsController::class, 'updategrant'])->name('api.grants.updategrant');
- 
+
     //users
     Route::get('/users/manage', [UsersController::class, 'viewallusers'])->name('pages.users.manage');
     Route::get('/users/view/{id}', [UsersController::class, 'viewsingleuser'])->name('pages.users.viewsingleuser');
@@ -167,6 +172,8 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::post('/users/resetpassword/{id}', [RegisterController::class, 'resetuserpassword'])->name('api.users.resetpassword');
     //notificationtypes
     Route::get('/notificationtype/view/{id}', [UsersController::class, 'managenotificationtype'])->name('pages.notificationtype.managenotificationtype');
+    Route::post('/notificationtype/addusers/{id}', [UsersController::class, 'addnotifiableusers'])->name('api.notificationtype.addnotifiableusers');
+    Route::post('/notificationtype/removeusers/{id}', [UsersController::class, 'removenotifiableuser'])->name('api.notificationtype.removenotifiableuser');
     Route::get('/notificationtype/fetchalltypes', [UsersController::class, 'fetchallnotificationtypes'])->name('api.notificationtype.fetchallnotificationtypes');
     Route::get('/notificationtype/fetchtypewiseusers/{id}', [UsersController::class, 'fetchtypewiseusers'])->name('api.notificationtype.fetchtypewiseusers');
 

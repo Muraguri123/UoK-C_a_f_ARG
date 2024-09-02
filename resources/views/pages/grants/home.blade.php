@@ -32,8 +32,10 @@
                         type="button" role="tab" aria-controls="panel-grants" aria-selected="true">Grants</button>
                     <button class="nav-link " id="nav-finyears-tab" data-bs-toggle="tab" data-bs-target="#panel-finyears"
                         type="button" role="tab" aria-controls="panel-finyears" aria-selected="true">Fin Years</button>
-                    <button class="nav-link" id="nav-settings-tab" data-bs-toggle="tab" data-bs-target="#panel-settings"
-                        type="button" role="tab" aria-controls="panel-settings" aria-selected="false">Settings</button>
+                    @if (Auth()->user()->haspermission('canupdatecurrentgrantandyear'))
+                        <button class="nav-link" id="nav-settings-tab" data-bs-toggle="tab" data-bs-target="#panel-settings"
+                            type="button" role="tab" aria-controls="panel-settings" aria-selected="false">Settings</button>
+                    @endif
                 </div>
             </nav>
 
@@ -512,7 +514,7 @@
                                             '<td>' + data.finyear + '</td>' +
                                             '<td>' + data.startdate + '</td>' +
                                             '<td>' + data.enddate + '</td>' +
-                                            '<td>' + data.description  + '</td>' +
+                                            '<td>' + data.description + '</td>' +
                                             '</tr>';
                                         tbody.append(row);
                                     });
@@ -570,13 +572,14 @@
                 <!-- settings tab -->
                 <div role="tabpanel" class="tab-pane" id="panel-settings">
                     <div>
-                        <form class="form-horizontal">
+                        <form id="form_currentgrant" class="form-horizontal">
+                            @csrf
                             <div class="row form-group">
                                 <div class="col-3">
                                     <label>Current Open Grant</label>
                                 </div>
                                 <div class="col-7">
-                                    <select type="text" id="grantnofk" name="grantnofk" class="form-control">
+                                    <select type="text" id="current_grantno" name="current_grantno" class="form-control">
                                         <option value="">Select a Grant Item</option>
                                         @foreach ($allgrants as $grant)
                                             <option value="{{ $grant->grantid }}" {{ (isset($currentsettings) && $currentsettings['current_grant'] == $grant->grantid) ? 'selected' : '' }}>
@@ -586,15 +589,18 @@
                                     </select>
                                 </div>
                                 <div class="col-2">
-                                    <button class="btn btn-info">Save</button>
+                                    <button id="btn_savecurrentgrant" type="button" class="btn btn-info">Save</button>
                                 </div>
                             </div>
+                        </form>
+                        <form id="form_currentfinyear" class="form-horizontal">
+                            @csrf
                             <div class="row form-group">
                                 <div class="col-3">
                                     <label>Current Fin Year</label>
                                 </div>
                                 <div class="col-7">
-                                    <select type="text" id="grantnofk" name="grantnofk" class="form-control">
+                                    <select type="text" id="current_finyear" name="current_finyear" class="form-control">
                                         <option value="">Select a Financial Year</option>
                                         @foreach ($finyears as $year)
                                             <option value="{{ $year->id }}" {{ (isset($currentsettings) && $currentsettings['current_year'] == $year->id) ? 'selected' : '' }}>
@@ -604,7 +610,7 @@
                                     </select>
                                 </div>
                                 <div class="col-2">
-                                    <button class="btn btn-info">Save</button>
+                                    <button id="btn_savecurrentfinyear" type="button" class="btn btn-info">Save</button>
                                 </div>
                             </div>
                         </form>
@@ -613,10 +619,60 @@
                     <script>
 
                         $(document).ready(function () {
-                            var canviewuser = false;
-                            @if(Auth::user()->haspermission('canedituserprofile'))
-                                canviewuser = true;
-                            @endif
+
+                            document.getElementById('btn_savecurrentgrant')?.addEventListener('click', function () {
+
+                                var formData = $('#form_currentgrant').serialize();
+
+                                // Function to fetch data using AJAX
+                                $.ajax({
+                                    url: "{{ route('api.grants.settings.postcurrentgrant') }}",
+                                    type: 'POST',
+                                    data: formData,
+                                    dataType: 'json',
+                                    success: function (response) { 
+                                        showtoastmessage(response); 
+                                    },
+                                    error: function (xhr, status, error) {
+                                        var mess = JSON.stringify(xhr.responseJSON.message);
+                                        var type = JSON.stringify(xhr.responseJSON.type);
+                                        var result = {
+                                            message: mess,
+                                            type: type
+                                        };
+                                        showtoastmessage(result);
+
+                                        console.error('Error fetching data:', error);
+                                    }
+                                });
+                            });
+
+                            document.getElementById('btn_savecurrentfinyear')?.addEventListener('click', function () {
+
+                                var formData = $('#form_currentfinyear').serialize();
+
+                                // Function to fetch data using AJAX
+                                $.ajax({
+                                    url: "{{ route('api.grants.settings.postcurrentfinyear') }}",
+                                    type: 'POST',
+                                    data: formData,
+                                    dataType: 'json',
+                                    success: function (response) { 
+                                        showtoastmessage(response); 
+                                    },
+                                    error: function (xhr, status, error) {
+                                        var mess = JSON.stringify(xhr.responseJSON.message);
+                                        var type = JSON.stringify(xhr.responseJSON.type);
+                                        var result = {
+                                            message: mess,
+                                            type: type
+                                        };
+                                        showtoastmessage(result);
+
+                                        console.error('Error fetching data:', error);
+                                    }
+                                });
+                            });
 
                             // Function to fetch data using AJAX
                             function fetchallprojects() {

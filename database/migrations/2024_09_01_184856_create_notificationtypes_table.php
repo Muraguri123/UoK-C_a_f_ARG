@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('notificationtypes', function (Blueprint $table) {
             $table->uuid('typeuuid')->primary(); 
-            $table->string('typename');
+            $table->string('typename')->unique();
             $table->bool('notifyowner')->default(false);
             $table->text('description')->nullable();
         });

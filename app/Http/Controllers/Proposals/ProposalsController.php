@@ -7,6 +7,7 @@ use App\Http\Controllers\MailingController;
 use App\Models\Collaborator;
 use App\Models\Department;
 use App\Models\Expenditureitem;
+use App\Models\FinancialYear;
 use App\Models\GlobalSetting;
 use App\Models\Grant;
 use App\Models\Permission;
@@ -83,7 +84,7 @@ class ProposalsController extends Controller
                 ->with('success', 'Proposal exists for grant number');
         }
         $grant = Grant::findOrFail($request->input('grantnofk'));
-        // Generate proposal code
+        // Generate proposal code 
         $currentYear = date('Y');
         $lastRecord = Proposal::orderBy('proposalid', 'desc')->first();
         $incrementNumber = $lastRecord ? $lastRecord->proposalid + 1 : 1;
@@ -130,7 +131,6 @@ class ProposalsController extends Controller
             return true; // Return true to indicate an error occurred (adjust as needed)
         }
     }
-
 
     public function updatebasicdetails(Request $request, $id)
     {
@@ -226,6 +226,7 @@ class ProposalsController extends Controller
 
 
     }
+
     public function submitproposal(Request $request, $id)
     {
         $proposal = Proposal::findOrFail($id);
@@ -233,19 +234,20 @@ class ProposalsController extends Controller
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Submit this Proposal. Only the owner can Submit!");
         }
         if ($proposal->submittedstatus) {
-            return response(['message' => 'Application has already been submitted!', 'type' => 'warning']);
+            return response(['message' => 'Application has already been submitted!', 'type' => 'danger']);
+        }
+        if ($proposal->receivedstatus) {
+            return response(['message' => 'This Proposal has been received before!!', 'type' => 'danger']);
         }
         $cansubmit = $this->cansubmit($id);
         if (isset($cansubmit)) {
             $proposal->submittedstatus = true;
             $proposal->save();
             //notifiable users to be informed of new proposal
-            if (Permission::where('shortname', 'cangetnewproposalnotification')->exists()) {
-                // Create an instance of MailingController and call the sendMail function
-                $mailingController = new MailingController();
-                $url = route('pages.proposals.viewproposal', ['id' => $proposal->proposalid]);
-                $mailingController->notifyUsersOfProposalActivity('proposalsubmitted','New Proposal','success',['You have a New Proposal Pending Receival and processing.'],'View Proposal',$url);
-           }
+            $mailingController = new MailingController();
+            $url = route('pages.proposals.viewproposal', ['id' => $proposal->proposalid]);
+            $mailingController->notifyUsersOfProposalActivity('proposalsubmitted', 'New Proposal', 'success', ['You have a New Proposal Pending Receival and processing.'], 'View Proposal', $url);
+
             return response(['message' => 'Application Submitted Successfully!!', 'type' => 'success']);
         }
         else {
@@ -260,8 +262,11 @@ class ProposalsController extends Controller
         }
 
         $proposal = Proposal::findOrFail($id);
+        if (!$proposal->submittedstatus) {
+            return response(['message' => 'This proposal has not been submitted!', 'type' => 'warning']);
+        }
         if ($proposal->receivedstatus) {
-            return response(['message' => 'This Proposal has been received before!!', 'type' => 'warning']);
+            return response(['message' => 'This Proposal has been received before!!', 'type' => 'danger']);
         }
         $proposal->receivedstatus = true;
         $proposal->caneditstatus = false;
@@ -312,10 +317,10 @@ class ProposalsController extends Controller
         }
 
         $proposal = Proposal::findOrFail($id);
-        if (!$proposal->submittedstatus ) {
+        if (!$proposal->submittedstatus) {
             return response(['message' => 'This Proposal has not been Submitted by the owner!!', 'type' => 'danger']);
         }
-        if (!$proposal->receivedstatus ) {
+        if (!$proposal->receivedstatus) {
             return response(['message' => 'This Proposal has not been Received!!', 'type' => 'danger']);
         }
         if ($proposal->approvalstatus == 'Rejected' || ResearchProject::where('proposalidfk', $id)->exists()) {
@@ -328,12 +333,13 @@ class ProposalsController extends Controller
             $proposal->caneditstatus = false;
             $proposal->saveOrFail();
 
-            $grant = Grant::findOrFail($proposal->grantnofk);
+            $yearid = GlobalSetting::where('item', 'current_fin_year')->first();
+            $currentyear = FinancialYear::findOrFail($yearid->value1);
 
             if ($request->input('status') == "Approved") {
                 $lastRecord = ResearchProject::orderBy('researchid', 'desc')->first();
                 $incrementNumber = $lastRecord ? $lastRecord->researchid + 1 : 1;
-                $generatedCode = 'UOK/ARG/' . $grant->finyear . '/' . $incrementNumber;
+                $generatedCode = 'UOK/ARG/' . $currentyear->finyear . '/' . $incrementNumber;
                 // new project
                 $project = new ResearchProject();
                 $project->researchnumber = $generatedCode;
@@ -345,12 +351,17 @@ class ProposalsController extends Controller
 
         });
         if ($request->input('status') == "Approved") {
+            $project = ResearchProject::where('proposalidfk', $id)->firstOrFail();
             $mailingController = new MailingController();
-            $mailingController->notifyusersapprovedproposal($proposal);
+            $url = route('pages.projects.viewanyproject', ['id' => $project->researchid]);
+            $mailingController->notifyUsersOfProposalActivity('proposalapproved', 'Proposal Approved!', 'success', ['This Proposal has been Approved Successfully.', 'The project will kick off on the indicated Start Date.'], 'View Project', $url);
             return response(['message' => 'Proposal Approved Successfully! Project Started!', 'type' => 'success']);
         }
         else if ($request->input('status') == "Rejected") {
-            return response(['message' => 'Proposal Rejected Successfully!!', 'type' => 'success']);
+            $mailingController = new MailingController();
+            $url = route('pages.proposals.viewproposal', ['id' => $id]);
+            $mailingController->notifyUsersOfProposalActivity('proposalrejected', 'Proposal Rejected', 'success', ['The project didnt qualify for further steps.'], 'View Proposal', $url);
+            return response(['message' => 'Proposal Rejected Successfully!!', 'type' => 'danger']);
         }
         else {
             return response(['message' => 'Unknown Action on Status!!', 'type' => 'danger']);

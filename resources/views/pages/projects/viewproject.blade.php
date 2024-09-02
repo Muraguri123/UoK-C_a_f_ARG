@@ -24,7 +24,48 @@
                     margin-bottom: 6px;
                 }
             </style>
-
+            @if (session('projectalreadypausedmessage'))
+                <script>
+                    $(document).ready(function () {
+                        showtoastmessage({ 'message': "{{session('projectalreadypausedmessage')}}" });
+                    });
+                </script>
+            @endif
+            @if (session('projectnotpausedmessage'))
+                <script>
+                    $(document).ready(function () {
+                        showtoastmessage({ 'message': "{{session('projectnotpausedmessage')}}" });
+                    });
+                </script>
+            @endif
+            @if (session('projectnotcancelledmessage'))
+                <script>
+                    $(document).ready(function () {
+                        showtoastmessage({ 'message': "{{session('projectnotcancelledmessage')}}" });
+                    });
+                </script>
+            @endif
+            @if (session('projectnotcompletedmessage'))
+                <script>
+                    $(document).ready(function () {
+                        showtoastmessage({ 'message': "{{session('projectnotcompletedmessage')}}" });
+                    });
+                </script>
+            @endif
+            @if (session('projectcompletedmessage'))
+                <script>
+                    $(document).ready(function () {
+                        showtoastmessage({ 'message': "{{session('projectcompletedmessage')}}" });
+                    });
+                </script>
+            @endif
+            @if (session('projectfundinglimit'))
+                <script>
+                    $(document).ready(function () {
+                        showtoastmessage({ 'message': "{{session('projectfundinglimit')}}" });
+                    });
+                </script>
+            @endif
             <div class="prop-tabcontainer">
                 <!-- Nav tabs -->
                 <nav>
@@ -90,10 +131,7 @@
                         <script>
 
                             $(document).ready(function () {
-                                var canviewuser = false;
-                                @if(Auth::user()->haspermission('canedituserprofile'))
-                                    canviewuser = true;
-                                @endif
+
 
 
                                 // Function to fetch data using AJAX
@@ -378,6 +416,7 @@
 
                             $(document).ready(function () {
                                 let projectid = "{{ isset($project) ? $project->researchid : '' }}"; // Check if depid is set
+                                let userid="{{auth()->user()->userid}}"
                                 let payload = $('#csrf_form')?.serialize();
                                 document.getElementById('btn_saveprogress')?.addEventListener('click', function () {
                                     submitreporturl = `{{ route('api.projects.submitmyprogress', ['id' => ':id']) }}`.replace(':id', projectid);

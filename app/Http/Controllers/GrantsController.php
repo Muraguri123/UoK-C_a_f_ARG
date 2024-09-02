@@ -142,4 +142,74 @@ class GrantsController extends Controller
             ->get();
         return response()->json($data); // Return filtered data as JSON
     }
+
+
+    //settings
+    public function postcurrentgrant(Request $request)
+    {
+        if (!auth()->user()->haspermission('canupdatecurrentgrantandyear')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Update Current Settings!");
+        }
+        // Validate incoming request data if needed
+        // Define validation rules
+        $rules = [ 
+            'current_grantno' => 'required|string',
+        ];
+
+
+
+        // Validate incoming request
+        $validator = Validator::make($request->all(), $rules);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // return response()->json(['error' => $validator->errors()], 400);
+            return response(['message' => 'Fill all the required Fields!', 'type' => 'danger'], 400);
+
+        }
+
+        $item = GlobalSetting::where('item','current_open_grant')->firstOrFail(); 
+        $item->value1 = $request->input('current_grantno'); 
+        $item->save();
+
+        // Optionally, return a response or redirect
+        // return response()->json(['message' => 'Proposal created successfully'], 201);
+        return response(['message' => 'Current Grant Updated Successfully!!', 'type' => 'success']);
+
+
+    }
+
+    public function postcurrentfinyear(Request $request)
+    {
+        if (!auth()->user()->haspermission('canupdatecurrentgrantandyear')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Update Current Settings!");
+        }
+        // Validate incoming request data if needed
+        // Define validation rules
+        $rules = [ 
+            'current_finyear' => 'required|string',
+        ];
+
+
+
+        // Validate incoming request
+        $validator = Validator::make($request->all(), $rules);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            // return response()->json(['error' => $validator->errors()], 400);
+            return response(['message' => 'Fill all the required Fields!', 'type' => 'danger'], 400);
+
+        }
+
+        $item = GlobalSetting::where('item','current_fin_year')->firstOrFail(); 
+        $item->value1 = $request->input('current_finyear'); 
+        $item->save();
+
+        // Optionally, return a response or redirect
+        // return response()->json(['message' => 'Proposal created successfully'], 201);
+        return response(['message' => 'Current Financial Year Updated Successfully!!', 'type' => 'success']);
+
+
+    }
 }

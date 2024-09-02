@@ -106,18 +106,19 @@
 
                             </div>
                             <div class="col-12 col-md-9">
-                                <input type="text" placeholder="Your Role"
-                                    value="{{ $user->role }}" class="form-control" readonly>
+                                <input type="text" placeholder="Your Role" value="{{ $user->role }}" class="form-control"
+                                    readonly>
                             </div>
                         </div>
                         @if (Auth::user()->haspermission('canedituserprofile'))
-                        <div class="row form-group">
-                            <div class="col text-center">
-                                <button id="btn_editprofile" type="button" class="btn btn-info">Edit Profile</button>
+                            <div class="row form-group">
+                                <div class="col text-center">
+                                    <button id="btn_editprofile" type="button" class="btn btn-info">Edit Profile</button>
 
-                                <button id="btn_updateprofile" type="button" class="btn btn-success" disabled hidden>Update</button>
+                                    <button id="btn_updateprofile" type="button" class="btn btn-success" disabled
+                                        hidden>Update</button>
+                                </div>
                             </div>
-                        </div>
                         @endif
                     </form>
 
@@ -140,7 +141,7 @@
                             });
                             document.getElementById('btn_updateprofile').addEventListener('click', function () {
 
-                                var formData = $('#form_basicdetails').serialize(); 
+                                var formData = $('#form_basicdetails').serialize();
                                 // var csrfToken = document.getElementsByName('_token')[0].value;
                                 //     var formdata={'_token': csrfToken};
                                 // Function to fetch data using AJAX
@@ -150,9 +151,9 @@
                                     data: formData,
                                     dataType: 'json',
                                     success: function (response) {
-                                        showtoastmessage(response);  
+                                        showtoastmessage(response);
                                     },
-                                    error: function (xhr, status, error) { 
+                                    error: function (xhr, status, error) {
                                         var mess = JSON.stringify(xhr.responseJSON.message);
                                         var type = JSON.stringify(xhr.responseJSON.type);
                                         var result = {
@@ -173,128 +174,135 @@
                 <!-- Actions tab -->
                 <div role="tabpanel" class="tab-pane" id="panel-actions">
                     <form method="POST" id="changepasswordform" enctype="multipart/form-data" class="form-horizontal">
-                        @csrf 
+                        @csrf
 
                         <div class="row form-group">
-                            
+
                             <div class="text-center">
-                                <button id="btn_resetpassword" type="button" class="btn btn-info">Reset User Password</button>
+                                <button id="btn_resetpassword" type="button" class="btn btn-info">Reset User
+                                    Password</button>
                             </div>
                         </div>
 
                     </form>
-                    
+
                     <hr>
                     <div class="row form-group">
-                    <form id="form_userrole" method="POST">
-                        @csrf
-                        <div class=" form-group col-12">
-                            <div class=" form-check">
-                                <input id="isadmin" name="isadmin" class="form-check-input" type="checkbox" {{($user->isadmin) ? 'checked' : ''}}>
-                                <label for="isadmin" class="form-check-label">This User is Super Admin</i>)</label>
+                        <form id="form_userrole" method="POST">
+                            @csrf
+                            <div class=" form-group col-12">
+                                <div class=" form-check">
+                                    <input id="isadmin" name="isadmin" class="form-check-input" type="checkbox"
+                                        {{($user->isadmin) ? 'checked' : ''}}>
+                                    <label for="isadmin" class="form-check-label">This User is Super Admin</i>)</label>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row form-group ">
-                        <div class="col-3">
-                        <label>Change User Role</label>
-                        </div> 
-                        <div class="col-9">
+                            <div class="row form-group ">
+                                <div class="col-3">
+                                    <label>Change User Role</label>
+                                </div>
+                                <div class="col-9">
 
-                            <select id="userrole" name="userrole" class="form-control">
-                            <option value="">Select Status</option>
-                            <option value="1" {{ (isset($user) && $user->role == "1") ? 'selected' : '' }}>Committee</option>
-                            <option value="2" {{ (isset($user) && $user->role == "2") ? 'selected' : '' }}>Researcher</option>
-                            <option value="3" {{ (isset($user) && $user->role == "3") ? 'selected' : '' }}>Co-opted</option>                            
-                            </select>
-                        </div>
-                        </div>
-                        <div class="col-12 col-md-9">
-                            <div class=" form-check">
-                                <input id="userisactive" name="userisactive" class="form-check-input" type="checkbox" {{($user->isactive) ? 'checked' : ''}}>
-                                <label for="userisactive" class="form-check-label">User is Active (<i>Can login!</i>)</label>
-
-                                <br />
-
+                                    <select id="userrole" name="userrole" class="form-control">
+                                        <option value="">Select Status</option>
+                                        <option value="1" {{ (isset($user) && $user->role == "1") ? 'selected' : '' }}>
+                                            Committee</option>
+                                        <option value="2" {{ (isset($user) && $user->role == "2") ? 'selected' : '' }}>
+                                            Researcher</option>
+                                        <option value="3" {{ (isset($user) && $user->role == "3") ? 'selected' : '' }}>
+                                            Co-opted</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="text-center">
-                            <button id="btn_updaterole" type="button" class="btn btn-info">Update User Role</button>
-                        </div>
-                    </form>
+                            <div class="col-12 col-md-9">
+                                <div class=" form-check">
+                                    <input id="userisactive" name="userisactive" class="form-check-input" type="checkbox"
+                                        {{($user->isactive) ? 'checked' : ''}}>
+                                    <label for="userisactive" class="form-check-label">User is Active (<i>Can
+                                            login!</i>)</label>
+
+                                    <br />
+
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button id="btn_updaterole" type="button" class="btn btn-info">Update User Role</button>
+                            </div>
+                        </form>
                     </div>
                     <script>
-                            $(document).ready(function () {
-                                var roleselector= document.getElementById('userrole');
-                                var isadmincheckbox = document.getElementById('isadmin');
-                                isadmincheckbox.addEventListener('change',function(){
-                                if(roleselector){
+                        $(document).ready(function () {
+                            var roleselector = document.getElementById('userrole');
+                            var isadmincheckbox = document.getElementById('isadmin');
+                            isadmincheckbox.addEventListener('change', function () {
+                                if (roleselector) {
                                     if (isadmincheckbox.checked) {
-                                        roleselector.disabled=true; 
+                                        roleselector.disabled = true;
                                         isadmincheckbox
                                     }
-                                    else{
-                                        roleselector.disabled=false; 
+                                    else {
+                                        roleselector.disabled = false;
                                     }
                                 }
-                                });
-
-                                let userid = "{{ isset($user) ? $user->userid : '' }}"; // Check if user is set
-                                const passwordchangeurl = `{{ route('api.users.resetpassword', ['id' => ':id']) }}`.replace(':id', userid.toString());
-                                const updateroleurl = `{{ route('api.users.updaterole', ['id' => ':id']) }}`.replace(':id', userid.toString());
-
-                                document.getElementById('btn_resetpassword').addEventListener('click', function () {
-                                    var csrfToken = document.getElementsByName('_token')[0].value;
-                                    var formdata={'_token': csrfToken};
-                                    $.ajax({
-                                        url: passwordchangeurl,
-                                        type: 'POST',
-                                        data:formdata,
-                                        dataType: 'json',
-                                        success: function (response) {  
-                                            showtoastmessage(response); 
-                                        },
-                                        error: function (xhr, status, error) {
-                                            var mess = JSON.stringify(xhr.responseJSON.message);
-                                            var type = JSON.stringify(xhr.responseJSON.type);
-                                            var result = {
-                                                message: mess,
-                                                type: type
-                                            };
-                                            showtoastmessage(result);
-
-                                            console.error('Error fetching data:', error);
-                                        }
-                                    });
-                                }); 
-                                document.getElementById('btn_updaterole').addEventListener('click', function () {
-
-var formData = $('#form_userrole').serialize();
- 
-// Function to fetch data using AJAX
-$.ajax({
-    url: updateroleurl,
-    type: 'POST',
-    data: formData,
-    dataType: 'json',
-    success: function (response) { 
-        showtoastmessage(response); 
-    },
-    error: function (xhr, status, error) {
-        var mess = JSON.stringify(xhr.responseJSON.message);
-        var type = JSON.stringify(xhr.responseJSON.type);
-        var result = {
-            message: mess,
-            type: type
-        };
-        showtoastmessage(result);
-
-        console.error('Error fetching data:', error);
-    }
-});
-}); 
-
                             });
-                        </script>
+
+                            let userid = "{{ isset($user) ? $user->userid : '' }}"; // Check if user is set
+                            const passwordchangeurl = `{{ route('api.users.resetpassword', ['id' => ':id']) }}`.replace(':id', userid.toString());
+                            const updateroleurl = `{{ route('api.users.updaterole', ['id' => ':id']) }}`.replace(':id', userid.toString());
+
+                            document.getElementById('btn_resetpassword').addEventListener('click', function () {
+                                var csrfToken = document.getElementsByName('_token')[0].value;
+                                var formdata = { '_token': csrfToken };
+                                $.ajax({
+                                    url: passwordchangeurl,
+                                    type: 'POST',
+                                    data: formdata,
+                                    dataType: 'json',
+                                    success: function (response) {
+                                        showtoastmessage(response);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        var mess = JSON.stringify(xhr.responseJSON.message);
+                                        var type = JSON.stringify(xhr.responseJSON.type);
+                                        var result = {
+                                            message: mess,
+                                            type: type
+                                        };
+                                        showtoastmessage(result);
+
+                                        console.error('Error fetching data:', error);
+                                    }
+                                });
+                            });
+                            document.getElementById('btn_updaterole').addEventListener('click', function () {
+
+                                var formData = $('#form_userrole').serialize();
+
+                                // Function to fetch data using AJAX
+                                $.ajax({
+                                    url: updateroleurl,
+                                    type: 'POST',
+                                    data: formData,
+                                    dataType: 'json',
+                                    success: function (response) {
+                                        showtoastmessage(response);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        var mess = JSON.stringify(xhr.responseJSON.message);
+                                        var type = JSON.stringify(xhr.responseJSON.type);
+                                        var result = {
+                                            message: mess,
+                                            type: type
+                                        };
+                                        showtoastmessage(result);
+
+                                        console.error('Error fetching data:', error);
+                                    }
+                                });
+                            });
+
+                        });
+                    </script>
                 </div>
 
 
@@ -304,50 +312,49 @@ $.ajax({
                         <h5 class="text-center">Select permissions preffered for this user only!</h5>
                         @if (!(isset($user) && $user->issuperadmin()))
                             <div id="permissions_list_div" class="container mt-1">
-                            @if ($user->role=='1' || $user->role=='3')
-                            <div class="card">
-                                    <div class="card-header">
-                                        Admin Rights
+                                @if ($user->role == '1' || $user->role == '3')
+                                    <div class="card">
+                                        <div class="card-header">
+                                            Admin Rights
+                                        </div>
+                                        <div class="card-body">
+                                            @if (isset($permissions))
+                                                <table class="table table-responsive table-bordered table-hover">
+                                                    <thead class="bg-secondary text-white">
+                                                        <td>Value</td>
+                                                        <td>Menu Name</td>
+                                                        <td>Role</td>
+                                                        <td>Description</td>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach ($permissions->where('targetrole', 1)->toQuery()->orderBy('permissionlevel')->orderBy('priorityno')->get() as $perm)
+                                                            <tr>
+                                                                <td>
+                                                                    <input id="{{ $perm->pid }}" class="form-check-input"
+                                                                        value="{{ $perm->pid }}" type="checkbox" @if(isset($user) && $user->hasPermission($perm->shortname)) checked @endif>
+                                                                </td>
+                                                                <td>
+                                                                    <label for="{{$perm->pid}}"
+                                                                        class="form-check-label">{{$perm->menuname }}</label>
+                                                                </td>
+                                                                <td>
+                                                                    <label for="{{$perm->pid}}"
+                                                                        class="form-check-label">{{$perm->targetrole == 1 ? 'Admin' : 'Non Admin'}}</label>
+                                                                </td>
+                                                                <td>
+                                                                    <label for="{{$perm->pid}}"
+                                                                        class="form-check-label">{{$perm->description}}</label>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            @endif
+                                        </div>
                                     </div>
-                                    <div class="card-body">
-                                        @if (isset($permissions))
-                                        <table class="table table-responsive table-bordered table-hover">
-                                        <thead class="bg-secondary text-white">
-                                            <td>Value</td>
-                                            <td>Menu Name</td>
-                                            <td>Role</td>
-                                            <td>Description</td>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($permissions->where('targetrole', 1)->toQuery()->orderBy('permissionlevel')->orderBy('priorityno')->get() as $perm)
-                                                <tr> 
-                                                    <td>
-                                                        <input id="{{$perm->pid}}" class="form-check-input" value="{{$perm->pid}}" type="checkbox" 
-                                                        {{ isset($user) && $user->haspermission($perm->shortname) ? 'checked' : '' }}>
-                                                    </td>
-                                                    <td>
-                                                        <label for="{{$perm->pid}}"
-                                                            class="form-check-label">{{$perm->menuname }}</label>
-                                                    </td>
-                                                    <td>
-                                                        <label for="{{$perm->pid}}"
-                                                            class="form-check-label">{{$perm->targetrole==1? 'Admin' : 'Non Admin'}}</label>
-                                                    </td> 
-                                                    <td>
-                                                        <label for="{{$perm->pid}}"
-                                                            class="form-check-label">{{$perm->description}}</label>
-                                                    </td> 
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endif    
-                          
+                                @endif  
                                 <div class="row col-12 form-group">
-                                    
+
                                 </div>
                                 <div class="card">
                                     <div class="card-header">
@@ -355,37 +362,37 @@ $.ajax({
                                     </div>
                                     <div class="card-body">
                                         @if (isset($permissions))
-                                        <table class="table table-responsive table-bordered table-hover">
-                                        <thead class="bg-secondary text-white">
-                                            <td>Value</td>
-                                            <td>Menu Name</td>
-                                            <td>Role</td>
-                                            <td>Description</td>
-                                        </thead>
-                                        <tbody>
-                                        @foreach ($permissions->where('targetrole', 2) as $perm)
-                                                <tr> 
-                                                    <td>
-                                                        <input id=" {{$perm->pid}} " class="form-check-input" value=" {{$perm->pid}} " type="checkbox" 
-                                                        {{ isset($user) && $user->haspermission($perm->shortname) ? 'checked' : '' }}>
-                                                    </td>
-                                                    <td>
-                                                        <label for="{{$perm->pid}}"
-                                                            class="form-check-label">{{$perm->menuname }}</label>
-                                                    </td>
-                                                    <td>
-                                                        <label for="{{$perm->pid}}"
-                                                            class="form-check-label">{{$perm->targetrole==1? 'Admin' : 'Non Admin'}}</label>
-                                                    </td> 
-                                                    <td>
-                                                        <label for="{{$perm->pid}}"
-                                                            class="form-check-label">{{$perm->description}}</label>
-                                                    </td> 
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>    
-                                       
+                                            <table class="table table-responsive table-bordered table-hover">
+                                                <thead class="bg-secondary text-white">
+                                                    <td>Value</td>
+                                                    <td>Menu Name</td>
+                                                    <td>Role</td>
+                                                    <td>Description</td>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach ($permissions->where('targetrole', 2) as $perm)
+                                                        <tr>
+                                                            <td>
+                                                                <input id="{{ $perm->pid }}" class="form-check-input"
+                                                                    value="{{ $perm->pid }}" type="checkbox" @if(isset($user) && $user->hasPermission($perm->shortname)) checked @endif>
+                                                            </td>
+                                                            <td>
+                                                                <label for="{{$perm->pid}}"
+                                                                    class="form-check-label">{{$perm->menuname }}</label>
+                                                            </td>
+                                                            <td>
+                                                                <label for="{{$perm->pid}}"
+                                                                    class="form-check-label">{{$perm->targetrole == 1 ? 'Admin' : 'Non Admin'}}</label>
+                                                            </td>
+                                                            <td>
+                                                                <label for="{{$perm->pid}}"
+                                                                    class="form-check-label">{{$perm->description}}</label>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+
                                         @endif
                                     </div>
                                 </div>
@@ -551,7 +558,7 @@ $.ajax({
 </div>
 <script>
     $(document).ready(function () {
-        
+
 
         // Function to fetch data using AJAX
         function fetchData() {
