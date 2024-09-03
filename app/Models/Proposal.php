@@ -76,42 +76,8 @@ class Proposal extends Model
     public function proposalchanges()
     {
         return $this->belongsTo(ResearchTheme::class, 'themefk', 'themeid');
-    }
-
-    function getCurrentFinancialYear()
-    {
-        $currentDate = new DateTime();
-        $currentYear = $currentDate->format('Y');
-        $currentMonth = (int) $currentDate->format('m'); // Convert month to integer
-
-        // Financial year starts in July
-        $financialYearStartMonth = 7; // July is 7 (1-based index)
-
-        if ($currentMonth >= $financialYearStartMonth) {
-            // From July to December, the financial year starts this year
-            return "{$currentYear}/" . ($currentYear + 1);
-        } else {
-            // From January to June, the financial year started last year
-            return ($currentYear - 1) . "/{$currentYear}";
-        }
-    }
-
-    public function isEditable()
-    {
-        try {
-            if ($this->approvalstatus == 'Rejected' || $this->approvalstatus == 'Approved' || !$this->caneditstatus) {
-                return false;
-            }
-            if ($this->approvalstatus == 'Pending') {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (\Exception $exception) {
-            return false;
-        }
-
-    }
+    }  
+ 
     public function hasPendingUpdates()
     {
         try {

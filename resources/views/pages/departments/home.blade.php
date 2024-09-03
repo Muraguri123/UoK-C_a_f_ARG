@@ -127,7 +127,7 @@
                 </div>
                 <script>
                     $(document).ready(function () {
-                        document.getElementById('btn_saveschool').addEventListener('click', function () {
+                        document.getElementById('btn_saveschool')?.addEventListener('click', function () {
 
                             var formData = $('#form_addschool').serialize();
 
@@ -327,7 +327,7 @@
                 </div>
                 <script>
                     $(document).ready(function () {
-                        document.getElementById('btn_savedepartment').addEventListener('click', function () {
+                        document.getElementById('btn_savedepartment')?.addEventListener('click', function () {
 
                             var formData = $('#form_adddepartment').serialize();
 

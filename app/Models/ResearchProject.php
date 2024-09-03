@@ -57,4 +57,8 @@ class ResearchProject extends Model
     {
         return $this->hasOneThrough(User::class, Proposal::class, 'proposalid', 'userid', 'proposalidfk', 'useridfk');
     }
+    public function mandeperson()
+    {
+        return $this->belongsTo(User::class, 'supervisorfk', 'userid');
+    }
 }

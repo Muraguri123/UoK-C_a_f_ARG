@@ -128,7 +128,7 @@
                             let userid = "{{ isset($user) ? $user->userid : '' }}"; // Check if user is set
                             // Assuming prop is passed to the Blade view from the Laravel controller
                             const userurl = `{{ route('api.users.updatebasicdetails', ['id' => ':id']) }}`.replace(':id', userid);
-                            document.getElementById('btn_editprofile').addEventListener('click', function () {
+                            document.getElementById('btn_editprofile')?.addEventListener('click', function () {
 
                                 document.getElementById('fullname').removeAttribute('readonly');
                                 document.getElementById('email').removeAttribute('readonly');
@@ -139,7 +139,7 @@
                                 this.disabled = true;
                                 this.hidden = true;
                             });
-                            document.getElementById('btn_updateprofile').addEventListener('click', function () {
+                            document.getElementById('btn_updateprofile')?.addEventListener('click', function () {
 
                                 var formData = $('#form_basicdetails').serialize();
                                 // var csrfToken = document.getElementsByName('_token')[0].value;
@@ -250,7 +250,7 @@
                             const passwordchangeurl = `{{ route('api.users.resetpassword', ['id' => ':id']) }}`.replace(':id', userid.toString());
                             const updateroleurl = `{{ route('api.users.updaterole', ['id' => ':id']) }}`.replace(':id', userid.toString());
 
-                            document.getElementById('btn_resetpassword').addEventListener('click', function () {
+                            document.getElementById('btn_resetpassword')?.addEventListener('click', function () {
                                 var csrfToken = document.getElementsByName('_token')[0].value;
                                 var formdata = { '_token': csrfToken };
                                 $.ajax({
@@ -274,7 +274,7 @@
                                     }
                                 });
                             });
-                            document.getElementById('btn_updaterole').addEventListener('click', function () {
+                            document.getElementById('btn_updaterole')?.addEventListener('click', function () {
 
                                 var formData = $('#form_userrole').serialize();
 
@@ -418,7 +418,7 @@
                             var user = {!! $userJson !!};
                             var updateUrlTemplate = "{{ route('api.users.updatepermissions', ['id' => $user->userid]) }}";
 
-                            document.getElementById('btn_save_permissions').addEventListener('click', function () {
+                            document.getElementById('btn_save_permissions')?.addEventListener('click', function () {
                                 var checkedCheckboxes = document.getElementById('permissions_list_div').querySelectorAll('div input[type="checkbox"]:checked');
                                 checkedCheckboxes = Array.from(checkedCheckboxes);
                                 var permissions = Array.from(checkedCheckboxes).map(function (checkbox) {

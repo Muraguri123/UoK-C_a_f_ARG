@@ -242,6 +242,7 @@ class ProposalsController extends Controller
         $cansubmit = $this->cansubmit($id);
         if (isset($cansubmit)) {
             $proposal->submittedstatus = true;
+            $proposal->caneditstatus = false;
             $proposal->save();
             //notifiable users to be informed of new proposal
             $mailingController = new MailingController();
@@ -307,13 +308,18 @@ class ProposalsController extends Controller
         $rules = [
             'comment' => 'required|string',
             'status' => 'required|string',
+            'fundingfinyearfk' => [
+                'required_if:status,Approved',
+                'nullable',
+                'string',
+            ],
         ];
         // Validate incoming request
         $validator = Validator::make($request->all(), $rules);
 
         // Check if validation fails
         if ($validator->fails()) {
-            return response()->json(['message' => "Please provide a comment & status!", 'type' => "warning"], 400);
+            return response()->json(['message' => "Please provide a comment,Funding Year & status!", 'type' => "warning"], 400);
         }
 
         $proposal = Proposal::findOrFail($id);
@@ -346,6 +352,7 @@ class ProposalsController extends Controller
                 $project->proposalidfk = $proposal->proposalid;
                 $project->projectstatus = 'Active';
                 $project->ispaused = false;
+                $project->fundingfinyearfk = $request->input('fundingfinyearfk');
                 $project->saveOrFail();
             }
 
@@ -422,20 +429,19 @@ class ProposalsController extends Controller
         $grants = Grant::all();
         $departments = Department::all();
         $themes = ResearchTheme::all();
-
-        return view('pages.proposals.readproposalform', compact('prop', 'departments', 'grants', 'themes'));
+        $finyears=FinancialYear::all();
+        return view('pages.proposals.readproposalform', compact('prop', 'departments', 'grants', 'themes','finyears'));
     }
-    public function generatePDF()
+    public function printpdf($id)
     {
-        $proposal = Proposal::with(['applicant', 'department', 'themeitem'])->get()->first();
+        $proposal = Proposal::with(['applicant', 'department', 'themeitem'])->findOrFail($id);
         // Load your Blade view here
         $pdf = Pdf::loadView('pages.proposals.printproposal', compact('proposal'));
 
         // Optionally, you can set the paper size and orientation
         $pdf->setPaper('A4', 'potrait');
-        // Return the generated PDF
-        return $pdf->stream('document.pdf');
-        // return response()->json($proposal);
+        // Return the generated PDF 
+        return $pdf->download('Application-' . str_replace('/', '-', $proposal->proposalcode).'.pdf');
     }
     public function geteditsingleproposalpage(Request $req, $id)
     {
@@ -443,7 +449,7 @@ class ProposalsController extends Controller
         if (!auth()->user()->userid == $prop->useridfk) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit the requested Proposal!");
         }
-        if (!$prop->isEditable()) {
+        if (!$prop->caneditstatus || $prop->approvalstatus!='Pending') {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "The Proposal is not Editable!");
         }
         $grants = Grant::all();
@@ -463,7 +469,6 @@ class ProposalsController extends Controller
         $user = auth()->user();
         $myapplications = Proposal::where('useridfk', $user->userid)->with('department', 'grantitem', 'themeitem', 'applicant')->get();
         $proposals = $myapplications->map(function ($proposal) use ($user) {
-            $proposal->iseditable = $proposal->isEditable();
             $proposal->haspendingupdates = $proposal->hasPendingUpdates();
             return $proposal;
         });

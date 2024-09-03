@@ -12,12 +12,6 @@
             </script>
         @endif
 
-
-
-
-
-
-
         <style>
             .prop-tabcontainer {
                 background-color: #FAF9F6;
@@ -37,7 +31,9 @@
                 margin-bottom: 6px;
             }
         </style>
-
+        @if (isset($isnewprop) && isset($grants) && $grants->count()<=0)
+        <div class="alert alert-primary text-center mt-5"><b>No Call for Grants to Apply For!!</b></div>
+        @else
         <div class="prop-tabcontainer">
             <!-- Nav tabs -->
             <nav>
@@ -586,7 +582,7 @@
                             const collaboratorsurl = `{{ route('api.proposals.fetchcollaborators', ['id' => ':id']) }}`.replace(':id', proposalId);
                             const punlicationsurl = `{{ route('api.proposals.fetchpublications', ['id' => ':id']) }}`.replace(':id', proposalId);
 
-                            document.getElementById('addCollaboratorButton').addEventListener('click', function () {
+                            document.getElementById('addCollaboratorButton')?.addEventListener('click', function () {
 
                                 var formData = $('#form_collaborators').serialize();
                                 if (proposalId) {
@@ -621,7 +617,7 @@
                                 });
                             });
 
-                            document.getElementById('addpublicationButton').addEventListener('click', function () {
+                            document.getElementById('addpublicationButton')?.addEventListener('click', function () {
                                 var tablecontainer = document.getElementById('colltable');
 
                                 var formData = $('#form_publications').serialize();
@@ -915,8 +911,8 @@
                         <script>
                             $(document).ready(function () {
                                 // Calculate total when quantity or price changes
-                                document.getElementById('quantity').addEventListener('input', calculateTotal);
-                                document.getElementById('unitprice').addEventListener('input', calculateTotal);
+                                document.getElementById('quantity')?.addEventListener('input', calculateTotal);
+                                document.getElementById('unitprice')?.addEventListener('input', calculateTotal);
                                 var closebtn = document.getElementById('btn_close_expendituremodal');
 
                                 function calculateTotal() {
@@ -933,7 +929,7 @@
                                 // Assuming prop is passed to the Blade view from the Laravel controller
                                 const expenditureurl = `{{ route('api.proposals.fetchexpenditures', ['id' => ':id']) }}`.replace(':id', proposalId);
 
-                                document.getElementById('button_save_expenditure').addEventListener('click', function () {
+                                document.getElementById('button_save_expenditure')?.addEventListener('click', function () {
 
                                     var formData = $('#expenditureForm').serialize();
                                     if (proposalId) {
@@ -1454,11 +1450,11 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Basic Details</td>
+                                        <td><span style="color:red">* </span>Basic Details</td>
                                         <td id="td_basic">Incomplete</td>
                                     </tr>
                                     <tr>
-                                        <td>Research Details</td>
+                                        <td><span style="color:red">* </span>Research Details</td>
                                         <td id="td_researchinfo">Incomplete</td>
                                     </tr>
                                     <tr>
@@ -1470,15 +1466,15 @@
                                         <td id="td_pub">Not Filled</td>
                                     </tr>
                                     <tr>
-                                        <td>Financials</td>
+                                        <td><span style="color:red">* </span>Financials</td>
                                         <td id="td_financials">Incomplete</td>
                                     </tr>
                                     <tr>
-                                        <td>Research Design</td>
+                                        <td><span style="color:red">* </span>Research Design</td>
                                         <td id="td_design">Incomplete</td>
                                     </tr>
                                     <tr>
-                                        <td>Workplan</td>
+                                        <td><span style="color:red">* </span>Workplan</td>
                                         <td id="td_workplan">Incomplete</td>
                                     </tr>
                                     <!-- Add more rows as needed -->
@@ -1621,6 +1617,7 @@
 
             </div>
         </div>
+        @endif
     </div>
 @else
 

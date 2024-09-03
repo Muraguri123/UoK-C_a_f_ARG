@@ -198,7 +198,8 @@
                                 class="table table-responsive table-bordered table-striped table-hover" style="margin:4px">
                                 <thead class="bg-secondary text-white">
                                     <tr>
-                                        <th scope="col">Shortname</th>
+                                        <th scope="col">Type</th>
+                                        <th scope="col">Notify Owner</th>
                                         <th scope="col">Description</th>
                                     </tr>
                                 </thead>
@@ -257,6 +258,7 @@
                                         var typeurl = routeUrlTemplate.replace('__ID__', data.typeuuid);
                                         var row = '<tr>' +
                                             '<td><a class="nav-link pt-0 pb-0" href="' + typeurl + '">' + data.typename + '</a></td>' +
+                                            '<td>' + Boolean(data.notifyowner) + '</td>' +
                                             '<td>' + data.description ?? '' + '</td>' +
                                             '</tr>';
                                         tbody.append(row);

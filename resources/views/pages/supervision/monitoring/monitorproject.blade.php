@@ -247,7 +247,7 @@
                                 let projectid = "{{ isset($project) ? $project->researchid : '' }}"; // Check if depid is set
                                 submitreporturl = `{{ route('api.supervision.monitoring.addreport', ['id' => ':id']) }}`.replace(':id', projectid);
                                 progressurl = `{{ route('api.supervision.monitoring.fetchmonitoringreport', ['id' => ':id']) }}`.replace(':id', projectid);
-                                document.getElementById('btn_saveprogress').addEventListener('click', function () {
+                                document.getElementById('btn_saveprogress')?.addEventListener('click', function () {
 
                                     var formData = $('#form_researchprogress').serialize();
 

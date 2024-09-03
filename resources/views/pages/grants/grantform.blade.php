@@ -57,7 +57,7 @@
                     let grantid = "{{ isset($grant) ? $grant->grantid : '' }}"; // Check if grantid is set
                     // Assuming prop is passed to the Blade view from the Laravel controller
                     const granturl = `{{ route('api.grants.updategrant', ['id' => ':id']) }}`.replace(':id', grantid);
-                    document.getElementById('btn_editgrant').addEventListener('click', function () {
+                    document.getElementById('btn_editgrant')?.addEventListener('click', function () {
 
                         document.getElementById('title').removeAttribute('readonly');
                         document.getElementById('finyear').removeAttribute('readonly');
@@ -68,7 +68,7 @@
                         this.disabled = true;
                         this.hidden = true;
                     });
-                    document.getElementById('btn_updategrant').addEventListener('click', function () {
+                    document.getElementById('btn_updategrant')?.addEventListener('click', function () {
 
                         var formData = $('#grantdetailsform').serialize();
                         

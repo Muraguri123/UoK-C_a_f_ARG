@@ -173,13 +173,13 @@
                     </div>
                     <script>
                         $(document).ready(function () {
-                            document.getElementById('startdate').addEventListener('change', function () {
+                            document.getElementById('startdate')?.addEventListener('change', function () {
                                 calculateFinYear();
                             });
-                            document.getElementById('enddate').addEventListener('change', function () {
+                            document.getElementById('enddate')?.addEventListener('change', function () {
                                 calculateFinYear();
                             });
-                            document.getElementById('btn_savegrant').addEventListener('click', function () {
+                            document.getElementById('btn_savegrant')?.addEventListener('click', function () {
 
                                 var formData = $('#form_addgrant').serialize();
 

@@ -6,7 +6,9 @@ use App\Models\Proposal;
 use App\Models\ResearchFunding;
 use App\Models\ResearchProgress;
 use App\Models\ResearchProject;
+use App\Models\User;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -135,10 +137,11 @@ class ProjectsController extends Controller
         }
 
         // Fetch projects where the related proposals' useridfk matches the current user
-        $project = ResearchProject::with(['proposal.applicant'])->findOrFail($id);
+        $project = ResearchProject::with(['proposal.applicant', 'mandeperson'])->findOrFail($id);
+        $allusers = User::all();
         //  ;
         // Return the view with the necessary data
-        return view('pages.projects.viewproject', compact('project'));
+        return view('pages.projects.viewproject', compact('project', 'allusers'));
     }
 
     public function submitmyprogress(Request $request, $id)
@@ -166,7 +169,7 @@ class ProjectsController extends Controller
             return response(['message' => 'Fill all the required Fields!', 'type' => 'danger'], 400);
 
         }
-        $project=ResearchProject::with('applicant')->findOrFail($id);
+        $project = ResearchProject::with('applicant')->findOrFail($id);
         $item = new ResearchProgress();
         $item->researchidfk = $request->input('researchidfk');
         $item->reportedbyfk = $request->input('reportedbyfk');
@@ -179,6 +182,38 @@ class ProjectsController extends Controller
 
         // Optionally, return a response or redirect
         return response(['message' => 'Report Submitted Successfully!!', 'type' => 'success']);
+
+
+    }
+    public function assignme(Request $request, $id)
+    {
+        if (!auth()->user()->hasPermission('canassignmonitoringperson')) {
+            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not authorized to Assign M & E!");
+        }
+        $rules = [
+            'supervisorfk' => 'required|string',
+        ];
+
+
+
+        // Validate incoming request
+        $validator = Validator::make($request->all(), $rules);
+
+        // Check if validation fails
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 400);
+        }
+
+        $item = ResearchProject::findOrFail($id);
+
+        $item->supervisorfk = $request->input('supervisorfk');
+        $item->save();
+        $mailingController = new MailingController();
+        $url = route('pages.projects.viewanyproject', ['id' => $item->researchid]);
+        $mailingController->notifyUsersOfProposalActivity('projectassignedmande', 'Project Monitoring Assignment!', 'success', ['This Project has been assigned M & E Team.'], 'View Project', $url);
+
+        // Optionally, return a response or redirect
+        return redirect(route('pages.projects.viewanyproject', ['id' => $id]));
 
 
     }
@@ -295,8 +330,23 @@ class ProjectsController extends Controller
 
         }
         $tranches = ResearchFunding::where('researchidfk', $id)->count();
-        if ($tranches >= 3) {
-            return redirect()->back()->with('projectfundinglimit', 'This Project has reached the Maximum number of Funding Tranches!');
+        if ($tranches >= 3) {                
+            return response(['message' => 'This Project has reached the Maximum number of Funding Tranches!', 'type' => 'danger']);
+
+        }
+        $project = ResearchProject::with('proposal')->findOrFail($id);
+        $commencingDate = Carbon::parse($project->proposal->commencingdate);
+        if ($tranches == 1) {
+            $commencingDatePlusSixMonths = $commencingDate->addMonths(6);
+            if (Carbon::now()->isBefore($commencingDatePlusSixMonths)) {
+                return response(['message' => 'You must wait until [' . $commencingDatePlusSixMonths->toDateString() . '] to get the second Tranch of Funding!', 'type' => 'danger']);
+            }
+        }
+        if ($tranches == 2) {
+            $commencingDatePlusNineMonths = $commencingDate->addMonths(9);
+            if (Carbon::now()->isBefore($commencingDatePlusNineMonths)) {
+                return response(['message' => 'You must wait until [' . $commencingDatePlusNineMonths->toDateString() . '] to get the Third Tranch of Funding!', 'type' => 'danger']);
+            }
         }
         $item = new ResearchFunding();
         $item->researchidfk = $id;

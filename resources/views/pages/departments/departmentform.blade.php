@@ -63,7 +63,7 @@
                         let depid = "{{ isset($department) ? $department->depid : '' }}"; // Check if depid is set
                         // Assuming prop is passed to the Blade view from the Laravel controller
                         const depurl = `{{ route('api.departments.updatedepartment', ['id' => ':id']) }}`.replace(':id', depid);
-                        document.getElementById('btn_editdepartment').addEventListener('click', function () {
+                        document.getElementById('btn_editdepartment')?.addEventListener('click', function () {
 
                             document.getElementById('shortname').removeAttribute('readonly');
                             document.getElementById('schoolfk').removeAttribute('disabled');
@@ -73,7 +73,7 @@
                             this.disabled = true;
                             this.hidden = true;
                         });
-                        document.getElementById('btn_updatedepartment').addEventListener('click', function () {
+                        document.getElementById('btn_updatedepartment')?.addEventListener('click', function () {
 
                             var formData = $('#departmentdetailsform').serialize();
 

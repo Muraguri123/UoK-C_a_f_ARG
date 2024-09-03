@@ -228,6 +228,14 @@
                                     </div>
                                 @endif
 
+                                @if (auth()->user()->haspermission('canassignmonitoringperson') && $project->projectstatus == 'Active' && $project->ispaused == false)
+                                    <div class="col text-center">
+                                        <button id="btn_assignmande" type="button" class="btn btn-info " data-bs-toggle="modal"
+                                            data-bs-target="#assignmandemodal">Assign M&E
+                                        </button>
+                                    </div>
+                                @endif
+
                                 @if (auth()->user()->haspermission('canresumeresearchproject') && $project->projectstatus == 'Active' && $project->ispaused == true)
                                     <div class="col text-center">
                                         <button id="btn_resumeproject" type="button" class="btn btn-info " data-bs-toggle="modal"
@@ -342,6 +350,73 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!--assign m and e team Modal -->
+                                <div class="modal fade" id="assignmandemodal" data-bs-backdrop="static" data-bs-keyboard="false"
+                                    tabindex="-1" aria-labelledby="mandemodalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="mandemodalLabel">Assign M & E</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form id="form_assignmande" action="{{ route('api.projects.assignme', ['id' => $project->researchid])}}" method="POST">
+                                                    @csrf
+                                                    <div class="row form-group">
+                                                        <div class="col col-md-3">
+                                                            <label class="form-control-label">Current M&E</label>
+                                                        </div>
+                                                        <div class="col-12 col-md-9">
+                                                            <input class="form-control" value="{{optional($project->mandeperson)->name}}" readonly type="text"/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row form-group">
+                                                        <table id="alluserstonotifytable"
+                                                            class="table table-responsive table-bordered table-striped table-hover"
+                                                            style="margin:4px">
+                                                            <thead class="bg-secondary text-white">
+                                                                <tr>
+                                                                    <th scope="col">Select</th>
+                                                                    <th scope="col">Name</th>
+                                                                    <th scope="col">PFNO</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($allusers as $nuser)
+                                                                    <tr>
+                                                                        <td>
+                                                                            <input name="supervisorfk" id="{{ $nuser->userid }}"
+                                                                                class="form-check-input"
+                                                                                value="{{ $nuser->userid }}"  type="radio"
+                                                                                {{ $project->supervisorfk == $nuser->userid ? 'checked' : '' }}>
+                                                                        </td>
+                                                                        <td>
+                                                                            <label for="{{$nuser->userid}}"
+                                                                                class="form-check-label">{{$nuser->name }}</label>
+                                                                        </td>
+                                                                        <td>
+                                                                            <label for="{{$nuser->userid}}"
+                                                                                class="form-check-label">{{$nuser->pfno}}</label>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </form>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button id="btn_closemandemodal" type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button id="btn_savemande" type="submit" form="form_assignmande" class="btn btn-primary">Save and
+                                                    Sign</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!--cancel project Modal -->
                                 <div class="modal fade" id="cancelprojectmodal" data-bs-backdrop="static"
                                     data-bs-keyboard="false" tabindex="-1" aria-labelledby="cancelprojectmodalLabel"
@@ -369,7 +444,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!--cancel project Modal -->
+                                <!--complete project Modal -->
                                 <div class="modal fade" id="completeprojectmodal" data-bs-backdrop="static"
                                     data-bs-keyboard="false" tabindex="-1" aria-labelledby="cancelprojectmodalLabel"
                                     aria-hidden="true">
@@ -416,7 +491,7 @@
 
                             $(document).ready(function () {
                                 let projectid = "{{ isset($project) ? $project->researchid : '' }}"; // Check if depid is set
-                                let userid="{{auth()->user()->userid}}"
+                                let userid = "{{auth()->user()->userid}}"
                                 let payload = $('#csrf_form')?.serialize();
                                 document.getElementById('btn_saveprogress')?.addEventListener('click', function () {
                                     submitreporturl = `{{ route('api.projects.submitmyprogress', ['id' => ':id']) }}`.replace(':id', projectid);
@@ -579,7 +654,7 @@
                                 let projectid = "{{ isset($project) ? $project->researchid : '' }}"; // Check if depid is set
                                 addfundingurl = `{{ route('api.projects.addfunding', ['id' => ':id']) }}`.replace(':id', projectid);
                                 fetchfundingurl = `{{ route('api.projects.fetchprojectfunding', ['id' => ':id']) }}`.replace(':id', projectid);
-                                document.getElementById('btn_savefunding').addEventListener('click', function () {
+                                document.getElementById('btn_savefunding')?.addEventListener('click', function () {
 
                                     var formData = $('#form_addfunding').serialize();
 

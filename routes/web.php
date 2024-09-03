@@ -18,7 +18,7 @@ use App\Http\Controllers\{
     Proposals\ResearchdesignController,
     ReportsController,
     Proposals\ProposalChangesController,
-    NotificationsController,
+    BusinessMailingController,
     DepartmentsController,
     SchoolsController,
     Auth\CustomPasswordResetController,
@@ -112,7 +112,7 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::post('/proposals/approvereject/{id}', [ProposalsController::class, 'approverejectproposal'])->name('api.proposals.approvereject');
     Route::get('/proposals/view/{id}', [ProposalsController::class, 'getsingleproposalpage'])->name('pages.proposals.viewproposal');
     Route::get('/proposals/edit/{id}', [ProposalsController::class, 'geteditsingleproposalpage'])->name('pages.proposals.editproposal');
-    Route::get('/proposals/generatePDF', [ProposalsController::class, 'generatePDF'])->name('api.proposal.generatepdf');
+    Route::get('/proposals/printpdf/{id}', [ProposalsController::class, 'printpdf'])->name('api.proposal.printpdf');
     //changes
     Route::post('/proposals/changes/post', [ProposalChangesController::class, 'postproposalchanges'])->name('api.proposalchanges.post');
     Route::get('/proposals/changes/fetchsearch', [ProposalChangesController::class, 'fetchsearch'])->name('api.proposalchanges.fetchsearch');
@@ -228,6 +228,7 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::post('/projects/resumeproject/{id}', [ProjectsController::class, 'resumeproject'])->name('api.projects.resumeproject');
     Route::post('/projects/cancelproject/{id}', [ProjectsController::class, 'cancelproject'])->name('api.projects.cancelproject');
     Route::post('/projects/completeproject/{id}', [ProjectsController::class, 'completeproject'])->name('api.projects.completeproject');
+    Route::post('/projects/assignme/{id}', [ProjectsController::class, 'assignme'])->name('api.projects.assignme');
 
     //project funding
     Route::post('/projects/addfunding/{id}', [ProjectsController::class, 'addfunding'])->name('api.projects.addfunding');
@@ -243,7 +244,7 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
     Route::get('/myprofile', [MyProfileController::class, 'myprofile'])->name('pages.myprofile');
 
     //notifications
-    Route::get('/notifications', [NotificationsController::class, 'notificationshome'])->name('pages.notifications');
+    Route::get('/mailing/home', [BusinessMailingController::class, 'mailinghome'])->name('pages.mailing.home');
 
     //reports
     Route::get('/reports/home', [ReportsController::class, 'home'])->name('pages.reports.home');

@@ -19,6 +19,8 @@ return new class extends Migration {
             $table->string('projectstatus')->default('active'); //active,cancelled,completed
             $table->boolean('ispaused')->default(false);
             $table->string('supervisorfk')->nullable();
+            $table->unsignedBigInteger('fundingfinyearfk');
+            $table->foreign('fundingfinyearfk')->references('id')->on('finyears')->onDelete('restrict');
             $table->foreign('supervisorfk')->references('userid')->on('users')->onDelete('restrict');
             $table->foreign('proposalidfk')->references('proposalid')->on('proposals')->onDelete('restrict');
             $table->timestamps();

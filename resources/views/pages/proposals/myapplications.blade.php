@@ -88,13 +88,13 @@
                     var editurl = routeeditUrlTemplate.replace('__ID__', data.proposalid);
                     var row = '<tr>' +
                         '<td><a class="nav-link" href="' + proposalUrl + '">' + data.proposalcode + '</a></td>' +
-                        '<td>' + (data.grantitem ? data.grantitem?.grantid + ' - (' + data.grantitem?.finyear + ')' : '') + '</td>' +
+                        '<td>' + (data.grantitem ? data.grantitem?.grantid + ' - (' + data.grantitem?.title + ')' : '') + '</td>' +
                         '<td>' + (data.themeitem ? data.themeitem.themename : '') + '</td>' +
                         '<td>' + data.highqualification + '</td>' +
                         '<td>' + (data.department ? data.department.shortname : '') + '</td>' +
                         '<td>' + (data.submittedstatus == 1 ? "Yes" : "No") + '</td>' +
                         '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
-                        (data.iseditable ? '<td><a class="nav-link" href="' + editurl + '"><i class="bi bi-pencil"></i>Edit</a></td>' :
+                        ((data.caneditstatus && data.approvalstatus == 'Pending') ? '<td><a class="nav-link" href="' + editurl + '"><i class="bi bi-pencil"></i>Edit</a></td>' :
                             '<td><a class="nav-link" href="' + proposalUrl + '">View</a></td>') +
                         '</tr>';
                     tbody.append(row);

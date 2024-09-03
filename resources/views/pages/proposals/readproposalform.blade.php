@@ -53,6 +53,13 @@
 
 
 
+
+
+
+
+
+
+
                     </div>
                 </nav>
 
@@ -99,7 +106,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="grantnofk" name="grantnofk" placeholder="Grant"
-                                        value="{{$prop->grantnofk }}" class="form-control" readonly>
+                                        value="{{$prop->grantitem->title }}" class="form-control" readonly>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -108,7 +115,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="themefk" name="themefk" placeholder="Theme"
-                                        value="{{$prop->themefk }}" class="form-control" readonly>
+                                        value="{{$prop->themeitem->themename }}" class="form-control" readonly>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -117,7 +124,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="departmentidfk" name="departmentidfk" placeholder="Department"
-                                        value="{{$prop->departmentidfk }}" class="form-control" readonly>
+                                        value="{{$prop->department->shortname }}" class="form-control" readonly>
                                 </div>
                             </div>
 
@@ -179,7 +186,7 @@
                                 </div>
                                 <div class="col-12 col-md-9">
                                     <input type="text" id="researchtitle" name="researchtitle" placeholder="Research Title"
-                                        class="form-control" value="{{ isset($prop) ? $prop->researchtitle : '' }}">
+                                        class="form-control" value="{{ isset($prop) ? $prop->researchtitle : '' }}" readonly>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -216,8 +223,8 @@
                                     <label class="form-control-label">Objectives</label>
                                 </div>
                                 <div class="col-12 col-md-9">
-                                    <textarea name="objectives" placeholder="Objectives"
-                                        class="form-control">{{ isset($prop) ? $prop->objectives : '' }}</textarea>
+                                    <textarea name="objectives" placeholder="Objectives" class="form-control"
+                                        readonly>{{ isset($prop) ? $prop->objectives : '' }}</textarea>
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -285,6 +292,13 @@
                                 </div>
                             </div>
                         @endif
+
+
+
+
+
+
+
 
 
 
@@ -523,8 +537,8 @@
                             <script>
                                 $(document).ready(function () {
                                     // Calculate total when quantity or price changes
-                                    document.getElementById('quantity').addEventListener('input', calculateTotal);
-                                    document.getElementById('unitprice').addEventListener('input', calculateTotal);
+                                    document.getElementById('quantity')?.addEventListener('input', calculateTotal);
+                                    document.getElementById('unitprice')?.addEventListener('input', calculateTotal);
 
                                     function calculateTotal() {
                                         const quantity = parseFloat(document.getElementById('quantity').value) || 0;
@@ -785,12 +799,26 @@
 
 
 
+
+
+
+
+
+
+
                             @if(Auth::user()->canenableediting($prop->proposalid))
                                 <div class="col text-center">
                                     <button id="btn_enableproposalediting" type="button" class="btn btn-info ">Enable
                                         Editing</button>
                                 </div>
                             @endif
+
+
+
+
+
+
+
 
 
 
@@ -803,12 +831,26 @@
 
 
 
+
+
+
+
+
+
+
                             @if(Auth::user()->canproposechanges($prop->proposalid))
                                 <div class="col text-center">
                                     <button id="btn_open_proposalchangeform" type="button" class="btn btn-info "
                                         data-bs-toggle="modal" data-bs-target="#proposalchangeModal">Propose Changes</button>
                                 </div>
                             @endif
+
+
+
+
+
+
+
 
 
 
@@ -822,6 +864,13 @@
 
 
 
+
+
+
+
+
+
+
                             @if(Auth::user()->canapproveproposal($prop->proposalid))
                                 <div class="col text-center">
                                     <button id="btn_openapprove_proposalmodal" type="button" class="btn btn-success "
@@ -829,6 +878,18 @@
                                         data-action="approve">Approve</button>
                                 </div>
                             @endif
+
+
+
+
+
+
+                            <div class="col text-center">
+                                <form action="{{ route('api.proposal.printpdf', ['id' => $prop->proposalid])}}">
+                                    <button id="btn_printproposall" type="submit" class="btn btn-success ">Print</button>
+
+                                </form>
+                            </div>
 
 
 
@@ -916,6 +977,18 @@
                                                 <textarea type="text" class="form-control" id="comment" name="comment"
                                                     required></textarea>
                                             </div>
+                                            <div class="form-group">
+                                                <label for="comment">Funding Year</label>
+                                                <select type="text" id="fundingfinyearfk" name="fundingfinyearfk"
+                                                    class="form-control">
+                                                    <option value="">Select a Financial Year</option>
+                                                    @foreach ($finyears as $year)
+                                                                                                                    <option value="{{ $year->id }}" {{ (isset($currentsettings) && $currentsettings['current_year'] == $year->id) ? 'selected' : '' }}>
+                                                            {{ $year->id . ' -- (' . $year->finyear . ')'}}
+                                                        </option>
+                                                    @endforeach 
+                                                                                    </select>
+                                            </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Cancel</button>
@@ -954,6 +1027,7 @@
                                 const enableediting = `{{ route('api.proposals.changeeditstatus', ['id' => ':id']) }}`.replace(':id', proposalId.toString());
                                 var csrfToken = document.getElementsByName('_token')[0].value;
 
+                               
                                 //receive proposal
                                 document.getElementById('btn_receiveproposal')?.addEventListener('click', function () {
                                     // Function to fetch data using AJAX
@@ -978,7 +1052,7 @@
                                         }
                                     });
                                 });
-                                
+
                                 //enable editing proposal
                                 document.getElementById('_btn_enableproposalediting')?.addEventListener('click', function () {
                                     // Function to fetch data using AJAX
