@@ -33,6 +33,10 @@ html {
   /* Adjust for navbar height */
   left: 0;
   z-index: 103;
+  border-right-style: solid;
+  border-right-width: 1px;
+  border-right-color:#deeae3;
+
 }
 
 .sidebar-collapsed {

@@ -65,9 +65,6 @@ class ProjectsController extends Controller
     }
     public function viewmyproject($id)
     {
-        if (!auth()->user()->hasPermission('canreadmyproject')) {
-            return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to view this Project!");
-        }
 
         // Fetch projects where the related proposals' useridfk matches the current user
         $project = ResearchProject::with(['proposal.applicant'])->findOrFail($id);

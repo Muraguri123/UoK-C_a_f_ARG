@@ -38,13 +38,22 @@
 
 
                             <hr class="my-2">
-                            <div>New User ? <a href="register">Register Here</a></div>
+                            <div class="row col-12">
+                                <div class="col-6">
+                                    <a href="password/reset">Forgot Password?</a>
+                                </div>
+                                <div class="col-6">
+                                    <a href="register">Register Here</a>
+                                </div>
+                            </div>
 
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+</div>
+</section>
 </div>
 @endsection

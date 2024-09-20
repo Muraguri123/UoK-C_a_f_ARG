@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Proposal;
+use App\Models\ResearchFunding;
+use App\Models\ResearchProject;
 use App\Models\ResearchTheme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,46 +12,35 @@ use Illuminate\Support\Facades\DB;
 class DashboardController extends Controller
 {
     public function home()
-    { 
-        $themes = ResearchTheme::all();
-        // Count proposals grouped by theme
-        $themeCounts = Proposal::join('researchthemes', 'proposals.themefk', '=', 'researchthemes.themeid')
-            ->select('researchthemes.themename as themename', DB::raw('count(proposals.proposalid) as total'))
-            ->groupBy('themename')
-            ->get()
-            ->toArray();
+    {
+        // Get the current user's ID
+        $userid = auth()->user()->userid;
+        $proposals = Proposal::where('useridfk', $userid)->get();
+        $proposalsids = $proposals->pluck('proposalid'); 
+        $projects = ResearchProject::whereIn('proposalidfk', $proposalsids)->get();
+        $projectsids = $projects->pluck('researchid'); 
+        $fundings = ResearchFunding::whereIn('researchidfk', $projectsids)->get();
 
-        // Prepare the data array
-        $data = [
-            ['Research Theme', 'Applications Count'], // Header row
-        ];
- 
-        foreach ($themes as $theme) {
-            $count = 0;
-            foreach ($themeCounts as $tc) {
-                if ($tc['themename'] === $theme->themename) {
-                    $count = $tc['total'];
-                    break;
-                }
-            }
-            $data[] = [
-                $theme->themename,
-                $count,
-            ];
-        }
         // Get  proposals count
-        $allProposalscount = Proposal::count();
-        $approvedProposalsCount = Proposal::where('approvalstatus', 'approved')->count();
-        $rejectedProposalsCount = Proposal::where('approvalstatus', 'rejected')->count();
-        $pendingProposalsCount = Proposal::where('approvalstatus', 'pending')->count();
-        $requirechangeProposalsCount = Proposal::where('approvalstatus', 'requirechange')->count();
+        $totalProposals = $proposals->count();
+        $approvedProposals =  $proposals->where('approvalstatus', 'approved')->count();
+        $rejectedProposals =$proposals->where('approvalstatus', 'rejected')->count();
+        $pendingProposals = $proposals->where('approvalstatus', 'pending')->count();
+        //get projects counts
+        $activeprojects =  $projects->where('projectstatus', 'Active')->count();
+        $cancelledprojects =$projects->where('projectstatus', 'Cancelled')->count();
+        $completedprojects = $projects->where('projectstatus', 'Completed')->count();
+        //total funds
+        $totalAmountReceived = $fundings->sum('amount');
         $dashboardmetrics = [
-            'allProposalscount' => $allProposalscount,
-            'approvedProposalsCount' => $approvedProposalsCount,
-            'pendingProposalsCount' => $pendingProposalsCount,
-            'requirechangeProposalsCount' => $requirechangeProposalsCount,
-            'rejectedProposalsCount' => $rejectedProposalsCount,
-            'themeCounts' => $data
+            'totalProposals' => $totalProposals,
+            'approvedProposals' => $approvedProposals,
+            'pendingProposals' => $pendingProposals,
+            'totalAmountReceived' => $totalAmountReceived,
+            'rejectedProposals' => $rejectedProposals,
+            'activeprojects' => $activeprojects,
+            'cancelledprojects' => $cancelledprojects,
+            'completedprojects' => $completedprojects,
         ];
 
         return view('pages.home', $dashboardmetrics);
@@ -57,11 +48,11 @@ class DashboardController extends Controller
 
     public function dashboard()
     {
-        if(!auth()->user()->haspermission('canviewadmindashboard')){
+        if (!auth()->user()->haspermission('canviewadmindashboard')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to View Admin Dashboard!");
         }
-        
- 
+
+
         // Get  proposals count
         $allProposalscount = Proposal::count();
         $approvedProposalsCount = Proposal::where('approvalstatus', 'approved')->count();
@@ -80,7 +71,7 @@ class DashboardController extends Controller
     }
     public function chartdata1()
     {
-        if(!auth()->user()->haspermission('canviewadmindashboard')){
+        if (!auth()->user()->haspermission('canviewadmindashboard')) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to View Admin Dashboard!");
         }
         $themes = ResearchTheme::all();
@@ -95,7 +86,7 @@ class DashboardController extends Controller
         $data = [
             ['Research Theme', 'Applications Count'], // Header row
         ];
- 
+
         foreach ($themes as $theme) {
             $count = 0;
             foreach ($themeCounts as $tc) {
@@ -128,10 +119,10 @@ class DashboardController extends Controller
     }
     public function chartdata(Request $request)
     {
-        if(!auth()->user()->haspermission('canviewadmindashboard')){
+        if (!auth()->user()->haspermission('canviewadmindashboard')) {
             return [];
-        } 
- 
+        }
+
         $proposalsQuery = Proposal::with('department', 'grantitem', 'themeitem', 'applicant');
 
 
@@ -207,10 +198,11 @@ class DashboardController extends Controller
         return response()->json($chartData);
     }
 
-    public function unauthorized(){
-        $message=session('unauthorizationmessage');
-    
-        return view('pages.unauthorized', ['message'=>$message]);
+    public function unauthorized()
+    {
+        $message = session('unauthorizationmessage');
+
+        return view('pages.unauthorized', ['message' => $message]);
 
     }
 

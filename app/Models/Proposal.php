@@ -69,6 +69,28 @@ class Proposal extends Model
     {
         return $this->belongsTo(ResearchTheme::class, 'themefk', 'themeid');
     }
+
+    public function collaborators()
+    {
+        return $this->hasMany(Collaborator::class, 'proposalidfk', 'proposalid');
+    }
+    public function publications()
+    {
+        return $this->hasMany(Publication::class, 'proposalidfk', 'proposalid');
+    }
+    
+    public function expenditures()
+    {
+        return $this->hasMany(Expenditureitem::class, 'proposalidfk', 'proposalid');
+    }
+    public function researchdesigns()
+    {
+        return $this->hasMany(ResearchDesignItem::class, 'proposalidfk', 'proposalid');
+    }
+    public function workplans()
+    {
+        return $this->hasMany(Workplan::class, 'proposalidfk', 'proposalid');
+    }
     public function researchProject()
     {
         return $this->belongsTo(ResearchProject::class, 'research_project_id', 'id');
@@ -76,15 +98,16 @@ class Proposal extends Model
     public function proposalchanges()
     {
         return $this->belongsTo(ResearchTheme::class, 'themefk', 'themeid');
-    }  
- 
+    }
+
     public function hasPendingUpdates()
     {
         try {
             $changes = $this->proposalchanges()->get();
             if ($changes->where('status', 'Pending')) {
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         } catch (\Exception $exception) {
@@ -98,7 +121,8 @@ class Proposal extends Model
             $user = Auth::user();
             if (($user->userid == $this->useridfk) && $this->caneditstatus && $this->approvalstatus == 'Pending') {
                 return true;
-            } else {
+            }
+            else {
                 return false;
             }
         } catch (\Exception $exception) {

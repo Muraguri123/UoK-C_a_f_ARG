@@ -6,13 +6,14 @@
   <div class="position-sticky sidebar-sticky">
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="list-group-item list-group-item-action" style="border:0px" href="{{ route('pages.home')  }}">
+        <a class="nav-link" style="border:0px" href="{{ route('pages.home')  }}">
           <i class="bi bi-house"> </i>Home
         </a>
 
-      </li> @foreach($menu as $menuitem)
+      </li>
+      @foreach($menu as $menuitem)
       <li class="nav-item">
-      <a class="nav-link  " style="border:0px" href="{{ route($menuitem->path) }}">
+      <a class="nav-link" style="border:0px" href="{{ route($menuitem->path) }}">
         <i class="bi bi-arrow-right-short"></i>{{ $menuitem->menuname }}</a>
       </li>
     @endforeach  

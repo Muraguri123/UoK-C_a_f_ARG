@@ -99,17 +99,7 @@ class UsersController extends Controller
             // Update active status
             $user->isactive = $request->has('userisactive') && $request->input('userisactive') == 'on';
 
-            // Update permissions based on the role
-            if ($user->role == 2) {
-                $applicantPermissions = Permission::where('targetrole', $user->role)->get();
-            }
-            else {
-                $applicantPermissions = $this->getNonApplicantDefaultRights();
-            }
-
-            foreach ($applicantPermissions as $permission) {
-                $user->permissions()->attach($permission->pid, ['id' => (string) Str::uuid()]);
-            }
+             
 
             $user->saveOrFail();
         });

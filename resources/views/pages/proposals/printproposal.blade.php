@@ -63,7 +63,7 @@
 <div class="header">
     <h1>UoK Final Research Proposal</h1>
     <p>Proposal Code: {{ $proposal->proposalcode }}</p>
-    <p>Date Submitted: {{ \Carbon\Carbon::now()->format('d-m-Y H:i:s') }}</p>
+    <p>Date Printed: {{ \Carbon\Carbon::now()->format('d-m-Y H:i:s') }}</p>
 </div>
 
 <div class="content">
@@ -133,6 +133,93 @@
     <div class="section-title">Research Findings</div>
     <p>{{ $proposal->res_findings }}</p>
 
+    <!-- Expenditures Section -->
+    <div class="section-title">Expenditures</div>
+    <table class="table">
+        <tr>
+            <th>Item</th>
+            <th>Type</th>
+            <th>Total</th>
+        </tr>
+        @foreach($proposal->expenditures as $expenditure)
+        <tr>
+            <td>{{ $expenditure->item }}</td>
+            <td>{{ $expenditure->itemtype }}</td>
+            <td>{{ $expenditure->total }}</td>
+        </tr>
+        @endforeach
+    </table>
+
+    <!-- Research Design Section -->
+    <div class="section-title">Research Design</div>
+    <table class="table">
+        <tr>
+            <th>Summary</th>
+            <th>Indicators</th>
+            <th>Goal</th>
+        </tr>
+        @foreach($proposal->researchdesigns as $design)
+        <tr>
+            <td>{{ $design->summary }}</td>
+            <td>{{ $design->indicators }}</td>
+            <td>{{ $design->goal }}</td>
+        </tr>
+        @endforeach
+    </table>
+
+    <!-- Workplan Section -->
+    <div class="section-title">Workplan</div>
+    <table class="table">
+        <tr>
+            <th>Activity</th>
+            <th>Time</th>
+            <th>Input</th>
+            <th>By Who</th>
+        </tr>
+        @foreach($proposal->workplans as $workplan)
+        <tr>
+            <td>{{ $workplan->activity }}</td>
+            <td>{{ $workplan->time }}</td>
+            <td>{{ $workplan->input }}</td>
+            <td>{{ $workplan->bywhom }}</td>
+        </tr>
+        @endforeach
+    </table>
+
+    
+    <!-- Collaborators Section -->
+    <div class="section-title">Collaborators</div>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Institution</th>
+        </tr>
+        @foreach($proposal->collaborators as $collaborator)
+        <tr>
+            <td>{{ $collaborator->collaboratorname }}</td>
+            <td>{{ $collaborator->position }}</td>
+            <td>{{ $collaborator->institution }}</td>
+        </tr>
+        @endforeach
+    </table>
+
+    <!-- Publications Section -->
+    <div class="section-title">Publications</div>
+    <table class="table">
+        <tr>
+            <th>Title</th>
+            <th>Publisher</th>
+            <th>Year</th>
+        </tr>
+        @foreach($proposal->publications as $publication)
+        <tr>
+            <td>{{ $publication->title }}</td>
+            <td>{{ $publication->publisher }}</td>
+            <td>{{ $publication->year }}</td>
+        </tr>
+        @endforeach
+    </table>
     <div class="section-title">Additional Comments</div>
     <p>{{ $proposal->comment }}</p>
 

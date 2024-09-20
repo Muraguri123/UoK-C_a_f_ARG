@@ -48,13 +48,7 @@ class LoginController extends Controller
             $request->session()->put('user_name', $user->name); // Store user name in session
             $request->session()->put('user_id', $user->email);// Store user email in session
 
-            // // After successful login, send email
-            $recipientEmail = auth()->user()->email;
-            $details = [
-                'title' => '',
-                'body' => 'Thank you for logging in.'
-            ];
-
+          
             // Create an instance of MailingController and call the sendMail function
             // $mailingController = new MailingController();
             // $mailingController->sendMail($recipientEmail, $details);

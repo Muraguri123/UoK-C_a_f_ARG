@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="ARG Portal">
   <meta name="author" content="Tagile Solutions">
-  <link rel="icon" href="{{ asset('images/favicon.png') }}" type="image/x-icon">
+  <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/x-icon" >
   <title>U.O.K ARG Portal</title>
 
   @include('partials.styles')
@@ -21,8 +21,8 @@
       @if (Auth::check() && Auth::user()->hasVerifiedEmail())
       @include('partials.sidebar')
       <div class="content-wrapper">
-      <div class="main">
-        <main class="content">
+      <div class="main bg-light">
+        <main class="content ">
         @yield('content') 
         </main>
       </div>

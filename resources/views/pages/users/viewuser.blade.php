@@ -247,12 +247,13 @@
                             });
 
                             let userid = "{{ isset($user) ? $user->userid : '' }}"; // Check if user is set
-                            const passwordchangeurl = `{{ route('api.users.resetpassword', ['id' => ':id']) }}`.replace(':id', userid.toString());
+                            const passwordchangeurl = `{{ route('password.requestreset') }}`;
                             const updateroleurl = `{{ route('api.users.updaterole', ['id' => ':id']) }}`.replace(':id', userid.toString());
 
                             document.getElementById('btn_resetpassword')?.addEventListener('click', function () {
                                 var csrfToken = document.getElementsByName('_token')[0].value;
                                 var formdata = { '_token': csrfToken };
+                                formdata['email']="{{$user->email}}";
                                 $.ajax({
                                     url: passwordchangeurl,
                                     type: 'POST',
@@ -304,13 +305,11 @@
                         });
                     </script>
                 </div>
-
-
                 <!-- Rights tab -->
                 <div role="tabpanel" class="tab-pane" id="panel-rights">
                     <div>
-                        <h5 class="text-center">Select permissions preffered for this user only!</h5>
                         @if (!(isset($user) && $user->issuperadmin()))
+                            <h5 class="text-center">Select permissions preffered for this user only!</h5>
                             <div id="permissions_list_div" class="container mt-1">
                                 @if ($user->role == '1' || $user->role == '3')
                                     <div class="card">
@@ -352,8 +351,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                @endif  
-                                <div class="row col-12 form-group">
+                                @endif                          <div class="row col-12 form-group">
 
                                 </div>
                                 <div class="card">
@@ -405,7 +403,7 @@
                             </div>
                         @else
                             <div class="text-center">
-                                <h5>This is a superuser (Admin) and reserves all rights exclusively!</h5>
+                                <h5>This is a <i>superuser (Admin)</i> and is Limited to Some Rights!</h5>
                             </div>
                         @endif
                     </div>

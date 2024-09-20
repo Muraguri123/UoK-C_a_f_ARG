@@ -46,10 +46,8 @@ class RegisterController extends Controller
 
     public function resetuserpassword(Request $request, $id)
     {
-
-        // Create a new user instance
         $user = User::findOrFail($id);
-        $recipientEmail = $user->email;
+        $recipientEmail = [$user->email];
         $details = [
             'title' => 'Password Reset Request',
             'body' => 'Your password reset link is here.'

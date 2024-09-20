@@ -886,7 +886,7 @@
 
                             <div class="col text-center">
                                 <form action="{{ route('api.proposal.printpdf', ['id' => $prop->proposalid])}}">
-                                    <button id="btn_printproposall" type="submit" class="btn btn-success ">Print</button>
+                                    <button id="btn_printproposall" type="submit" class="btn btn-success ">Download Pdf</button>
 
                                 </form>
                             </div>

@@ -56,12 +56,10 @@
           style="margin:4px">
           <thead class="bg-secondary text-white">
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
-            <th scope="col">PFNO</th>
-            <th scope="col">Can Login</th>
-            <th scope="col">Role</th>
-            <th scope="col">Date Created</th>
+            <th scope="col">#</th>
+            <th scope="col">Queue</th>
+            <th scope="col">Attempts</th>
+            <th scope="col">Date</th>
           </tr>
           </thead>
           <tbody>
@@ -78,11 +76,11 @@
         // Function to fetch data using AJAX
         function fetchpendingmailsData() {
           $.ajax({
-          url: "{{ route('api.users.fetchallusers') }}",
+          url: "{{ route('api.mailing.getalljobs') }}",
           type: 'GET',
           dataType: 'json',
           success: function (response) {
-            populateTable(response);
+            populateallljobsTable(response);
           },
           error: function (xhr, status, error) {
             console.error('Error fetching data:', error);
@@ -100,30 +98,27 @@
             search: searchTerm
           },
           success: function (response) {
-
-            populateTable(response);
+            populateallljobsTable(response);
           },
           error: function (xhr, status, error) {
             console.error('Error searching data:', error);
           }
           });
         }
-        var routeUrlTemplate = "{{ route('pages.users.viewsingleuser', ['id' => '__ID__']) }}";
+        var viewjoburl = "{{ route('pages.mailing.viewjobpage', ['id' => '__ID__']) }}";
 
         // Function to populate table with data
-        function populateTable(data) {
+        function populateallljobsTable(data) {
           var tbody = $('#pendingmailstable tbody');
           tbody.empty(); // Clear existing table rows
           if (data.length > 0) {
           $.each(data, function (index, data) {
-            var userurl = routeUrlTemplate.replace('__ID__', data.userid);
+            var viewjob_url = viewjoburl.replace('__ID__', data.id);
             var row = '<tr>' +
-            '<td>' + data.name + '</td>' +
-            '<td><a class="nav-link pt-0 pb-0" href="' + userurl + '">' + data.email + '</a></td>' +
-            '<td>' + data.pfno + '</td>' +
-            '<td>' + Boolean(data.isactive) + '</td>' +
-            '<td>' + getrolename(data.role) + '</td>' +
-            '<td>' + new Date(data.created_at).toDateString("en-US") + '</td>' +
+            '<td><a class="nav-link pt-0 pb-0" href="' + viewjob_url + '">' + data.id + '</a></td>' +
+            '<td>' + data.queue + '</td>' +
+            '<td>' + data.attempts + '</td>' +
+            '<td>' + new Date(data.created_at).toISOString() + '</td>' +
             '</tr>';
             tbody.append(row);
           });
@@ -154,9 +149,9 @@
         $('#pendingmails_searchInput').on('keyup', function () {
           var searchTerm = $(this).val().toLowerCase();
           if (searchTerm.length >= 3) { // Optional: adjust the minimum search term length
-            searchpendingmailsData(searchTerm);
+          searchpendingmailsData(searchTerm);
           } else if (searchTerm.length === 0) {
-            fetchpendingmailsData(); // Fetch all data when search input is empty
+          fetchpendingmailsData(); // Fetch all data when search input is empty
           }
         });
         });
@@ -165,12 +160,114 @@
       </div>
 
       <div role="tabpanel" class="tab-pane" id="panel-failedmails">
+      <div class="row">
+        <div class="row form-group" style="padding-top:4px">
+        <form class="form-horizontal">
+          <div class="row form-group">
+          <div class="col-12">
+
+            <input type="text" id="failedjobs_searchInput" class="form-control text-center"
+            style="::placeholder { color: red; }" placeholder="Search by Queue">
+          </div>
+          </div>
+        </form>
+
+        <table id="failedjobstable" class="table table-responsive table-bordered table-striped table-hover"
+          style="margin:4px">
+          <thead class="bg-secondary text-white">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Queue</th>
+            <th scope="col">Uuid</th>
+            <th scope="col">Date</th>
+          </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <script>
+
+        $(document).ready(function () {
 
 
+        // Function to fetch data using AJAX
+        function fetchfailedjobsData() {
+          $.ajax({
+          url: "{{ route('api.mailing.getallfailedjobs') }}",
+          type: 'GET',
+          dataType: 'json',
+          success: function (response) {
+            populatefailedjobsTable(response);
+          },
+          error: function (xhr, status, error) {
+            console.error('Error fetching data:', error);
+          }
+          });
+        }
+
+        // Function to search data using AJAX
+        function searchfailedjobsData(searchTerm) {
+          $.ajax({
+          url: "{{ route('api.users.fetchsearchusers') }}",
+          type: 'GET',
+          dataType: 'json',
+          data: {
+            search: searchTerm
+          },
+          success: function (response) {
+            populatefailedjobsTable(response);
+          },
+          error: function (xhr, status, error) {
+            console.error('Error searching data:', error);
+          }
+          });
+        }
+        var viewfailedjoburl = "{{ route('pages.mailing.viewfailedjobdetails', ['id' => '__ID__']) }}";
+
+        // Function to populate table with data
+        function populatefailedjobsTable(data) {
+          var tbody = $('#failedjobstable tbody');
+          tbody.empty(); // Clear existing table rows
+          if (data.length > 0) {
+          $.each(data, function (index, data) {
+            var viewfailedjob_url = viewfailedjoburl.replace('__ID__', data.id);
+            var row = '<tr>' +
+            '<td><a class="nav-link pt-0 pb-0" href="' + viewfailedjob_url + '">' + data.id + '</a></td>' +
+            '<td>' + data.queue + '</td>' +
+            '<td>' + data.uuid + '</td>' +
+            '<td>' + new Date(data.failed_at).toISOString() + '</td>' +
+            '</tr>';
+            tbody.append(row);
+          });
+          }
+          else {
+          var row = '<tr><td colspan="5">No Users found</td></tr>';
+          tbody.append(row);
+          }
+        }
+        fetchfailedjobsData();
+
+        // Search input keyup event
+        $('#failedjobs_searchInput').on('keyup', function () {
+          var searchTerm = $(this).val().toLowerCase();
+          if (searchTerm.length >= 3) { // Optional: adjust the minimum search term length
+            searchfailedjobsData(searchTerm);
+          } else if (searchTerm.length === 0) {
+            fetchfailedjobsData(); // Fetch all data when search input is empty
+          }
+        });
+        });
+
+      </script>
       </div>
 
     </div>
+
     </div>
+  </div>
 
 
   </div>

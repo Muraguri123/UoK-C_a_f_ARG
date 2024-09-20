@@ -32,7 +32,7 @@ class VerificationMail extends Mailable
     {
         
         return $this->subject('Mail from Laravel')
-                    ->view('emails.example');
+                    ->view('pages.auth.passwords.reset');
     }
 
 

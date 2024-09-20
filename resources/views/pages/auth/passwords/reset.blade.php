@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Reset Password</title>
-</head>
-<body>
-    <form action="{{ route('password.update') }}" method="POST">
+@extends('layouts.unauthorizedtemplate')
+
+@section('content')
+<div class="container">
+    <section class="mt-2 mb-4">
+        <div class="container py-3 h-100 text-center">
+        <form action="{{ route('password.update') }}" method="POST">
         @csrf
-        <input type="hidden" name="token" value="{{ $token }}">
-        <input type="email" name="email" required placeholder="Email">
-        <input type="password" name="password" required placeholder="New Password">
-        <input type="password" name="password_confirmation" required placeholder="Confirm Password">
+        <input type="hidden" name="token" value="{{ $token }}"><br/>
+        <input type="email" name="email" required placeholder="Email"><br/>
+        <input type="password" name="password" required placeholder="New Password"><br/>
+        <input type="password" name="password_confirmation" required placeholder="Confirm Password"><br/>
         <button type="submit">Reset Password</button>
     </form>
     @if ($errors->any())
@@ -22,5 +21,7 @@
             </ul>
         </div>
     @endif
-</body>
-</html>
+        </div>
+    </section>
+</div>
+@endsection

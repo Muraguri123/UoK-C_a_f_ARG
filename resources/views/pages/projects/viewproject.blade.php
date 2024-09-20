@@ -3,6 +3,7 @@
 @section('content')
 @auth
 
+
     @if (isset($project))
         <div>
             <style>
@@ -31,6 +32,7 @@
                     });
                 </script>
             @endif
+
             @if (session('projectnotpausedmessage'))
                 <script>
                     $(document).ready(function () {
@@ -38,6 +40,7 @@
                     });
                 </script>
             @endif
+
             @if (session('projectnotcancelledmessage'))
                 <script>
                     $(document).ready(function () {
@@ -45,6 +48,7 @@
                     });
                 </script>
             @endif
+
             @if (session('projectnotcompletedmessage'))
                 <script>
                     $(document).ready(function () {
@@ -52,6 +56,7 @@
                     });
                 </script>
             @endif
+
             @if (session('projectcompletedmessage'))
                 <script>
                     $(document).ready(function () {
@@ -59,6 +64,7 @@
                     });
                 </script>
             @endif
+
             @if (session('projectfundinglimit'))
                 <script>
                     $(document).ready(function () {
@@ -66,6 +72,7 @@
                     });
                 </script>
             @endif
+
             <div class="prop-tabcontainer">
                 <!-- Nav tabs -->
                 <nav>
@@ -220,6 +227,7 @@
                                     </div>
                                 @endif
 
+
                                 @if (auth()->user()->haspermission('canpauseresearchproject') && $project->projectstatus == 'Active' && $project->ispaused == false)
                                     <div class="col text-center">
                                         <button id="btn_pauseproject" type="button" class="btn btn-info " data-bs-toggle="modal"
@@ -227,6 +235,7 @@
                                         </button>
                                     </div>
                                 @endif
+
 
                                 @if (auth()->user()->haspermission('canassignmonitoringperson') && $project->projectstatus == 'Active' && $project->ispaused == false)
                                     <div class="col text-center">
@@ -236,12 +245,14 @@
                                     </div>
                                 @endif
 
+
                                 @if (auth()->user()->haspermission('canresumeresearchproject') && $project->projectstatus == 'Active' && $project->ispaused == true)
                                     <div class="col text-center">
                                         <button id="btn_resumeproject" type="button" class="btn btn-info " data-bs-toggle="modal"
                                             data-bs-target="#resumeprojectmodal">Resume Project</button>
                                     </div>
                                 @endif
+
 
                                 @if (auth()->user()->haspermission('cancancelresearchproject'))
                                     <div class="col text-center">
@@ -250,12 +261,14 @@
                                     </div>
                                 @endif
 
+
                                 @if (auth()->user()->haspermission('cancompleteresearchproject'))
                                     <div class="col text-center">
                                         <button id="btn_completeproject" type="button" class="btn btn-success "
                                             data-bs-toggle="modal" data-bs-target="#completeprojectmodal">Complete</button>
                                     </div>
                                 @endif
+
 
 
                             </div>
@@ -361,14 +374,18 @@
                                                     aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <form id="form_assignmande" action="{{ route('api.projects.assignme', ['id' => $project->researchid])}}" method="POST">
+                                                <form id="form_assignmande"
+                                                    action="{{ route('api.projects.assignme', ['id' => $project->researchid])}}"
+                                                    method="POST">
                                                     @csrf
                                                     <div class="row form-group">
                                                         <div class="col col-md-3">
                                                             <label class="form-control-label">Current M&E</label>
                                                         </div>
                                                         <div class="col-12 col-md-9">
-                                                            <input class="form-control" value="{{optional($project->mandeperson)->name}}" readonly type="text"/>
+                                                            <input class="form-control"
+                                                                value="{{optional($project->mandeperson)->name}}" readonly
+                                                                type="text" />
                                                         </div>
                                                     </div>
                                                     <div class="row form-group">
@@ -383,24 +400,27 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                @foreach ($allusers as $nuser)
-                                                                    <tr>
-                                                                        <td>
-                                                                            <input name="supervisorfk" id="{{ $nuser->userid }}"
-                                                                                class="form-check-input"
-                                                                                value="{{ $nuser->userid }}"  type="radio"
-                                                                                {{ $project->supervisorfk == $nuser->userid ? 'checked' : '' }}>
-                                                                        </td>
-                                                                        <td>
-                                                                            <label for="{{$nuser->userid}}"
-                                                                                class="form-check-label">{{$nuser->name }}</label>
-                                                                        </td>
-                                                                        <td>
-                                                                            <label for="{{$nuser->userid}}"
-                                                                                class="form-check-label">{{$nuser->pfno}}</label>
-                                                                        </td>
-                                                                    </tr>
-                                                                @endforeach
+                                                                @if (isset($allusers))
+                                                                    @foreach ($allusers as $nuser)
+                                                                            <tr>
+                                                                            <td>
+                                                                                <input name="supervisorfk" id="{{ $nuser->userid }}"                                                                                    class="form-check-input"
+                                                                                    value="{{ $nuser->userid }}" type="radio" 
+                                                                                    {{ $project->supervisorfk == $nuser->userid ?? 'checked'  }}
+                                                                                    >
+                                                                            </td>
+                                                                            <td>
+                                                                                <label for="{{$nuser->userid}}"
+                                                                                    class="form-check-label">{{$nuser->name }}</label>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label for="{{$nuser->userid}}"
+                                                                                    class="form-check-label">{{$nuser->pfno}}</label>
+                                                                            </td>
+                                                                        </tr>
+                                                                    @endforeach
+                                                                   @endif
+
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -411,7 +431,8 @@
                                             <div class="modal-footer">
                                                 <button id="btn_closemandemodal" type="button" class="btn btn-secondary"
                                                     data-bs-dismiss="modal">Close</button>
-                                                <button id="btn_savemande" type="submit" form="form_assignmande" class="btn btn-primary">Save and
+                                                <button id="btn_savemande" type="submit" form="form_assignmande"
+                                                    class="btn btn-primary">Save and
                                                     Sign</button>
                                             </div>
                                         </div>
@@ -593,6 +614,7 @@
                                         </button>
                                     @endif
 
+
                                 </div>
                             </div>
                             <!-- modals div -->
@@ -737,6 +759,7 @@
             </div>
         </div>
     @endif
+
 
 @endauth
 @endsection

@@ -301,7 +301,7 @@
                                     style="::placeholder { color: red; }" placeholder="Search by Department Name">
                             </div>
                             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-6">
-                                @if (auth()->user()->haspermission('canadddepartment'))
+                                @if (auth()->user()->haspermission('canaddoreditdepartment'))
                                     <button type="button" class="btn btn-info text-white" data-bs-toggle="modal"
                                         data-bs-target="#adddepartmentmodal">
                                         Add Department

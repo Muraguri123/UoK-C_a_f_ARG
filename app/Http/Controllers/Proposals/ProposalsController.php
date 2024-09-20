@@ -434,7 +434,7 @@ class ProposalsController extends Controller
     }
     public function printpdf($id)
     {
-        $proposal = Proposal::with(['applicant', 'department', 'themeitem'])->findOrFail($id);
+        $proposal = Proposal::with(['applicant', 'department', 'themeitem',])->findOrFail($id);
         // Load your Blade view here
         $pdf = Pdf::loadView('pages.proposals.printproposal', compact('proposal'));
 

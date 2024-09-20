@@ -15,7 +15,7 @@ class CustomPasswordResetController extends Controller
     // Show the form to request a password reset link
     public function showLinkRequestForm()
     {
-        return view('pages.auth.passwords.email');
+        return view('pages.auth.passwords.requestreset');
     }
 
     // Handle sending the reset link email

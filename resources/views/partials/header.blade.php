@@ -6,17 +6,19 @@
       <i class="bi bi-list"></i>
     </button>
   @endauth
-    <a class="navbar-brand d-flex align-items-center" href="#">
+    <a class="navbar-brand d-flex align-items-center" href="{{url(config('app.url'))}}">
       <img src="{{asset('images/logo.png')}}" alt="Logo">
       <span class="d-none d-lg-inline text-light">University of Kabianga</span>
     </a>
     <div class="mx-auto text-center">
       <h5 class="navbar-text text-light" style="padding:0px;margin:0px;">Uok Call for Annual Grants</h5>
-    </div> 
-    @auth
-    <a class="btn btn-outline-light ms-auto d-flex align-items-center" href="{{route('route.logout')}}">
+    </div>
+    <span style="width:80px">
+      @auth
+      <a class="btn btn-sm btn-outline-light ms-auto d-flex align-items-center" href="{{route('route.logout')}}">
       <i class="bi bi-box-arrow-right me-1"></i>Logout
-    </a>
-  @endauth
+      </a>
+    @endauth
+    </span>
   </div>
 </nav>

@@ -24,7 +24,7 @@ class CustomResetPasswordNotification extends Notification
                     ->greeting('Hello, Dear User')
                     ->subject('Reset Password!')
                     ->line('You are receiving this email because we received a password reset request for your account.')
-                    ->action('Reset Password', url(config('app.url') . route('password.reset', $this->token, false)))
+                    ->action('Reset Password', url(config('app.url').  route('password.reset', $this->token, false)))
                     ->line('If you did not request a password reset, no further action is required.');
     }
 }

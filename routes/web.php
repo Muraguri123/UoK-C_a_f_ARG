@@ -55,7 +55,7 @@ Route::get('/setupadmin', [CommonPagesController::class, 'setupadmin'])->name('p
 
 //custom password reset
 Route::get('password/reset', [CustomPasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('password/email', [CustomPasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::post('password/email', [CustomPasswordResetController::class, 'sendResetLinkEmail'])->name('password.requestreset');
 Route::get('password/reset/{token}', [CustomPasswordResetController::class, 'showResetForm'])->name('password.reset');
 Route::post('password/reset', [CustomPasswordResetController::class, 'reset'])->name('password.update');
 
@@ -245,6 +245,10 @@ Route::middleware(['auth.custom', 'email.account.verification'])->group(function
 
     //notifications
     Route::get('/mailing/home', [BusinessMailingController::class, 'mailinghome'])->name('pages.mailing.home');
+    Route::get('/mailing/jobs/all', [BusinessMailingController::class, 'getalljobs'])->name('api.mailing.getalljobs');
+    Route::get('/mailing/jobs/{id}', [BusinessMailingController::class, 'viewjobpage'])->name('pages.mailing.viewjobpage');
+    Route::get('/mailing/failedjobs/all', [BusinessMailingController::class, 'getallfailedjobs'])->name('api.mailing.getallfailedjobs');
+    Route::get('/mailing/failedjobs/{id}', [BusinessMailingController::class, 'viewfailedjobdetails'])->name('pages.mailing.viewfailedjobdetails');
 
     //reports
     Route::get('/reports/home', [ReportsController::class, 'home'])->name('pages.reports.home');
