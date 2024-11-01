@@ -250,8 +250,7 @@ class ProposalsController extends Controller
             $mailingController->notifyUsersOfProposalActivity('proposalsubmitted', 'New Proposal', 'success', ['You have a New Proposal Pending Receival and processing.'], 'View Proposal', $url);
 
             return response(['message' => 'Application Submitted Successfully!!', 'type' => 'success']);
-        }
-        else {
+        } else {
             return response(['message' => 'Application not ready for Submission. Has incomplete Details!', 'type' => 'warning']);
         }
 
@@ -298,10 +297,8 @@ class ProposalsController extends Controller
     public function approverejectproposal(Request $request, $id)
     {
         if ($request->input('status') == "Approved" && auth()->user()->haspermission('canapproveproposal')) {
-        }
-        else if ($request->input('status') == "Rejected" && auth()->user()->haspermission('canrejectproposal')) {
-        }
-        else {
+        } else if ($request->input('status') == "Rejected" && auth()->user()->haspermission('canrejectproposal')) {
+        } else {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to  Approve/Reject this Proposal!");
         }
 
@@ -363,14 +360,12 @@ class ProposalsController extends Controller
             $url = route('pages.projects.viewanyproject', ['id' => $project->researchid]);
             $mailingController->notifyUsersOfProposalActivity('proposalapproved', 'Proposal Approved!', 'success', ['This Proposal has been Approved Successfully.', 'The project will kick off on the indicated Start Date.'], 'View Project', $url);
             return response(['message' => 'Proposal Approved Successfully! Project Started!', 'type' => 'success']);
-        }
-        else if ($request->input('status') == "Rejected") {
+        } else if ($request->input('status') == "Rejected") {
             $mailingController = new MailingController();
             $url = route('pages.proposals.viewproposal', ['id' => $id]);
             $mailingController->notifyUsersOfProposalActivity('proposalrejected', 'Proposal Rejected', 'success', ['The project didnt qualify for further steps.'], 'View Proposal', $url);
             return response(['message' => 'Proposal Rejected Successfully!!', 'type' => 'danger']);
-        }
-        else {
+        } else {
             return response(['message' => 'Unknown Action on Status!!', 'type' => 'danger']);
         }
 
@@ -382,8 +377,7 @@ class ProposalsController extends Controller
         $response = $this->querysubmissionstatus($id);
         if ($response['basic'] == 2 && $response['design'] == 2 && $response['expenditure'] == 2 && $response['workplan'] == 2 && $response['researchinfo'] == 2) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
 
@@ -394,8 +388,7 @@ class ProposalsController extends Controller
 
         if ($user->haspermission($id)) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
 
@@ -429,8 +422,8 @@ class ProposalsController extends Controller
         $grants = Grant::all();
         $departments = Department::all();
         $themes = ResearchTheme::all();
-        $finyears=FinancialYear::all();
-        return view('pages.proposals.readproposalform', compact('prop', 'departments', 'grants', 'themes','finyears'));
+        $finyears = FinancialYear::all();
+        return view('pages.proposals.readproposalform', compact('prop', 'departments', 'grants', 'themes', 'finyears'));
     }
     public function printpdf($id)
     {
@@ -442,6 +435,7 @@ class ProposalsController extends Controller
         $pdf->setPaper('A4', 'potrait');
         // Return the generated PDF 
         return $pdf->download('Application-' . str_replace('/', '-', $proposal->proposalcode).'.pdf');
+        // return $pdf->stream();
     }
     public function geteditsingleproposalpage(Request $req, $id)
     {
@@ -449,7 +443,7 @@ class ProposalsController extends Controller
         if (!auth()->user()->userid == $prop->useridfk) {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "You are not Authorized to Edit the requested Proposal!");
         }
-        if (!$prop->caneditstatus || $prop->approvalstatus!='Pending') {
+        if (!$prop->caneditstatus || $prop->approvalstatus != 'Pending') {
             return redirect()->route('pages.unauthorized')->with('unauthorizationmessage', "The Proposal is not Editable!");
         }
         $grants = Grant::all();
@@ -552,8 +546,7 @@ class ProposalsController extends Controller
         $total = $rule_40 + $rule_60;
         if ($rule_40 <= (0.4 * $total)) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
